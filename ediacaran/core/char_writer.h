@@ -28,7 +28,6 @@ namespace ediacaran
         constexpr char_writer(char * i_dest, size_t i_size) noexcept
             : m_curr_char(i_dest), m_remaining_size(i_size - 1)
         {
-            EDIACARAN_ASSERT(i_size > 0);
             *m_curr_char = 0;
         }
 
@@ -126,7 +125,7 @@ namespace ediacaran
         for(size_t index = 0; index < length / 2; index++)
         {
             auto const other_index = (length - 1) - index;
-            auto tmp = buffer[other_index];
+            auto tmp = buffer[index];
             buffer[index] = buffer[other_index];
             buffer[other_index] = tmp;
         }
@@ -193,7 +192,7 @@ namespace ediacaran
         for(size_t index = 0; index < length / 2; index++)
         {
             auto const other_index = (length - 1) - index;
-            auto tmp = buffer[other_index];
+            auto tmp = buffer[index];
             buffer[index] = buffer[other_index];
             buffer[other_index] = tmp;
         }

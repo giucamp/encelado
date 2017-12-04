@@ -91,12 +91,14 @@ namespace ediacaran
       char_writer & o_error_dest) noexcept
     {
         TYPE actual_value;
+        auto const prev_source = i_source;
         if (!try_parse(actual_value, i_source, o_error_dest))
         {
             return false;
         }
         if (actual_value != i_expected_value)
         {
+            i_source = prev_source;
             o_error_dest << "mismatching value";
             return false;
         }
@@ -188,6 +190,22 @@ namespace ediacaran
               i_expected.length()) == 0)
         {
             i_source.skip(i_expected.length());
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // try_accept specialization for chars - optimization
+    inline bool try_accept(char i_expected,
+      char_reader & i_source,
+      char_writer & /*o_error_dest*/) noexcept
+    {
+        if (*i_source.next_chars() == i_expected)
+        {
+            i_source.skip(1);
             return true;
         }
         else

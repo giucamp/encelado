@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\core\constexpr_string.h" />
     <ClInclude Include="..\core\ediacaran_common.h" />
     <ClInclude Include="..\core\char_reader.h" />
     <ClInclude Include="..\core\char_writer.h" />

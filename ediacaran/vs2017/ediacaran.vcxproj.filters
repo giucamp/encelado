@@ -25,6 +25,9 @@
     <ClInclude Include="..\reflection\namespace.h">
       <Filter>reflection</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\constexpr_string.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

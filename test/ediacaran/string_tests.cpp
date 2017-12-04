@@ -151,8 +151,10 @@ namespace ediacaran_test
                 break;
             }
             ENCELADO_TEST_ASSERT(!std::isspace(*next_char));
-            ENCELADO_TEST_ASSERT(
-              buff.get() + strlen(buff.get()) == out.next_dest());
+            auto const start_of_buff = buff.get();
+            auto const buff_len = strlen(start_of_buff);
+            auto const end_of_buff = start_of_buff + buff_len;
+            ENCELADO_TEST_ASSERT(end_of_buff == out.next_dest());
             delimiters.push_back(out.next_dest());
         }
 
@@ -171,7 +173,7 @@ namespace ediacaran_test
                   using value_type = std::decay_t<decltype(i_value)>;
                   
                   // try with the random input
-                  if constexpr (!std::is_same_v<value_type, std::string>)
+                  if constexpr (!std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
                   {
                     char_reader random_stream(random_input);
                     value_type val;
@@ -183,7 +185,8 @@ namespace ediacaran_test
                   }
 
                   // consume an object
-                  in >> std::as_const(std::get<value_type>(obj)) >> spaces;
+                  auto const expected = std::get<value_type>(obj);
+                  in >> expected >> spaces;
                   ENCELADO_TEST_ASSERT(
                     delimiters[index] == in.next_chars());
               },

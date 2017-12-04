@@ -5,6 +5,7 @@
 #pragma once
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/char_writer.h"
+#include "ediacaran/core/constexpr_string.h"
 #include "ediacaran/reflection/type.h"
 #include <type_traits>
 #include <limits>
@@ -15,36 +16,16 @@ namespace ediacaran
     namespace detail
     {
         template <typename INT_TYPE>
-            constexpr void write_int_type_name(char_writer & o_dest) noexcept
+            struct WriteIntTypeName
         {
-            static_assert(std::numeric_limits<INT_TYPE>::radix == 2);
-
-            if constexpr(std::is_signed_v<INT_TYPE>)
-                o_dest << 's';
-            o_dest << "int" << std::numeric_limits<INT_TYPE>::digits;
-        }
-
-        template <typename INT_TYPE>
-            struct IntTypeName
-        {
-            constexpr static size_t get_length() noexcept
+            constexpr void operator ()(char_writer & o_dest) noexcept
             {
-                char_writer writer;
-                write_int_type_name<INT_TYPE>(writer);
-                return writer.input_size();
+                static_assert(std::numeric_limits<INT_TYPE>::radix == 2);
+
+                if constexpr(!std::is_signed_v<INT_TYPE>)
+                    o_dest << 'u';
+                o_dest << "int" << std::numeric_limits<INT_TYPE>::digits;
             }
-
-            constexpr static size_t length = get_length();
-
-            constexpr static std::array<char, length> get_string() noexcept
-            {
-                std::array<char, length> name = {};
-                char_writer writer(name.data(), name.size());
-                write_int_type_name<INT_TYPE>(writer);
-                return name;
-            }
-
-            constexpr static std::array<char, length> string = get_string();
         };
     }
 
@@ -79,11 +60,11 @@ namespace ediacaran
         return create_static_type<double>("long double");
     }
 
-    template <typename TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<TYPE> && !std::is_same_v<TYPE, bool>, type_t> create_type(
-      tag<TYPE>)
+    template <typename INT_TYPE>
+    constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>, type_t> create_type(
+      tag<INT_TYPE>)
     {
-        return create_static_type<TYPE>(detail::IntTypeName<TYPE>::string.data());
+        return create_static_type<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data());
     }
 
     constexpr type_t create_type(tag<void *>)

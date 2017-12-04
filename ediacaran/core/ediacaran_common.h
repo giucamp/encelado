@@ -61,8 +61,8 @@ namespace ediacaran
         constexpr static size_t length(const char_type * i_string) noexcept
         {
             auto curr = i_string;
-            while(*curr++)
-                ;
+            while(*curr)
+                curr++;
             return curr - i_string;
         }
 
