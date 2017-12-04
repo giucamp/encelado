@@ -1,0 +1,6 @@
+
+cambrian/vs2017/x64/
+ediacaran/vs2017/x64/
+test/vs2017/.vs/
+test/vs2017/x64/
+*.user

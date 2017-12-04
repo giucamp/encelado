@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\cambrian.cpp" />
+    <ClCompile Include="..\ediacaran.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\ediacaran\string_tests.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ediacaran\qualified_type_ptr_tests.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ediacaran">
+      <UniqueIdentifier>{70dd5627-960a-499e-abf3-edaa899b33fd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common.h" />
+  </ItemGroup>
+</Project>

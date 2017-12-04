@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\core\char_writer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\char_reader.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\ediacaran_common.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\get_type.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\qualified_type_ptr.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\special_functions.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\type.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\namespace.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\core\char_writer.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\char_reader.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\reflection\qualified_type_ptr.cpp">
+      <Filter>reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\reflection\namespace.cpp">
+      <Filter>reflection</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{644484fe-ea43-4d1e-8c98-2bf7333dc86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reflection">
+      <UniqueIdentifier>{09481940-c503-4049-b40f-353650f9d371}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\reflection\qualified_type_ptr.inl">
+      <Filter>reflection</Filter>
+    </None>
+  </ItemGroup>
+</Project>
