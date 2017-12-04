@@ -25,27 +25,26 @@ namespace ediacaran
         }
 
         template <typename INT_TYPE>
-            constexpr size_t int_type_name_length() noexcept
+            struct IntTypeName
         {
-            char_writer writer;
-            write_int_type_name<INT_TYPE>(writer);
-            return writer.input_size();
-        }
+            constexpr static size_t get_length() noexcept
+            {
+                char_writer writer;
+                write_int_type_name<INT_TYPE>(writer);
+                return writer.input_size();
+            }
 
-        template <typename INT_TYPE>
-            constexpr std::array<char, int_type_name_length<INT_TYPE>() + 1> int_type_name() noexcept
-        {
-            std::array<char, int_type_name_length<INT_TYPE>() + 1> name;
-            char_writer writer(name.data(), name.size());
-            write_int_type_name<INT_TYPE>(writer);
-            return name;
-        }
+            constexpr static size_t length = get_length();
 
-        template <typename INT_TYPE>
-            struct int_type
-        {
-            constexpr static size_t ss = int_type_name_length<INT_TYPE>();
-            constexpr static std::array<char, int_type_name_length<INT_TYPE>() + 1> s_name = int_type_name<INT_TYPE>();
+            constexpr static std::array<char, length> get_string() noexcept
+            {
+                std::array<char, length> name = {};
+                char_writer writer(name.data(), name.size());
+                write_int_type_name<INT_TYPE>(writer);
+                return name;
+            }
+
+            constexpr static std::array<char, length> string = get_string();
         };
     }
 
@@ -84,7 +83,7 @@ namespace ediacaran
     constexpr std::enable_if_t<std::is_integral_v<TYPE> && !std::is_same_v<TYPE, bool>, type_t> create_type(
       tag<TYPE>)
     {
-        return create_static_type<TYPE>(detail::int_type<TYPE>::s_name.data());
+        return create_static_type<TYPE>(detail::IntTypeName<TYPE>::string.data());
     }
 
     constexpr type_t create_type(tag<void *>)

@@ -74,7 +74,8 @@ namespace ediacaran
               std::min(m_remaining_size, i_string.length());
             if (length_to_write > 0)
             {
-                memcpy(m_curr_char, i_string.data(), length_to_write);
+                for(size_t index = 0; index < length_to_write; index++)
+                    m_curr_char[index] = i_string[index];
                 m_curr_char += length_to_write;
                 m_remaining_size -= length_to_write;
                 *m_curr_char = 0;

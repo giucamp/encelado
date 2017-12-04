@@ -4,6 +4,7 @@
 
 #pragma once
 #include <assert.h>
+#include <string>
 #include <string_view>
 #include <cstdint>
 
@@ -76,7 +77,22 @@ namespace ediacaran
         }
     };
 
-    using string_view = std::basic_string_view<char, constexpr_char_traits>;
+    class string_view : public std::basic_string_view<char, constexpr_char_traits>
+    {
+    public:
+        using basic_string_view<char, constexpr_char_traits>::basic_string_view;
+
+        string_view(const std::string & i_source) noexcept
+            : string_view(i_source.c_str(), i_source.size())
+        {
+            
+        }
+
+        operator std::string ()
+        {
+            return std::string(data(), size());
+        }
+    };
 
     using hash_t = size_t;
 
