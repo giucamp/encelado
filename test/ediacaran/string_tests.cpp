@@ -156,7 +156,7 @@ namespace ediacaran_test
             delimiters.push_back(out.next_dest());
         }
 
-        char_reader in(std::string_view(buff.get(), buffer_size));
+        char_reader in(string_view(buff.get(), buffer_size));
         for (size_t index = 0; index < objects.size(); index++)
         {
             auto const & obj = objects[index];

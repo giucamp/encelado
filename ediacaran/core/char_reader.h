@@ -26,7 +26,7 @@ namespace ediacaran
     class char_reader
     {
       public:
-        constexpr char_reader(const std::string_view & i_source)
+        constexpr char_reader(const string_view & i_source)
             : m_source(i_source)
         {
         }
@@ -46,7 +46,7 @@ namespace ediacaran
         }
 
       private:
-        std::string_view m_source;
+        string_view m_source;
     };
 
     // trait has_try_parse
@@ -136,7 +136,7 @@ namespace ediacaran
 
     // parse(string_view)
     template <typename TYPE>
-        TYPE parse(const std::string_view & i_source)
+        TYPE parse(const string_view & i_source)
     {
         char_reader in(i_source);
         return parse<TYPE>(in);
@@ -180,7 +180,7 @@ namespace ediacaran
     }
 
     // try_accept for strings - they don't have a try_parse
-    inline bool try_accept(const std::string_view & i_expected,
+    inline bool try_accept(const string_view & i_expected,
       char_reader & i_source,
       char_writer & /*o_error_dest*/) noexcept
     {

@@ -99,7 +99,7 @@ namespace ediacaran_test
 
 		// test types
 		qualified_type_ptr_unit_test_type<float>();
-		qualified_type_ptr_unit_test_type<std::vector<int>>();
+		//qualified_type_ptr_unit_test_type<std::vector<int>>();
 
 		ENCELADO_TEST_ASSERT(get_type<const void *>().is_const(1));
 		ENCELADO_TEST_ASSERT(get_type<void *const>().is_const(0));

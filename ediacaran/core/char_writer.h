@@ -9,6 +9,7 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <utility>
 
 namespace ediacaran
 {
@@ -65,7 +66,7 @@ namespace ediacaran
         }
 
         constexpr char_writer & operator<<(
-          const std::string_view & i_string) noexcept
+          const string_view & i_string) noexcept
         {
             m_input_size += i_string.length();
 
@@ -98,7 +99,7 @@ namespace ediacaran
     };
 
     template <typename UINT_TYPE>
-    std::enable_if_t<std::is_integral_v<UINT_TYPE> &&
+    constexpr std::enable_if_t<std::is_integral_v<UINT_TYPE> &&
                        !std::is_signed_v<UINT_TYPE> && !std::is_same_v<UINT_TYPE, bool>,
       char_writer> &
       operator<<(char_writer & i_dest, UINT_TYPE i_source) noexcept
@@ -107,7 +108,7 @@ namespace ediacaran
 
         constexpr int buffer_size =
           std::numeric_limits<UINT_TYPE>::digits10 + 1;
-        char buffer[buffer_size];
+        char buffer[buffer_size] = {};
         size_t length = 0;
         do
         {
@@ -120,15 +121,22 @@ namespace ediacaran
 
         } while (i_source > 0);
 
-        std::reverse(buffer, buffer + length);
+        // std::reverse is not constexpr
+        for(size_t index = 0; index < length / 2; index++)
+        {
+            auto const other_index = (length - 1) - index;
+            auto tmp = buffer[other_index];
+            buffer[index] = buffer[other_index];
+            buffer[other_index] = tmp;
+        }
 
-        i_dest << std::string_view(buffer, length);
+        i_dest << string_view(buffer, length);
 
         return i_dest;
     }
 
     template <typename SINT_TYPE>
-    std::enable_if_t<std::is_integral_v<SINT_TYPE> &&
+    constexpr std::enable_if_t<std::is_integral_v<SINT_TYPE> &&
                        std::is_signed_v<SINT_TYPE> && !std::is_same_v<SINT_TYPE, bool>,
       char_writer> &
       operator<<(char_writer & i_dest, SINT_TYPE i_source) noexcept
@@ -139,7 +147,7 @@ namespace ediacaran
 
         constexpr int buffer_size =
           std::numeric_limits<SINT_TYPE>::digits10 + 1;
-        char buffer[buffer_size];
+        char buffer[buffer_size] = {};
         int length = 0;
         /* note: if the number is negative, we can't just negate the sign and use the same algorithm,
 			because the unary minus operator is lossy: for example, negating -128 as int8 produces an overflow, as 
@@ -180,15 +188,22 @@ namespace ediacaran
             i_dest << '-';
         }
 
-        std::reverse(buffer, buffer + length);
-
-        i_dest << std::string_view(buffer, length);
+        // std::reverse is not constexpr
+        for(size_t index = 0; index < length / 2; index++)
+        {
+            auto const other_index = (length - 1) - index;
+            auto tmp = buffer[other_index];
+            buffer[index] = buffer[other_index];
+            buffer[other_index] = tmp;
+        }
+        
+        i_dest << string_view(buffer, length);
 
         return i_dest;
     }
 
     template <typename BOOL>
-    inline std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &> operator<<(
+    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &> operator<<(
       char_writer & i_dest, BOOL i_value) noexcept
     {
         return i_dest << (i_value ? "true" : "false");

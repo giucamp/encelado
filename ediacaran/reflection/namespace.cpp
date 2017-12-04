@@ -20,9 +20,9 @@ namespace ediacaran
         EDIACARAN_ASSERT(removed == 1);
     }
 
-    const type_t * global_namespace_::find_type(const std::string_view & i_full_name) const
+    const type_t * global_namespace_::find_type(const string_view & i_full_name) const
     {
-        std::string full_type_name{i_full_name};
+        std::string full_type_name{i_full_name.data(), i_full_name.size()};
         auto const it = m_types.find(full_type_name);
         if(it == m_types.end())
             return nullptr;
@@ -69,7 +69,7 @@ namespace ediacaran
                 return false;
             }
 
-            std::string_view const full_name{first_char, static_cast<size_t>(curr_char - first_char)};
+            string_view const full_name{first_char, static_cast<size_t>(curr_char - first_char)};
             auto const type_ptr = global_namespace_::get().find_type(full_name);
             if(type_ptr == nullptr)
             {

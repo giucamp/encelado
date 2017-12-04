@@ -38,7 +38,7 @@ namespace ediacaran
         void unregister_type(
           const char * i_full_name, const type_t * i_type) noexcept;
 
-        const type_t * find_type(const std::string_view & i_full_name) const;
+        const type_t * find_type(const string_view & i_full_name) const;
 
       private:
         global_namespace_() : namespace_("") {}

@@ -7,7 +7,6 @@
 #include <string_view>
 #include <cstdint>
 
-
 /** Assert that on failure should cause an halt of the program. Used only locally in this header. */
 #ifdef _MSC_VER
     #define EDIACARAN_CHECKING_ASSERT(bool_expr)          if(!(bool_expr)) { __debugbreak(); } else (void)0
@@ -42,9 +41,46 @@
 
 namespace ediacaran
 {
+    // workaround for P0426R0 not implemented
+    class constexpr_char_traits : public std::char_traits<char>
+    {
+    public:
+
+        static constexpr void assign(char_type & o_dest, const char_type& i_source) noexcept
+        {
+            o_dest = i_source;
+        }
+
+        static constexpr void assign(char_type * i_dest, size_t i_size, const char_type& i_source) noexcept
+        {
+            for(size_t index = 0; index < i_size; index++)
+                i_dest[index] = i_source;
+        }
+
+        constexpr static size_t length(const char_type * i_string) noexcept
+        {
+            auto curr = i_string;
+            while(*curr++)
+                ;
+            return curr - i_string;
+        }
+
+        static constexpr bool eq(char_type i_first, char_type i_second) noexcept
+        {
+            return i_first == i_second;
+        }
+
+        static constexpr bool lt(char_type i_first, char_type i_second) noexcept
+        {
+            return i_first < i_second;
+        }
+    };
+
+    using string_view = std::basic_string_view<char, constexpr_char_traits>;
+
     using hash_t = size_t;
 
-    constexpr hash_t string_hash(const std::string_view i_source) noexcept
+    constexpr hash_t string_hash(const string_view i_source) noexcept
     {
         /*	djb2 - http://www.cse.yorku.ca/~oz/hash.html Bernstein hash function */
         hash_t hash = 5381;
