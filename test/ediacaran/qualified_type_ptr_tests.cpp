@@ -261,14 +261,10 @@ namespace ediacaran_test
 		CHECK_TYPE(volatile void *const volatile*const*);
 		CHECK_TYPE(void *const volatile***);
 		CHECK_TYPE(void *volatile**);
-		//CHECK_TYPE(void&);
-		//CHECK_TYPE(const void&);
-		//CHECK_TYPE(volatile void const&);
 		CHECK_TYPE(const void ***&);
 		CHECK_TYPE(volatile void *const volatile*const*&&);
 		CHECK_TYPE(void *const volatile***&);
 		CHECK_TYPE(void *volatile**&&);
-		//CHECK_TYPE(void&&);
 		CHECK_TYPE(const void**);
 		CHECK_TYPE(volatile void **const);
 		CHECK_TYPE(const void ***const);

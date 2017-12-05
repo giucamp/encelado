@@ -28,6 +28,7 @@ namespace ediacaran
         constexpr char_writer(char * i_dest, size_t i_size) noexcept
             : m_curr_char(i_dest), m_remaining_size(i_size - 1)
         {
+            EDIACARAN_ASSERT(i_size > 0);
             *m_curr_char = 0;
         }
 
