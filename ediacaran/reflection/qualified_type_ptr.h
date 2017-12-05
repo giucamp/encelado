@@ -5,10 +5,10 @@
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/get_type.h"
 #include "type.h"
+#include <array>
 #include <limits>
 #include <stdexcept>
 #include <type_traits>
-#include <array>
 
 namespace ediacaran
 {
@@ -76,7 +76,6 @@ namespace ediacaran
     class qualified_type_ptr final
     {
       public:
-
         // constants
 
         /** Maximum indirection levels that this class can handle. This is 14 if \c uintptr_t is 32-bit wide or smaller, 28 otherwise.
@@ -177,7 +176,10 @@ namespace ediacaran
 
         constexpr qualified_type_ptr(const type_t & i_final_type,
           const std::initializer_list<CV_Flags> & i_cv_flags)
-            : qualified_type_ptr(i_final_type, i_cv_flags.begin(), i_cv_flags.end() - i_cv_flags.begin()) {}
+            : qualified_type_ptr(i_final_type, i_cv_flags.begin(),
+                i_cv_flags.end() - i_cv_flags.begin())
+        {
+        }
 
         /** Copies from the source qualified_type_ptr */
         constexpr qualified_type_ptr(
@@ -200,7 +202,6 @@ namespace ediacaran
         }
 
       private:
-
         template <typename TYPE> friend constexpr qualified_type_ptr get_type();
 
         friend char_reader & operator>>(
@@ -217,9 +218,11 @@ namespace ediacaran
     };
 
 
-    char_writer & operator << (char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
+    char_writer & operator<<(
+      char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
 
-    bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
+    bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source,
+      char_writer & o_error_dest) noexcept;
 
 } // namespace ediacaran
 

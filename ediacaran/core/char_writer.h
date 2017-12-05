@@ -74,7 +74,7 @@ namespace ediacaran
               std::min(m_remaining_size, i_string.length());
             if (length_to_write > 0)
             {
-                for(size_t index = 0; index < length_to_write; index++)
+                for (size_t index = 0; index < length_to_write; index++)
                     m_curr_char[index] = i_string[index];
                 m_curr_char += length_to_write;
                 m_remaining_size -= length_to_write;
@@ -101,7 +101,8 @@ namespace ediacaran
 
     template <typename UINT_TYPE>
     constexpr std::enable_if_t<std::is_integral_v<UINT_TYPE> &&
-                       !std::is_signed_v<UINT_TYPE> && !std::is_same_v<UINT_TYPE, bool>,
+                                 !std::is_signed_v<UINT_TYPE> &&
+                                 !std::is_same_v<UINT_TYPE, bool>,
       char_writer> &
       operator<<(char_writer & i_dest, UINT_TYPE i_source) noexcept
     {
@@ -123,7 +124,7 @@ namespace ediacaran
         } while (i_source > 0);
 
         // std::reverse is not constexpr
-        for(size_t index = 0; index < length / 2; index++)
+        for (size_t index = 0; index < length / 2; index++)
         {
             auto const other_index = (length - 1) - index;
             auto tmp = buffer[index];
@@ -138,7 +139,8 @@ namespace ediacaran
 
     template <typename SINT_TYPE>
     constexpr std::enable_if_t<std::is_integral_v<SINT_TYPE> &&
-                       std::is_signed_v<SINT_TYPE> && !std::is_same_v<SINT_TYPE, bool>,
+                                 std::is_signed_v<SINT_TYPE> &&
+                                 !std::is_same_v<SINT_TYPE, bool>,
       char_writer> &
       operator<<(char_writer & i_dest, SINT_TYPE i_source) noexcept
     {
@@ -190,22 +192,22 @@ namespace ediacaran
         }
 
         // std::reverse is not constexpr
-        for(size_t index = 0; index < length / 2; index++)
+        for (size_t index = 0; index < length / 2; index++)
         {
             auto const other_index = (length - 1) - index;
             auto tmp = buffer[index];
             buffer[index] = buffer[other_index];
             buffer[other_index] = tmp;
         }
-        
+
         i_dest << string_view(buffer, length);
 
         return i_dest;
     }
 
     template <typename BOOL>
-    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &> operator<<(
-      char_writer & i_dest, BOOL i_value) noexcept
+    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &>
+      operator<<(char_writer & i_dest, BOOL i_value) noexcept
     {
         return i_dest << (i_value ? "true" : "false");
     }

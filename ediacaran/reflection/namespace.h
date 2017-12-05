@@ -1,9 +1,9 @@
 #pragma once
 #include "ediacaran/reflection/type.h"
 #include <string.h>
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 namespace ediacaran
 {
@@ -47,5 +47,6 @@ namespace ediacaran
         std::unordered_map<std::string, const type_t *> m_types;
     };
 
-    bool try_parse(const type_t * * o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept;
+    bool try_parse(const type_t ** o_type_ptr, char_reader & i_source,
+      char_writer & i_error) noexcept;
 }

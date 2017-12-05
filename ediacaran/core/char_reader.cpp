@@ -43,8 +43,8 @@ namespace ediacaran
         }
     }
 
-    bool try_parse(
-      float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    bool try_parse(float & o_dest, char_reader & i_source,
+      char_writer & o_error_dest) noexcept
     {
         return detail::try_parse_float(
           o_dest, i_source, o_error_dest, std::strtof);
@@ -64,8 +64,8 @@ namespace ediacaran
           o_dest, i_source, o_error_dest, std::strtold);
     }
 
-    bool try_parse(
-      bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    bool try_parse(bool & o_dest, char_reader & i_source,
+      char_writer & o_error_dest) noexcept
     {
         if (try_accept("true", i_source))
         {

@@ -26,8 +26,7 @@ namespace ediacaran
     class char_reader
     {
       public:
-        constexpr char_reader(const string_view & i_source)
-            : m_source(i_source)
+        constexpr char_reader(const string_view & i_source) : m_source(i_source)
         {
         }
 
@@ -124,8 +123,7 @@ namespace ediacaran
     }
 
     // parse(char_reader)
-    template <typename TYPE>
-        TYPE parse(char_reader & i_source)
+    template <typename TYPE> TYPE parse(char_reader & i_source)
     {
         static_assert(has_try_parse_v<TYPE>);
         char error[512];
@@ -137,8 +135,7 @@ namespace ediacaran
     }
 
     // parse(string_view)
-    template <typename TYPE>
-        TYPE parse(const string_view & i_source)
+    template <typename TYPE> TYPE parse(const string_view & i_source)
     {
         char_reader in(i_source);
         return parse<TYPE>(in);
@@ -146,8 +143,7 @@ namespace ediacaran
 
     // generic char_reader >> val, based on try_parse
     template <typename TYPE>
-    constexpr char_reader & operator>>(
-      char_reader & i_source, TYPE & o_dest)
+    constexpr char_reader & operator>>(char_reader & i_source, TYPE & o_dest)
     {
         static_assert(has_try_parse_v<TYPE>);
         char error[512];
@@ -158,7 +154,8 @@ namespace ediacaran
 
     // generic char_reader >> const val, based on try_accept
     template <typename TYPE>
-        constexpr char_reader & operator>>(char_reader & i_source, const TYPE & i_expected_value)
+    constexpr char_reader & operator>>(
+      char_reader & i_source, const TYPE & i_expected_value)
     {
         static_assert(has_try_accept_v<TYPE>);
         char error[512];
@@ -183,8 +180,7 @@ namespace ediacaran
 
     // try_accept for strings - they don't have a try_parse
     inline bool try_accept(const string_view & i_expected,
-      char_reader & i_source,
-      char_writer & /*o_error_dest*/) noexcept
+      char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         if (strncmp(i_source.next_chars(), i_expected.data(),
               i_expected.length()) == 0)
@@ -199,8 +195,7 @@ namespace ediacaran
     }
 
     // try_accept specialization for chars - optimization
-    inline bool try_accept(char i_expected,
-      char_reader & i_source,
+    inline bool try_accept(char i_expected, char_reader & i_source,
       char_writer & /*o_error_dest*/) noexcept
     {
         if (*i_source.next_chars() == i_expected)
@@ -213,7 +208,6 @@ namespace ediacaran
             return false;
         }
     }
-
 
 
     constexpr bool try_parse(char & i_dest, char_reader & i_source,

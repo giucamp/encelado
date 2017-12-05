@@ -147,9 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cambrian.cpp" />
-    <ClCompile Include="..\ediacaran.cpp" />
     <ClCompile Include="..\ediacaran\qualified_type_ptr_tests.cpp" />
     <ClCompile Include="..\ediacaran\string_tests.cpp" />
+    <ClCompile Include="..\ediacaran\type_tests.cpp" />
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>

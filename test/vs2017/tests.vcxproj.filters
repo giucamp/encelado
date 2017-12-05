@@ -2,12 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\cambrian.cpp" />
-    <ClCompile Include="..\ediacaran.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\ediacaran\string_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
     <ClCompile Include="..\ediacaran\qualified_type_ptr_tests.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ediacaran\type_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
   </ItemGroup>

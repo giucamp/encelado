@@ -1,4 +1,5 @@
 
+#include "../common.h"
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
 #include <memory>
@@ -8,10 +9,9 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
-#include "../common.h"
 
 namespace ediacaran_test
-{    
+{
     void string_conversion_tests()
     {
         size_t const buffer_size = 1024 * 1024;
@@ -164,31 +164,33 @@ namespace ediacaran_test
             auto const & obj = objects[index];
 
             char random_input[256];
-            std::generate(std::begin(random_input), std::end(random_input), [&rand] { return static_cast<char>(rand()); } );
+            std::generate(std::begin(random_input), std::end(random_input),
+              [&rand] { return static_cast<char>(rand()); });
             random_input[255] = 0;
 
             std::visit(
-              [&in, &obj, index, &delimiters, &random_input](const auto & i_value) {
+              [&in, &obj, index, &delimiters, &random_input](
+                const auto & i_value) {
 
                   using value_type = std::decay_t<decltype(i_value)>;
-                  
-                  // try with the random input
-                  if constexpr (!std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
-                  {
-                    char_reader random_stream(random_input);
-                    value_type val;
-                    try_parse(val, random_stream);
 
-                    random_stream = char_reader(random_input);
-                    val = value_type{};
-                    try_accept(val, random_stream);
+                  // try with the random input
+                  if constexpr (!std::is_same_v<value_type, std::string> &&
+                                !std::is_same_v<value_type, char>)
+                  {
+                      char_reader random_stream(random_input);
+                      value_type val;
+                      try_parse(val, random_stream);
+
+                      random_stream = char_reader(random_input);
+                      val = value_type{};
+                      try_accept(val, random_stream);
                   }
 
                   // consume an object
                   auto const expected = std::get<value_type>(obj);
                   in >> expected >> spaces;
-                  ENCELADO_TEST_ASSERT(
-                    delimiters[index] == in.next_chars());
+                  ENCELADO_TEST_ASSERT(delimiters[index] == in.next_chars());
               },
               obj);
         }

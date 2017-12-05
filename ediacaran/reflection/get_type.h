@@ -3,26 +3,25 @@
 
 
 #pragma once
-#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/core/constexpr_string.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/type.h"
-#include <type_traits>
-#include <limits>
 #include <array>
+#include <limits>
+#include <type_traits>
 
 namespace ediacaran
 {
     namespace detail
     {
-        template <typename INT_TYPE>
-            struct WriteIntTypeName
+        template <typename INT_TYPE> struct WriteIntTypeName
         {
-            constexpr void operator ()(char_writer & o_dest) noexcept
+            constexpr void operator()(char_writer & o_dest) noexcept
             {
                 static_assert(std::numeric_limits<INT_TYPE>::radix == 2);
 
-                if constexpr(!std::is_signed_v<INT_TYPE>)
+                if constexpr (!std::is_signed_v<INT_TYPE>)
                     o_dest << 'u';
                 o_dest << "int" << std::numeric_limits<INT_TYPE>::digits;
             }
@@ -61,10 +60,12 @@ namespace ediacaran
     }
 
     template <typename INT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>, type_t> create_type(
-      tag<INT_TYPE>)
+    constexpr std::enable_if_t<
+      std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>, type_t>
+      create_type(tag<INT_TYPE>)
     {
-        return create_static_type<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data());
+        return create_static_type<INT_TYPE>(
+          constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data());
     }
 
     constexpr type_t create_type(tag<void *>)

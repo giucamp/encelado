@@ -3,8 +3,7 @@
 
 namespace ediacaran
 {
-    template <typename WRITER_FUNC>
-        struct constexpr_string
+    template <typename WRITER_FUNC> struct constexpr_string
     {
         constexpr static size_t get_length() noexcept
         {
@@ -15,14 +14,14 @@ namespace ediacaran
 
         constexpr static size_t length = get_length();
 
-        constexpr static std::array<char, length> get_string() noexcept
+        constexpr static std::array<char, length + 1> get_string() noexcept
         {
-            std::array<char, length> name = {};
+            std::array<char, length + 1> name = {};
             char_writer writer(name.data(), name.size());
             WRITER_FUNC()(writer);
             return name;
         }
 
-        constexpr static std::array<char, length> string = get_string();
+        constexpr static std::array<char, length + 1> string = get_string();
     };
 }
