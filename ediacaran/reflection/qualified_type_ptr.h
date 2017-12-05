@@ -3,8 +3,7 @@
 
 
 #include "ediacaran/core/ediacaran_common.h"
-#include "ediacaran/reflection/get_type.h"
-#include "type.h"
+#include "ediacaran/reflection/type.h"
 #include <array>
 #include <limits>
 #include <stdexcept>

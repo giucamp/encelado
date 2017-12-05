@@ -1,9 +1,30 @@
 
 #include "ediacaran/reflection/namespace.h"
+#include "ediacaran/reflection/type.h"
 #include <string>
 
 namespace ediacaran
 {
+    global_namespace_::global_namespace_() 
+        : namespace_("")
+    {
+        register_type("void", &get_naked_type<void>());
+
+        register_type("int8", &get_naked_type<int32_t>());
+        register_type("int16", &get_naked_type<int32_t>());
+        register_type("int32", &get_naked_type<int32_t>());
+        register_type("int64", &get_naked_type<int32_t>());
+
+        register_type("uint8", &get_naked_type<uint32_t>());
+        register_type("uint16", &get_naked_type<uint32_t>());
+        register_type("uint32", &get_naked_type<uint32_t>());
+        register_type("uint64", &get_naked_type<uint32_t>());
+        
+        register_type("float", &get_naked_type<float>());
+        register_type("double", &get_naked_type<double>());
+        register_type("long double", &get_naked_type<long double>());
+    }
+
     void global_namespace_::register_type(
       const char * i_full_name, const type_t * i_type)
     {
@@ -43,8 +64,9 @@ namespace ediacaran
             for (;;)
             {
                 // accept "::"
-                if (*curr_char++ == ':')
+                if (*curr_char == ':')
                 {
+                    curr_char++;
                     if (*curr_char++ != ':')
                     {
                         i_error << "Expected ':' after ':'\n";
@@ -53,8 +75,9 @@ namespace ediacaran
                 }
 
                 // accept identifier
-                if (std::isalpha(*curr_char++))
+                if (std::isalpha(*curr_char))
                 {
+                    curr_char++;
                     some_identifier_found = true;
                     while (std::isalnum(*curr_char) || *curr_char == '_')
                     {

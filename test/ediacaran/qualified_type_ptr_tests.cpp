@@ -1,7 +1,7 @@
 
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
-#include "ediacaran/reflection/get_type.h"
+#include "ediacaran/reflection/type.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include <vector>
 

@@ -10,9 +10,6 @@
     <ClInclude Include="..\core\ediacaran_common.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\reflection\get_type.h">
-      <Filter>reflection</Filter>
-    </ClInclude>
     <ClInclude Include="..\reflection\qualified_type_ptr.h">
       <Filter>reflection</Filter>
     </ClInclude>

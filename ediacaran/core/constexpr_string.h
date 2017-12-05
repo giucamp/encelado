@@ -1,5 +1,6 @@
 #pragma once
 #include "ediacaran/core/char_writer.h"
+#include <array>
 
 namespace ediacaran
 {

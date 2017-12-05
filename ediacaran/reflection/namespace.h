@@ -41,7 +41,7 @@ namespace ediacaran
         const type_t * find_type(const string_view & i_full_name) const;
 
       private:
-        global_namespace_() : namespace_("") {}
+        global_namespace_();
 
       private:
         std::unordered_map<std::string, const type_t *> m_types;

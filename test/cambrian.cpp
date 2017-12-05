@@ -3,7 +3,7 @@
 
 
 #include "ediacaran/core/char_writer.h"
-#include "ediacaran/reflection/get_type.h"
+#include "ediacaran/reflection/type.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include <iostream>
 #include <string>
