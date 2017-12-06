@@ -25,6 +25,9 @@
     <ClInclude Include="..\core\constexpr_string.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\string_builder.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

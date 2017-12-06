@@ -2,6 +2,7 @@
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
+#include "ediacaran/core/string_builder.h"
 #include <memory>
 #include <random>
 #include <sstream>
@@ -145,7 +146,7 @@ namespace ediacaran_test
                 ENCELADO_TEST_ASSERT(false);
                 break;
             }
-            if (out.remaining_size() == 0)
+            if (out.remaining_size() <= 0)
             {
                 objects.pop_back();
                 break;
@@ -242,8 +243,30 @@ namespace ediacaran_test
         typed_string_overflow_tests<uint32_t, uint64_t>();
     }
 
+    void string_builder_tests()
+    {
+        string_builder builder;
+
+        int32_t const test_size = 1'000'000;
+        int32_t progress = 0;
+        for(size_t j = 0; j < test_size; j += 1)
+        {
+            for(; progress < j; progress++)
+                builder << progress << ' ' << std::to_string(progress) << ' ';
+        
+            auto string = builder.to_string();
+            char_reader reader(string);
+            for(int32_t i = 0; i < j; i++)
+            {
+                reader >> std::as_const(i) >> ' ';
+                reader >> std::as_const(i) >> ' ';
+            }
+        }
+    }
+
     void string_tests()
     {
+        string_builder_tests();
         string_conversion_tests();
         string_overflow_tests();
 
@@ -287,5 +310,7 @@ namespace ediacaran_test
 
         static_assert(!has_try_accept_v<void>);
         static_assert(!has_try_parse_v<void>);
+
+        parse<int>(string_view("42"));
     }
 }

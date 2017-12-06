@@ -49,8 +49,31 @@
 #    define EDIACARAN_ASSUME(bool_expr) (void)0
 #endif
 
+#ifdef _DEBUG
 #define EDIACARAN_ASSERT EDIACARAN_CHECKING_ASSERT
 #define EDIACARAN_INTERNAL_ASSERT EDIACARAN_CHECKING_ASSERT
+#else
+#define EDIACARAN_ASSERT EDIACARAN_ASSUME
+#define EDIACARAN_INTERNAL_ASSERT EDIACARAN_ASSUME
+#endif
+
+
+/** Macro that tells to the compiler that a condition is true in most cases. This is just an hint to the optimizer. */
+#if defined(__GNUC__) && !defined(_MSC_VER)
+    #define EDIACARAN_LIKELY(bool_expr)                   (__builtin_expect(bool_expr, true), bool_expr)
+#else
+    #define EDIACARAN_LIKELY(bool_expr)                   (bool_expr)
+#endif
+
+/** Macro used in some circumstances to avoid inlining of a function, for
+        example because the call handles a somewhat rare slow path. */
+#ifdef _MSC_VER
+    #define EDIACARAN_NO_INLINE                           __declspec(noinline)
+#elif defined(__GNUC__)
+    #define EDIACARAN_NO_INLINE                           __attribute__ ((noinline))
+#else
+    #define EDIACARAN_NO_INLINE
+#endif
 
 #if __cpp_noexcept_function_type
 #    define EDIACARAN_NOEXCEPT_FUNCTION_TYPE noexcept
@@ -128,5 +151,11 @@ namespace ediacaran
         for (auto c : i_source)
             hash = hash * 33 + c;
         return hash;
+    }
+
+    template <typename TYPE, size_t SIZE>
+    constexpr size_t array_size(TYPE (&i_array)[SIZE])
+    {
+        return SIZE;
     }
 }

@@ -10,7 +10,8 @@ namespace ediacaran
         {
             char_writer writer;
             WRITER_FUNC()(writer);
-            return writer.input_size();
+            EDIACARAN_ASSERT(writer.remaining_size() <= 0);
+            return static_cast<size_t>(-writer.remaining_size());
         }
 
         constexpr static size_t length = get_length();

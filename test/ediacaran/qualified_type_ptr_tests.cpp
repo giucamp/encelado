@@ -1,8 +1,8 @@
 
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
-#include "ediacaran/reflection/type.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
+#include "ediacaran/reflection/type.h"
 #include <vector>
 
 namespace ediacaran_test
@@ -279,7 +279,7 @@ namespace ediacaran_test
 
 
 #define CHECK_TYPE(TYPE)                                                       \
-    ENCELADO_TEST_ASSERT(get_type<TYPE>() == parse<qualified_type_ptr>(#TYPE))
+    ENCELADO_TEST_ASSERT(get_type<TYPE>() == parse<qualified_type_ptr>(#TYPE));
 
         CHECK_TYPE(float);
         CHECK_TYPE(const float);

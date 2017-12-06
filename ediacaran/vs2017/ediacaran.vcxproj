@@ -23,6 +23,7 @@
     <ClInclude Include="..\core\ediacaran_common.h" />
     <ClInclude Include="..\core\char_reader.h" />
     <ClInclude Include="..\core\char_writer.h" />
+    <ClInclude Include="..\core\string_builder.h" />
     <ClInclude Include="..\reflection\namespace.h" />
     <ClInclude Include="..\reflection\qualified_type_ptr.h" />
     <ClInclude Include="..\reflection\special_functions.h" />
@@ -141,7 +142,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -149,6 +150,12 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <AdditionalIncludeDirectories>../../</AdditionalIncludeDirectories>
+      <StringPooling>true</StringPooling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,7 +168,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -169,6 +176,12 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <AdditionalIncludeDirectories>../../</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ControlFlowGuard>false</ControlFlowGuard>
+      <StringPooling>true</StringPooling>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

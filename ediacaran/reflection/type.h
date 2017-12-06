@@ -3,8 +3,8 @@
 
 
 #pragma once
-#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/constexpr_string.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/special_functions.h"
 #include <limits>
 

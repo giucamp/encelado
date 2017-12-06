@@ -3,7 +3,7 @@
 
 
 #pragma once
-#include "ediacaran_common.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include <algorithm>
 #include <cstddef>
 #include <string>
@@ -26,7 +26,8 @@ namespace ediacaran
         constexpr char_writer() noexcept {}
 
         constexpr char_writer(char * i_dest, size_t i_size) noexcept
-            : m_curr_char(i_dest), m_remaining_size(i_size - 1)
+            : m_curr_char(i_dest),
+              m_remaining_size(static_cast<ptrdiff_t>(i_size - 1))
         {
             EDIACARAN_ASSERT(i_size > 0);
             *m_curr_char = 0;
@@ -44,18 +45,17 @@ namespace ediacaran
         constexpr char_writer & operator=(
           const char_writer &) noexcept = default;
 
-        constexpr size_t remaining_size() noexcept { return m_remaining_size; }
-
-        constexpr size_t input_size() noexcept { return m_input_size; }
+        constexpr ptrdiff_t remaining_size() const noexcept
+        {
+            return m_remaining_size;
+        }
 
         constexpr char_writer & operator<<(char i_char) noexcept
         {
-            m_input_size++;
-            if (m_remaining_size > 0)
+            if (--m_remaining_size >= 0)
             {
                 *m_curr_char++ = i_char;
                 *m_curr_char = 0;
-                m_remaining_size--;
             }
             return *this;
         }
@@ -68,16 +68,16 @@ namespace ediacaran
         constexpr char_writer & operator<<(
           const string_view & i_string) noexcept
         {
-            m_input_size += i_string.length();
+            auto const length_to_write = std::min(
+              m_remaining_size, static_cast<ptrdiff_t>(i_string.length()));
 
-            auto const length_to_write =
-              std::min(m_remaining_size, i_string.length());
+            m_remaining_size -= static_cast<ptrdiff_t>(i_string.length());
+
             if (length_to_write > 0)
             {
-                for (size_t index = 0; index < length_to_write; index++)
+                for (ptrdiff_t index = 0; index < length_to_write; index++)
                     m_curr_char[index] = i_string[index];
                 m_curr_char += length_to_write;
-                m_remaining_size -= length_to_write;
                 *m_curr_char = 0;
             }
             return *this;
@@ -95,8 +95,7 @@ namespace ediacaran
 
       private:
         char * m_curr_char = nullptr;
-        size_t m_remaining_size = 0;
-        size_t m_input_size = 0;
+        ptrdiff_t m_remaining_size = 0;
     };
 
     template <typename UINT_TYPE>

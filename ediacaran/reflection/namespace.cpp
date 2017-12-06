@@ -5,8 +5,7 @@
 
 namespace ediacaran
 {
-    global_namespace_::global_namespace_() 
-        : namespace_("")
+    global_namespace_::global_namespace_() : namespace_("")
     {
         register_type("void", &get_naked_type<void>());
 
@@ -19,7 +18,7 @@ namespace ediacaran
         register_type("uint16", &get_naked_type<uint32_t>());
         register_type("uint32", &get_naked_type<uint32_t>());
         register_type("uint64", &get_naked_type<uint32_t>());
-        
+
         register_type("float", &get_naked_type<float>());
         register_type("double", &get_naked_type<double>());
         register_type("long double", &get_naked_type<long double>());

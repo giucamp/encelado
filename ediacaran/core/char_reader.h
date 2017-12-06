@@ -3,8 +3,8 @@
 
 
 #pragma once
-#include "char_writer.h"
-#include "ediacaran_common.h"
+#include "ediacaran/core/char_writer.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
