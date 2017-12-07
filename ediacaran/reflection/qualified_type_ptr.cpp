@@ -16,11 +16,9 @@ namespace ediacaran
         {
             o_dest << i_source.final_type()->name();
 
-            uintptr_t level = 0;
-            const uintptr_t ind_levels = i_source.indirection_levels();
-            do
+            uintptr_t level = i_source.indirection_levels();
+            for(;;)
             {
-
                 if (i_source.is_const(level))
                 {
                     o_dest << " const";
@@ -31,14 +29,12 @@ namespace ediacaran
                     o_dest << " volatile";
                 }
 
-                if (level < ind_levels)
-                {
-                    o_dest << " *";
-                }
+                if (level == 0)
+                    break;
 
-                level++;
-
-            } while (level <= ind_levels);
+                level--;
+                o_dest << " *";
+            }
         }
         return o_dest;
     }

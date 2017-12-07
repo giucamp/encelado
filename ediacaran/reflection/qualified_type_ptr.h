@@ -206,8 +206,7 @@ namespace ediacaran
         friend char_reader & operator>>(
           char_reader & i_source, qualified_type_ptr & o_dest_qualified_type);
 
-      private
-          : // data members (currently a qualified_type_ptr is big as two pointers)
+      private: // data members (currently a qualified_type_ptr is big as two pointers)
         const type_t * m_final_type;
         uintptr_t m_indirection_levels
             : (std::numeric_limits<uintptr_t>::digits -

@@ -1,6 +1,7 @@
 
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
+#include "ediacaran/core/string_builder.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
 #include <vector>
@@ -103,6 +104,17 @@ namespace ediacaran_test
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
+    }
+
+    
+    template <typename TYPE> void qualified_type_ptr_string_tests(const char * i_type_str)
+    {
+        auto const qual_type = get_type<TYPE>();
+        ENCELADO_TEST_ASSERT(qual_type == parse<qualified_type_ptr>(i_type_str));
+
+        auto const stringfied = to_string(qual_type);
+        auto const parsed = parse<qualified_type_ptr>(stringfied);
+        ENCELADO_TEST_ASSERT(parsed == qual_type);
     }
 
     void qualified_type_ptr_tests()
@@ -278,9 +290,7 @@ namespace ediacaran_test
           "qualified_type_ptr is not big as two pointers, as documented.");
 
 
-#define CHECK_TYPE(TYPE)                                                       \
-    ENCELADO_TEST_ASSERT(get_type<TYPE>() == parse<qualified_type_ptr>(#TYPE));
-
+#define CHECK_TYPE(TYPE) qualified_type_ptr_string_tests<TYPE>(#TYPE)
         CHECK_TYPE(float);
         CHECK_TYPE(const float);
         CHECK_TYPE(volatile float const);

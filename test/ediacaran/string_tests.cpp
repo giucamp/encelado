@@ -218,14 +218,14 @@ namespace ediacaran_test
 
             bool const expected_res =
               i_negative ? (number >= max) : (number <= max);
-            EDIACARAN_ASSERT(res == expected_res);
+            ENCELADO_TEST_ASSERT(res == expected_res);
             if (res)
             {
-                EDIACARAN_ASSERT(result == number);
+                ENCELADO_TEST_ASSERT(result == number);
             }
             else
             {
-                EDIACARAN_ASSERT(strcmp(error_buffer, "integer overflow") == 0);
+                ENCELADO_TEST_ASSERT(strcmp(error_buffer, "integer overflow") == 0);
             }
         }
     }
@@ -246,8 +246,7 @@ namespace ediacaran_test
     void string_builder_tests()
     {
         string_builder builder;
-
-        int32_t const test_size = 1'000'000;
+        int32_t const test_size = 5'000;
         int32_t progress = 0;
         for(size_t j = 0; j < test_size; j += 1)
         {
@@ -264,8 +263,25 @@ namespace ediacaran_test
         }
     }
 
+    void string_basic_tests()
+    {
+        string_view const target("123 456 abc");
+        auto str = to_string(123, ' ', 456, " abc");
+        ENCELADO_TEST_ASSERT(target == str.c_str());
+
+        char small_char_array[5];
+        auto required = to_chars(small_char_array, 123, ' ', 456, " abc");
+        ENCELADO_TEST_ASSERT(required == target.size() + 1);
+
+        char big_char_array[32];
+        required = to_chars(big_char_array, 123, ' ', 456, " abc");
+        ENCELADO_TEST_ASSERT(required == target.size() + 1);
+        ENCELADO_TEST_ASSERT(target == big_char_array);
+    }
+
     void string_tests()
     {
+        string_basic_tests();
         string_builder_tests();
         string_conversion_tests();
         string_overflow_tests();

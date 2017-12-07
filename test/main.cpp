@@ -48,7 +48,7 @@ int main()
     signal(SIGSEGV, seg_fault_handler);
 #endif
 
+    ediacaran_test::qualified_type_ptr_tests();
     ediacaran_test::string_tests();
     ediacaran_test::type_tests();
-    ediacaran_test::qualified_type_ptr_tests();
 }

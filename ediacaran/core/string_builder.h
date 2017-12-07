@@ -55,6 +55,7 @@ namespace ediacaran
 
         template <typename TYPE> string_builder & operator<<(const TYPE & i_value)
         {
+            static_assert(has_to_chars_v<TYPE>, "Overloaded operator required: char_writer & operator << (const TYPE &)");
             for (;;)
             {
                 auto writer = m_writer;
@@ -109,5 +110,13 @@ namespace ediacaran
         size_t m_size = 0;
         size_t m_inplace_size = 0;
     };
+
+    template <typename... TYPE>
+        std::string to_string(const TYPE & ... i_objects)
+    {
+        string_builder builder;
+        (builder << ... << i_objects);
+        return builder.to_string();
+    }
 
 } // namespace ediacaran

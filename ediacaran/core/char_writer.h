@@ -230,4 +230,21 @@ namespace ediacaran
     using has_to_chars_t = typename has_to_chars<TYPE>::type;
     template <typename TYPE>
     constexpr bool has_to_chars_v = has_to_chars<TYPE>::value;
+
+    /** Returns the number of bytes required by the char array (including the null terminator) */
+    template <size_t SIZE, typename... TYPE>
+        constexpr size_t to_chars(char (&o_char_array)[SIZE], const TYPE & ... i_objects)
+    {
+        char * const dest = o_char_array;
+        return to_chars(dest, SIZE, i_objects...);
+    }
+
+    /** Returns the number of bytes required by the char array (including the null terminator) */
+    template <typename... TYPE>
+       constexpr size_t to_chars(char * o_char_array, size_t i_array_size, const TYPE & ... i_objects)
+    {
+        char_writer writer(o_char_array, i_array_size);
+        (writer << ... << i_objects);
+        return static_cast<size_t>(static_cast<ptrdiff_t>(i_array_size) - writer.remaining_size());
+    }
 }
