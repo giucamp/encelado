@@ -2,11 +2,9 @@
 #include "common.h"
 #include <iostream>
 
-void assert_failed(const char * i_source_file, const char * i_function,
-  int i_line, const char * i_expr)
+void assert_failed(const char * i_source_file, const char * i_function, int i_line, const char * i_expr)
 {
-    std::cerr << "assert failed in " << i_source_file << " (" << i_line
-              << ")\n";
+    std::cerr << "assert failed in " << i_source_file << " (" << i_line << ")\n";
     std::cerr << "function: " << i_function << "\n";
     std::cerr << "expression: " << i_expr << std::endl;
 
@@ -48,6 +46,7 @@ int main()
     signal(SIGSEGV, seg_fault_handler);
 #endif
 
+    ediacaran_test::class_tests();
     ediacaran_test::qualified_type_ptr_tests();
     ediacaran_test::string_tests();
     ediacaran_test::type_tests();

@@ -310,7 +310,7 @@ namespace ediacaran
 	}
 
 	template <typename TYPE>
-		constexpr qualified_type_ptr get_type()
+		constexpr qualified_type_ptr get_qualified_type()
 	{
 		static_assert(details::StaticQualification<TYPE>::s_indirection_levels <= qualified_type_ptr::s_max_indirection_levels,
 			"Maximum indirection level exceeded");

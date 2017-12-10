@@ -7,10 +7,10 @@
 
 namespace ediacaran
 {
-    class namespace_ : public symbol_
+    class namespace_ : public symbol_t
     {
       public:
-        using symbol_::symbol_;
+        using symbol_t::symbol_t;
 
         namespace_(const namespace_ &) = delete;
         namespace_ & operator=(const namespace_ &) = delete;
@@ -35,8 +35,7 @@ namespace ediacaran
 
         void register_type(const char * i_full_name, const type_t * i_type);
 
-        void unregister_type(
-          const char * i_full_name, const type_t * i_type) noexcept;
+        void unregister_type(const char * i_full_name, const type_t * i_type) noexcept;
 
         const type_t * find_type(const string_view & i_full_name) const;
 
@@ -47,6 +46,5 @@ namespace ediacaran
         std::unordered_map<std::string, const type_t *> m_types;
     };
 
-    bool try_parse(const type_t ** o_type_ptr, char_reader & i_source,
-      char_writer & i_error) noexcept;
+    bool try_parse(const type_t ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept;
 }

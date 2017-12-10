@@ -26,29 +26,22 @@ namespace ediacaran
         constexpr char_writer() noexcept {}
 
         constexpr char_writer(char * i_dest, size_t i_size) noexcept
-            : m_curr_char(i_dest),
-              m_remaining_size(static_cast<ptrdiff_t>(i_size - 1))
+            : m_curr_char(i_dest), m_remaining_size(static_cast<ptrdiff_t>(i_size - 1))
         {
             EDIACARAN_ASSERT(i_size > 0);
             *m_curr_char = 0;
         }
 
-        template <size_t SIZE>
-        constexpr char_writer(char (&i_dest)[SIZE]) noexcept
-            : char_writer(i_dest, SIZE)
+        template <size_t SIZE> constexpr char_writer(char (&i_dest)[SIZE]) noexcept : char_writer(i_dest, SIZE)
         {
             static_assert(SIZE > 0);
         }
 
         constexpr char_writer(const char_writer &) noexcept = default;
 
-        constexpr char_writer & operator=(
-          const char_writer &) noexcept = default;
+        constexpr char_writer & operator=(const char_writer &) noexcept = default;
 
-        constexpr ptrdiff_t remaining_size() const noexcept
-        {
-            return m_remaining_size;
-        }
+        constexpr ptrdiff_t remaining_size() const noexcept { return m_remaining_size; }
 
         constexpr char_writer & operator<<(char i_char) noexcept
         {
@@ -60,16 +53,11 @@ namespace ediacaran
             return *this;
         }
 
-        constexpr char_writer & operator<<(SpacesTag) noexcept
-        {
-            return operator<<(' ');
-        }
+        constexpr char_writer & operator<<(SpacesTag) noexcept { return operator<<(' '); }
 
-        constexpr char_writer & operator<<(
-          const string_view & i_string) noexcept
+        constexpr char_writer & operator<<(const string_view & i_string) noexcept
         {
-            auto const length_to_write = std::min(
-              m_remaining_size, static_cast<ptrdiff_t>(i_string.length()));
+            auto const length_to_write = std::min(m_remaining_size, static_cast<ptrdiff_t>(i_string.length()));
 
             m_remaining_size -= static_cast<ptrdiff_t>(i_string.length());
 
@@ -83,11 +71,9 @@ namespace ediacaran
             return *this;
         }
 
-        template <typename... TYPE>
-        constexpr void write(TYPE &&... i_args) noexcept
+        template <typename... TYPE> constexpr void write(TYPE &&... i_args) noexcept
         {
-            int dummy[sizeof...(TYPE)] = {
-              (*this << std::forward<TYPE>(i_args), 0)...};
+            int dummy[sizeof...(TYPE)] = {(*this << std::forward<TYPE>(i_args), 0)...};
             (void)dummy;
         }
 
@@ -99,16 +85,13 @@ namespace ediacaran
     };
 
     template <typename UINT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<UINT_TYPE> &&
-                                 !std::is_signed_v<UINT_TYPE> &&
-                                 !std::is_same_v<UINT_TYPE, bool>,
-      char_writer> &
+    constexpr std::enable_if_t<
+      std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE> && !std::is_same_v<UINT_TYPE, bool>, char_writer> &
       operator<<(char_writer & i_dest, UINT_TYPE i_source) noexcept
     {
         constexpr UINT_TYPE ten = 10;
 
-        constexpr int buffer_size =
-          std::numeric_limits<UINT_TYPE>::digits10 + 1;
+        constexpr int buffer_size = std::numeric_limits<UINT_TYPE>::digits10 + 1;
         char buffer[buffer_size] = {};
         size_t length = 0;
         do
@@ -116,8 +99,7 @@ namespace ediacaran
             buffer[length] = static_cast<char>('0' + i_source % ten);
             i_source /= ten;
 
-            EDIACARAN_INTERNAL_ASSERT(
-              length < buffer_size); // buffer too small?
+            EDIACARAN_INTERNAL_ASSERT(length < buffer_size); // buffer too small?
             length++;
 
         } while (i_source > 0);
@@ -137,18 +119,15 @@ namespace ediacaran
     }
 
     template <typename SINT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<SINT_TYPE> &&
-                                 std::is_signed_v<SINT_TYPE> &&
-                                 !std::is_same_v<SINT_TYPE, bool>,
-      char_writer> &
+    constexpr std::enable_if_t<
+      std::is_integral_v<SINT_TYPE> && std::is_signed_v<SINT_TYPE> && !std::is_same_v<SINT_TYPE, bool>, char_writer> &
       operator<<(char_writer & i_dest, SINT_TYPE i_source) noexcept
     {
         const bool is_negative = i_source < 0;
 
         constexpr SINT_TYPE ten = 10;
 
-        constexpr int buffer_size =
-          std::numeric_limits<SINT_TYPE>::digits10 + 1;
+        constexpr int buffer_size = std::numeric_limits<SINT_TYPE>::digits10 + 1;
         char buffer[buffer_size] = {};
         int length = 0;
         /* note: if the number is negative, we can't just negate the sign and use the same algorithm,
@@ -162,13 +141,11 @@ namespace ediacaran
                 /* note: we do not use the modulo operator %, because it has implementation-defined
 					behavior with non-positive operands. */
                 SINT_TYPE const new_value = i_source / ten;
-                buffer[length] =
-                  static_cast<char>('0' + new_value * ten - i_source);
+                buffer[length] = static_cast<char>('0' + new_value * ten - i_source);
                 i_source = new_value;
                 length++;
 
-                EDIACARAN_INTERNAL_ASSERT(
-                  length < buffer_size || i_source == 0); // buffer too small?
+                EDIACARAN_INTERNAL_ASSERT(length < buffer_size || i_source == 0); // buffer too small?
             } while (i_source != 0);
         }
         else
@@ -180,8 +157,7 @@ namespace ediacaran
                 length++;
                 i_source /= ten;
 
-                EDIACARAN_INTERNAL_ASSERT(
-                  length < buffer_size || i_source == 0); // buffer too small?
+                EDIACARAN_INTERNAL_ASSERT(length < buffer_size || i_source == 0); // buffer too small?
             } while (i_source != 0);
         }
 
@@ -205,8 +181,8 @@ namespace ediacaran
     }
 
     template <typename BOOL>
-    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &>
-      operator<<(char_writer & i_dest, BOOL i_value) noexcept
+    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &> operator<<(
+      char_writer & i_dest, BOOL i_value) noexcept
     {
         return i_dest << (i_value ? "true" : "false");
     }
@@ -216,24 +192,20 @@ namespace ediacaran
     char_writer & operator<<(char_writer & i_dest, long double i_value);
 
     // trait has_to_chars
-    template <typename, typename = std::void_t<>>
-    struct has_to_chars : std::false_type
+    template <typename, typename = std::void_t<>> struct has_to_chars : std::false_type
     {
     };
     template <typename TYPE>
-    struct has_to_chars<TYPE,
-      std::void_t<decltype(std::declval<char_writer &>()
-                           << std::declval<const TYPE &>())>> : std::true_type
+    struct has_to_chars<TYPE, std::void_t<decltype(std::declval<char_writer &>() << std::declval<const TYPE &>())>>
+        : std::true_type
     {
     };
-    template <typename TYPE>
-    using has_to_chars_t = typename has_to_chars<TYPE>::type;
-    template <typename TYPE>
-    constexpr bool has_to_chars_v = has_to_chars<TYPE>::value;
+    template <typename TYPE> using has_to_chars_t = typename has_to_chars<TYPE>::type;
+    template <typename TYPE> constexpr bool has_to_chars_v = has_to_chars<TYPE>::value;
 
     /** Returns the number of bytes required by the char array (including the null terminator) */
     template <size_t SIZE, typename... TYPE>
-        constexpr size_t to_chars(char (&o_char_array)[SIZE], const TYPE & ... i_objects)
+    constexpr size_t to_chars(char (&o_char_array)[SIZE], const TYPE &... i_objects)
     {
         char * const dest = o_char_array;
         return to_chars(dest, SIZE, i_objects...);
@@ -241,7 +213,7 @@ namespace ediacaran
 
     /** Returns the number of bytes required by the char array (including the null terminator) */
     template <typename... TYPE>
-       constexpr size_t to_chars(char * o_char_array, size_t i_array_size, const TYPE & ... i_objects)
+    constexpr size_t to_chars(char * o_char_array, size_t i_array_size, const TYPE &... i_objects)
     {
         char_writer writer(o_char_array, i_array_size);
         (writer << ... << i_objects);

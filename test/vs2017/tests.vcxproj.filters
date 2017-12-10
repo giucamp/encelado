@@ -12,6 +12,9 @@
     <ClCompile Include="..\ediacaran\type_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
+    <ClCompile Include="..\ediacaran\class_tests.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ediacaran">

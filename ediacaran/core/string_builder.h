@@ -12,9 +12,10 @@ namespace ediacaran
 
         size_t size() const noexcept
         {
-            if(m_chunks.size() > 0)
+            if (m_chunks.size() > 0)
             {
-                auto const last_written_size = (m_chunks.back().m_size - 1) - static_cast<size_t>(m_writer.remaining_size());
+                auto const last_written_size =
+                  (m_chunks.back().m_size - 1) - static_cast<size_t>(m_writer.remaining_size());
                 return m_size + last_written_size;
             }
             else
@@ -30,10 +31,10 @@ namespace ediacaran
             auto const string_size = size();
             result.reserve(string_size);
 
-            if(m_chunks.size() > 0)
+            if (m_chunks.size() > 0)
             {
                 result.append(m_inplace_space, m_inplace_size);
-                for(size_t chunk_index = 0; chunk_index < m_chunks.size() - 1; chunk_index++ )
+                for (size_t chunk_index = 0; chunk_index < m_chunks.size() - 1; chunk_index++)
                 {
                     auto const & chunk = m_chunks[chunk_index];
                     result.append(chunk.m_chars.get(), chunk.m_size);
@@ -55,7 +56,9 @@ namespace ediacaran
 
         template <typename TYPE> string_builder & operator<<(const TYPE & i_value)
         {
-            static_assert(has_to_chars_v<TYPE>, "Overloaded operator required: char_writer & operator << (const TYPE &)");
+            static_assert(has_to_chars_v<TYPE>, "Overloaded operator required: "
+                                                "char_writer & operator << "
+                                                "(const TYPE &)");
             for (;;)
             {
                 auto writer = m_writer;
@@ -111,8 +114,7 @@ namespace ediacaran
         size_t m_inplace_size = 0;
     };
 
-    template <typename... TYPE>
-        std::string to_string(const TYPE & ... i_objects)
+    template <typename... TYPE> std::string to_string(const TYPE &... i_objects)
     {
         string_builder builder;
         (builder << ... << i_objects);

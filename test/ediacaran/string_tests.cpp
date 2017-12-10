@@ -20,16 +20,13 @@ namespace ediacaran_test
         memset(buff.get(), 7, buffer_size);
         char_writer out(buff.get(), buffer_size);
 
-        using var = std::variant<bool, int8_t, int16_t, int32_t, int64_t,
-          uint8_t, uint16_t, uint32_t, uint64_t, float, double, long double,
-          char, std::basic_string<char>>;
+        using var = std::variant<bool, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float,
+          double, long double, char, std::basic_string<char>>;
 
 
         auto const seed = std::random_device{}();
         std::mt19937_64 mt{seed};
-        auto rand = [&mt] {
-            return std::uniform_int_distribution<unsigned long long>()(mt);
-        };
+        auto rand = [&mt] { return std::uniform_int_distribution<unsigned long long>()(mt); };
 
         std::vector<var> objects;
         std::vector<const char *> delimiters;
@@ -97,24 +94,21 @@ namespace ediacaran_test
             }
             case 8:
             {
-                auto const value =
-                  static_cast<float>(rand() & 0xFFFF) / 1.012345678f;
+                auto const value = static_cast<float>(rand() & 0xFFFF) / 1.012345678f;
                 objects.push_back(value);
                 out << value << ' ';
                 break;
             }
             case 9:
             {
-                auto const value =
-                  static_cast<double>(rand() & 0xFFFF) / 1.012345678f;
+                auto const value = static_cast<double>(rand() & 0xFFFF) / 1.012345678f;
                 objects.push_back(value);
                 out << value << ' ';
                 break;
             }
             case 10:
             {
-                auto const value =
-                  static_cast<long double>(rand() & 0xFFFF) / 1.012345678L;
+                auto const value = static_cast<long double>(rand() & 0xFFFF) / 1.012345678L;
                 objects.push_back(value);
                 out << value << ' ';
                 break;
@@ -129,8 +123,7 @@ namespace ediacaran_test
             case 12:
             {
                 auto const c = static_cast<char>('a' + rand() % 16);
-                std::string const value(
-                  static_cast<size_t>(1 + rand() % 32), c);
+                std::string const value(static_cast<size_t>(1 + rand() % 32), c);
                 objects.push_back(value);
                 out << value << ' ';
                 break;
@@ -165,19 +158,17 @@ namespace ediacaran_test
             auto const & obj = objects[index];
 
             char random_input[256];
-            std::generate(std::begin(random_input), std::end(random_input),
-              [&rand] { return static_cast<char>(rand()); });
+            std::generate(
+              std::begin(random_input), std::end(random_input), [&rand] { return static_cast<char>(rand()); });
             random_input[255] = 0;
 
             std::visit(
-              [&in, &obj, index, &delimiters, &random_input](
-                const auto & i_value) {
+              [&in, &obj, index, &delimiters, &random_input](const auto & i_value) {
 
                   using value_type = std::decay_t<decltype(i_value)>;
 
                   // try with the random input
-                  if constexpr (!std::is_same_v<value_type, std::string> &&
-                                !std::is_same_v<value_type, char>)
+                  if constexpr (!std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
                   {
                       char_reader random_stream(random_input);
                       value_type val;
@@ -197,14 +188,12 @@ namespace ediacaran_test
         }
     }
 
-    template <typename INT_TYPE, typename BIG_INT_TYPE>
-    void typed_string_overflow_tests(bool i_negative = false)
+    template <typename INT_TYPE, typename BIG_INT_TYPE> void typed_string_overflow_tests(bool i_negative = false)
     {
         char buff[1024], error_buffer[1024];
 
-        BIG_INT_TYPE const max = i_negative
-                                   ? std::numeric_limits<INT_TYPE>::min()
-                                   : std::numeric_limits<INT_TYPE>::max();
+        BIG_INT_TYPE const max =
+          i_negative ? std::numeric_limits<INT_TYPE>::min() : std::numeric_limits<INT_TYPE>::max();
         for (BIG_INT_TYPE number = max - 22; number <= max + 22; number++)
         {
             char_writer out(buff);
@@ -216,8 +205,7 @@ namespace ediacaran_test
             char_writer err(error_buffer);
             bool const res = try_parse(result, in, err);
 
-            bool const expected_res =
-              i_negative ? (number >= max) : (number <= max);
+            bool const expected_res = i_negative ? (number >= max) : (number <= max);
             ENCELADO_TEST_ASSERT(res == expected_res);
             if (res)
             {
@@ -248,14 +236,14 @@ namespace ediacaran_test
         string_builder builder;
         int32_t const test_size = 5'000;
         int32_t progress = 0;
-        for(size_t j = 0; j < test_size; j += 1)
+        for (size_t j = 0; j < test_size; j += 1)
         {
-            for(; progress < j; progress++)
+            for (; progress < j; progress++)
                 builder << progress << ' ' << std::to_string(progress) << ' ';
-        
+
             auto string = builder.to_string();
             char_reader reader(string);
-            for(int32_t i = 0; i < j; i++)
+            for (int32_t i = 0; i < j; i++)
             {
                 reader >> std::as_const(i) >> ' ';
                 reader >> std::as_const(i) >> ' ';

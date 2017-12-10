@@ -10,8 +10,7 @@ namespace ediacaran
     namespace detail
     {
         template <typename FLOAT_TYPE, typename STRTOF>
-        bool try_parse_float(FLOAT_TYPE & o_dest, char_reader & i_source,
-          char_writer &, STRTOF i_strtof) noexcept
+        bool try_parse_float(FLOAT_TYPE & o_dest, char_reader & i_source, char_writer &, STRTOF i_strtof) noexcept
         {
             auto const source = i_source.next_chars();
 
@@ -21,8 +20,7 @@ namespace ediacaran
             if (end_of_number != nullptr && end_of_number != source)
             {
                 EDIACARAN_INTERNAL_ASSERT(end_of_number >= source);
-                auto const read_chars =
-                  static_cast<size_t>(end_of_number - source);
+                auto const read_chars = static_cast<size_t>(end_of_number - source);
 
                 if (read_chars <= i_source.remaining_chars())
                 {
@@ -43,29 +41,22 @@ namespace ediacaran
         }
     }
 
-    bool try_parse(float & o_dest, char_reader & i_source,
-      char_writer & o_error_dest) noexcept
+    bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
-        return detail::try_parse_float(
-          o_dest, i_source, o_error_dest, std::strtof);
+        return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtof);
     }
 
-    bool try_parse(double & o_dest, char_reader & i_source,
-      char_writer & o_error_dest) noexcept
+    bool try_parse(double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
-        return detail::try_parse_float(
-          o_dest, i_source, o_error_dest, std::strtod);
+        return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtod);
     }
 
-    bool try_parse(long double & o_dest, char_reader & i_source,
-      char_writer & o_error_dest) noexcept
+    bool try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
-        return detail::try_parse_float(
-          o_dest, i_source, o_error_dest, std::strtold);
+        return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtold);
     }
 
-    bool try_parse(bool & o_dest, char_reader & i_source,
-      char_writer & o_error_dest) noexcept
+    bool try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
         if (try_accept("true", i_source))
         {

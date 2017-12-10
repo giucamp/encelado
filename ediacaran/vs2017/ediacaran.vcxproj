@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\core\array_view.h" />
     <ClInclude Include="..\core\constexpr_string.h" />
     <ClInclude Include="..\core\ediacaran_common.h" />
     <ClInclude Include="..\core\char_reader.h" />
     <ClInclude Include="..\core\char_writer.h" />
     <ClInclude Include="..\core\string_builder.h" />
+    <ClInclude Include="..\core\type_list.h" />
+    <ClInclude Include="..\reflection\class_type.h" />
     <ClInclude Include="..\reflection\namespace.h" />
+    <ClInclude Include="..\reflection\property.h" />
     <ClInclude Include="..\reflection\qualified_type_ptr.h" />
     <ClInclude Include="..\reflection\special_functions.h" />
     <ClInclude Include="..\reflection\type.h" />
@@ -145,7 +149,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
@@ -156,6 +160,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,7 +176,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
@@ -182,6 +187,7 @@
       <ControlFlowGuard>false</ControlFlowGuard>
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

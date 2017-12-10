@@ -9,15 +9,14 @@
 
 namespace ediacaran
 {
-    char_writer & operator<<(
-      char_writer & o_dest, const qualified_type_ptr & i_source) noexcept
+    char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept
     {
         if (!i_source.is_empty())
         {
             o_dest << i_source.final_type()->name();
 
             uintptr_t level = i_source.indirection_levels();
-            for(;;)
+            for (;;)
             {
                 if (i_source.is_const(level))
                 {
@@ -39,8 +38,7 @@ namespace ediacaran
         return o_dest;
     }
 
-    bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source,
-      char_writer & o_error_dest) noexcept
+    bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
         size_t constness_word = 0, volatileness_word = 0;
         const type_t * final_type = nullptr;
@@ -65,8 +63,7 @@ namespace ediacaran
                 constness_word <<= 1;
                 volatileness_word <<= 1;
                 indirection_levels++;
-                if (indirection_levels >
-                    qualified_type_ptr::s_max_indirection_levels)
+                if (indirection_levels > qualified_type_ptr::s_max_indirection_levels)
                 {
                     break;
                 }
@@ -79,10 +76,8 @@ namespace ediacaran
                 indirection_levels++;
                 break;
             }
-            else if (
-              indirection_levels == 0 &&
-              final_type ==
-                nullptr) // only in the last indirection level (that is before any *, & or &&
+            else if (indirection_levels == 0 &&
+                     final_type == nullptr) // only in the last indirection level (that is before any *, & or &&
             {
                 if (!try_parse(&final_type, source, o_error_dest))
                 {
@@ -98,9 +93,8 @@ namespace ediacaran
 
         if (indirection_levels > qualified_type_ptr::s_max_indirection_levels)
         {
-            o_error_dest
-              << "Exceeded the maximum number of indirection levels ("
-              << qualified_type_ptr::s_max_indirection_levels << ")";
+            o_error_dest << "Exceeded the maximum number of indirection levels ("
+                         << qualified_type_ptr::s_max_indirection_levels << ")";
             return false;
         }
         else if (final_type == nullptr)
@@ -111,8 +105,7 @@ namespace ediacaran
 
         // commit
         i_source = source;
-        o_dest = qualified_type_ptr(
-          final_type, indirection_levels, constness_word, volatileness_word);
+        o_dest = qualified_type_ptr(final_type, indirection_levels, constness_word, volatileness_word);
         return true;
     }
 }

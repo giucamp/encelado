@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-constexpr ediacaran::qualified_type_ptr t1 = ediacaran::get_type<int>();
+constexpr ediacaran::qualified_type_ptr t1 = ediacaran::get_qualified_type<int>();
 
 namespace ediacaran
 {
