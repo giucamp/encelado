@@ -138,8 +138,11 @@ namespace ediacaran
 
     template <typename TYPE, size_t SIZE> constexpr size_t array_size(TYPE (&i_array)[SIZE]) { return SIZE; }
 
-    template <typename CLASS, typename MEMBER_TYPE, MEMBER_TYPE(CLASS::*MEMBER)>
-    const size_t data_member_offset = reinterpret_cast<size_t>(&(reinterpret_cast<CLASS *>(0)->*MEMBER));
+    template <typename CLASS, typename MEMBER_TYPE>
+        inline size_t data_member_offset(MEMBER_TYPE (CLASS::*i_member))
+    {
+        return reinterpret_cast<size_t>(&(reinterpret_cast<CLASS *>(0)->*i_member));
+    }
 
     template <typename CLASS, typename SUBOBJECT>
     const size_t subobject_offset = static_cast<size_t>(

@@ -1,7 +1,7 @@
 
 namespace ediacaran
 {
-	namespace details
+	namespace detail
 	{
 		template <typename TYPE>
 		class StaticQualification;
@@ -312,12 +312,12 @@ namespace ediacaran
 	template <typename TYPE>
 		constexpr qualified_type_ptr get_qualified_type()
 	{
-		static_assert(details::StaticQualification<TYPE>::s_indirection_levels <= qualified_type_ptr::s_max_indirection_levels,
+		static_assert(detail::StaticQualification<TYPE>::s_indirection_levels <= qualified_type_ptr::s_max_indirection_levels,
 			"Maximum indirection level exceeded");
 
-		return qualified_type_ptr(&get_naked_type<typename details::StaticQualification<TYPE>::UnderlyingType>(),
-			details::StaticQualification<TYPE>::s_indirection_levels,
-			details::StaticQualification<TYPE>::s_constness_word,
-			details::StaticQualification<TYPE>::s_volatileness_word);
+		return qualified_type_ptr(&get_naked_type<typename detail::StaticQualification<TYPE>::UnderlyingType>(),
+			detail::StaticQualification<TYPE>::s_indirection_levels,
+			detail::StaticQualification<TYPE>::s_constness_word,
+			detail::StaticQualification<TYPE>::s_volatileness_word);
 	}
 }

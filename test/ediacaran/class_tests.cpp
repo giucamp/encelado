@@ -1,12 +1,5 @@
 
 
-namespace ediacaran_test
-{
-    // layer 3
-
-    struct TestBase_3_1;
-}
-
 #include "../common.h"
 #include "ediacaran/reflection/class_type.h"
 #include <iostream>
@@ -18,15 +11,11 @@ namespace ediacaran_test
 
     struct TestBase_3_1
     {
-        using bases = type_list<>;
-
         virtual void f() {}
     };
 
     struct TestBase_3_2
     {
-        using bases = type_list<>;
-
         virtual void g() {}
     };
 
@@ -34,29 +23,21 @@ namespace ediacaran_test
 
     struct TestBase_2_1
     {
-        using bases = type_list<>;
-
         char m_arr_1[32]{};
     };
 
     struct TestBase_2_2 : TestBase_3_1
     {
-        using bases = type_list<TestBase_3_1>;
-
         int m_arr_2[32]{};
     };
 
     struct TestBase_2_3 : TestBase_3_2
     {
-        using bases = type_list<TestBase_3_2>;
-
         float m_arr_3[32]{};
     };
 
     struct TestBase_2_4
     {
-        using bases = type_list<>;
-
         double m_arr_4[32]{};
     };
 
@@ -64,15 +45,11 @@ namespace ediacaran_test
 
     struct TestBase_1_1 : TestBase_2_1, TestBase_2_2
     {
-        using bases = type_list<TestBase_2_1, TestBase_2_2>;
-
         std::string m_string_1 = "abc";
     };
 
     struct TestBase_1_2 : TestBase_2_3, TestBase_2_4
     {
-        using bases = type_list<TestBase_2_3, TestBase_2_4>;
-
         std::string m_string_2 = "efg";
     };
 
@@ -80,8 +57,6 @@ namespace ediacaran_test
 
     struct TestClass : TestBase_1_1, TestBase_1_2
     {
-        using bases = type_list<TestBase_1_1, TestBase_1_2>;
-
         int m_integer = 42;
         float m_float = 42.f;
     };
@@ -89,57 +64,70 @@ namespace ediacaran_test
 
 namespace ediacaran
 {
-    template <typename CLASS> struct class_descriptor
+    template <> struct class_descriptor<ediacaran_test::TestClass>
     {
-        using bases = typename CLASS::bases;
+        constexpr static char * name = "TestClass";
+        
+        using bases = type_list<ediacaran_test::TestBase_1_1, ediacaran_test::TestBase_1_2>;
+
+        constexpr static property propoerties[] = {
+            make_property<int ediacaran_test::TestClass::*, &ediacaran_test::TestClass::m_integer>("integer"),
+            make_property<float ediacaran_test::TestClass::*, &ediacaran_test::TestClass::m_float>("float") };
     };
 
-    class_type create_class(tag<ediacaran_test::TestClass>)
+    //
+
+    template <> struct class_descriptor<ediacaran_test::TestBase_1_1>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestClass>("TestClass");
-    }
+        constexpr static char * name = "TestBase_1_1";
+        using bases = type_list<ediacaran_test::TestBase_2_1, ediacaran_test::TestBase_2_2>;
+    };
 
-    class_type create_class(tag<ediacaran_test::TestBase_3_1>)
+    template <> struct class_descriptor<ediacaran_test::TestBase_1_2>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_3_1>("TestBase_3_1");
-    }
+        constexpr static char * name = "TestBase_1_2";
+        using bases = type_list<ediacaran_test::TestBase_2_3, ediacaran_test::TestBase_2_4>;
+    };
 
-    class_type create_class(tag<ediacaran_test::TestBase_3_2>)
+    //
+
+    template <> struct class_descriptor<ediacaran_test::TestBase_2_1>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_3_2>("TestBase_3_2");
-    }
+        constexpr static char * name = "TestBase_2_1";
+        using bases = type_list<>;
+    };
 
-
-    class_type create_class(tag<ediacaran_test::TestBase_2_1>)
+    template <> struct class_descriptor<ediacaran_test::TestBase_2_2>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_2_1>("TestBase_2_1");
-    }
+        constexpr static char * name = "TestBase_2_2";
+        using bases = type_list<ediacaran_test::TestBase_3_1>;
+    };
 
-
-    class_type create_class(tag<ediacaran_test::TestBase_2_2>)
+    template <> struct class_descriptor<ediacaran_test::TestBase_2_3>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_2_2>("TestBase_2_2");
-    }
+        constexpr static char * name = "TestBase_2_3";
+        using bases = type_list<ediacaran_test::TestBase_3_2>;
+    };
 
-    class_type create_class(tag<ediacaran_test::TestBase_2_3>)
+    template <> struct class_descriptor<ediacaran_test::TestBase_2_4>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_2_3>("TestBase_2_3");
-    }
+        constexpr static char * name = "TestBase_2_3";
+        using bases = type_list<>;
+    };
 
-    class_type create_class(tag<ediacaran_test::TestBase_2_4>)
-    {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_2_4>("TestBase_2_4");
-    }
+    //
 
-    class_type create_class(tag<ediacaran_test::TestBase_1_1>)
+    template <> struct class_descriptor<ediacaran_test::TestBase_3_1>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_1_1>("TestBase_1_1");
-    }
+        constexpr static char * name = "TestBase_3_1";
+        using bases = type_list<>;
+    };
 
-    class_type create_class(tag<ediacaran_test::TestBase_1_2>)
+    template <> struct class_descriptor<ediacaran_test::TestBase_3_2>
     {
-        return ediacaran::make_static_class<ediacaran_test::TestBase_1_2>("TestBase_1_2");
-    }
+        constexpr static char * name = "TestBase_3_2";
+        using bases = type_list<>;
+    };
 }
 
 namespace ediacaran_test
@@ -147,6 +135,8 @@ namespace ediacaran_test
 
     void class_tests()
     {
+        constexpr auto g = all_bases<TestClass>::type::size;
+
         const auto & t = get_naked_type<TestClass>();
 
         std::cout << all_bases<TestBase_3_1>::type::size;

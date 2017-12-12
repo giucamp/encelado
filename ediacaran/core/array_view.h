@@ -7,40 +7,41 @@ namespace ediacaran
     template <typename TYPE> class array_view
     {
       public:
-        array_view() : m_objects(nullptr), m_size(0) {}
 
-        array_view(TYPE * i_objects, size_t i_size) : m_objects(i_objects), m_size(i_size) {}
+        constexpr array_view() noexcept : m_objects(nullptr), m_size(0) {}
 
-        template <size_t SIZE> array_view(TYPE (&i_objects)[SIZE]) : m_objects(i_objects), m_size(SIZE) {}
+        constexpr array_view(TYPE * i_objects, size_t i_size) noexcept : m_objects(i_objects), m_size(i_size) {}
 
-        array_view(std::initializer_list<TYPE> i_initializer_list)
+        template <size_t SIZE> constexpr array_view(TYPE (&i_objects)[SIZE]) noexcept : m_objects(i_objects), m_size(SIZE) {}
+
+        constexpr array_view(std::initializer_list<TYPE> i_initializer_list) noexcept
             : m_objects(i_initializer_list.begin()), m_size(i_initializer_list.end() - i_initializer_list.begin())
         {
         }
 
-        TYPE * data() const { return m_objects; }
+        constexpr TYPE * data() const noexcept { return m_objects; }
 
-        TYPE * begin() const { return m_objects; }
+        constexpr TYPE * begin() const noexcept { return m_objects; }
 
-        TYPE * end() const { return m_objects + m_size; }
+        constexpr TYPE * end() const noexcept { return m_objects + m_size; }
 
-        TYPE * cbegin() const { return m_objects; }
+        constexpr TYPE * cbegin() const noexcept { return m_objects; }
 
-        TYPE * cend() const { return m_objects + m_size; }
+        constexpr TYPE * cend() const noexcept { return m_objects + m_size; }
 
-        TYPE & operator[](size_t i_index)
+        constexpr TYPE & operator[](size_t i_index) noexcept
         {
             assert(i_index < m_size);
             return m_objects[i_index];
         }
 
-        const TYPE & operator[](size_t i_index) const
+        constexpr const TYPE & operator[](size_t i_index) const noexcept
         {
             assert(i_index < m_size);
             return m_objects[i_index];
         }
 
-        size_t size() const { return m_size; }
+        constexpr size_t size() const noexcept { return m_size; }
 
       private:
         TYPE * m_objects;
