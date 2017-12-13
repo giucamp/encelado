@@ -14,10 +14,22 @@ namespace ediacaran_test
         virtual void f() {}
     };
 
+    struct {
+        constexpr static char * name = "TestBase_3_1";
+        using this_class = TestBase_3_1;
+        using bases = type_list<>;
+    } get_type_descriptor(TestBase_3_1*& i_dummy); 
+
     struct TestBase_3_2
     {
         virtual void g() {}
     };
+
+    struct {
+        constexpr static char * name = "TestBase_3_2";
+        using this_class = TestBase_3_2;
+        using bases = type_list<>;
+    } get_type_descriptor(TestBase_3_2*& i_dummy); 
 
     // layer 2
 
@@ -26,32 +38,80 @@ namespace ediacaran_test
         char m_arr_1[32]{};
     };
 
+    struct {
+        constexpr static char * name = "TestBase_2_1";
+        using this_class = TestBase_2_1;
+        using bases = type_list<>;
+    } get_type_descriptor(TestBase_2_1*& i_dummy); 
+
     struct TestBase_2_2 : TestBase_3_1
     {
         int m_arr_2[32]{};
     };
+
+    struct {
+        constexpr static char * name = "TestBase_2_2";
+        using this_class = TestBase_2_2;
+        using bases = type_list<TestBase_3_1>;
+    } get_type_descriptor(TestBase_2_2*& i_dummy); 
 
     struct TestBase_2_3 : TestBase_3_2
     {
         float m_arr_3[32]{};
     };
 
+    struct {
+        constexpr static char * name = "TestBase_2_3";
+        using this_class = TestBase_2_3;
+        using bases = type_list<TestBase_3_2>;
+    } get_type_descriptor(TestBase_2_3*& i_dummy); 
+
     struct TestBase_2_4
     {
         double m_arr_4[32]{};
     };
 
+    struct {
+        constexpr static char * name = "TestBase_2_4";
+        using this_class = TestBase_2_4;
+        using bases = type_list<>;
+    } get_type_descriptor(TestBase_2_4*& i_dummy); 
+
+    struct TestBase_2_Base
+    {
+        int8_t m_arr_5[3]{};
+    };
+
+    struct {
+        constexpr static char * name = "TestBase_2_Base";
+        using this_class = TestBase_2_Base;
+        using bases = type_list<>;
+    } get_type_descriptor(TestBase_2_Base*& i_dummy); 
+
     // layer 1
 
-    struct TestBase_1_1 : TestBase_2_1, TestBase_2_2
+    struct TestBase_1_1 : TestBase_2_1, TestBase_2_2, virtual TestBase_2_Base
     {
         std::string m_string_1 = "abc";
     };
 
-    struct TestBase_1_2 : TestBase_2_3, TestBase_2_4
+    struct {
+        constexpr static char * name = "TestBase_1_1";
+        using this_class = TestBase_1_1;
+        using bases = type_list<TestBase_2_1, TestBase_2_2, TestBase_2_Base>;
+    } get_type_descriptor(TestBase_1_1*& i_dummy); 
+
+    struct TestBase_1_2 : TestBase_2_3, TestBase_2_4, virtual TestBase_2_Base
     {
         std::string m_string_2 = "efg";
     };
+
+    struct {
+        constexpr static char * name = "TestBase_1_2";
+        using this_class = TestBase_1_2;
+        using bases = type_list<TestBase_2_3, TestBase_2_4, TestBase_2_Base>;
+    } get_type_descriptor(TestBase_1_2*& i_dummy); 
+
 
     // layer 0
 
@@ -60,78 +120,18 @@ namespace ediacaran_test
         int m_integer = 42;
         float m_float = 42.f;
     };
-}
 
-namespace ediacaran
-{
-    template <> struct class_descriptor<ediacaran_test::TestClass>
-    {
+    struct {
         constexpr static char * name = "TestClass";
+        using this_class = TestClass;
+        using bases = type_list<TestBase_1_1, TestBase_1_2>;
         
-        using bases = type_list<ediacaran_test::TestBase_1_1, ediacaran_test::TestBase_1_2>;
+        constexpr static property properties[] = {
+            ediacaran::make_property<decltype(&this_class::m_integer), &this_class::m_integer>("integer"),
+            ediacaran::make_property<decltype(&this_class::m_float), &this_class::m_float>("float") };
+    } get_type_descriptor(TestClass*&);
 
-        constexpr static property propoerties[] = {
-            make_property<int ediacaran_test::TestClass::*, &ediacaran_test::TestClass::m_integer>("integer"),
-            make_property<float ediacaran_test::TestClass::*, &ediacaran_test::TestClass::m_float>("float") };
-    };
 
-    //
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_1_1>
-    {
-        constexpr static char * name = "TestBase_1_1";
-        using bases = type_list<ediacaran_test::TestBase_2_1, ediacaran_test::TestBase_2_2>;
-    };
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_1_2>
-    {
-        constexpr static char * name = "TestBase_1_2";
-        using bases = type_list<ediacaran_test::TestBase_2_3, ediacaran_test::TestBase_2_4>;
-    };
-
-    //
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_2_1>
-    {
-        constexpr static char * name = "TestBase_2_1";
-        using bases = type_list<>;
-    };
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_2_2>
-    {
-        constexpr static char * name = "TestBase_2_2";
-        using bases = type_list<ediacaran_test::TestBase_3_1>;
-    };
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_2_3>
-    {
-        constexpr static char * name = "TestBase_2_3";
-        using bases = type_list<ediacaran_test::TestBase_3_2>;
-    };
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_2_4>
-    {
-        constexpr static char * name = "TestBase_2_3";
-        using bases = type_list<>;
-    };
-
-    //
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_3_1>
-    {
-        constexpr static char * name = "TestBase_3_1";
-        using bases = type_list<>;
-    };
-
-    template <> struct class_descriptor<ediacaran_test::TestBase_3_2>
-    {
-        constexpr static char * name = "TestBase_3_2";
-        using bases = type_list<>;
-    };
-}
-
-namespace ediacaran_test
-{
 
     void class_tests()
     {

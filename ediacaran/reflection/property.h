@@ -10,6 +10,8 @@ namespace ediacaran
     {
       public:
 
+        constexpr property() : symbol_t(""), m_getter(nullptr), m_setter(nullptr) {}
+
         using getter = bool (*)(
             const void * i_source_object, void * i_dest_value, char_writer & o_error);
         using setter = bool (*)(

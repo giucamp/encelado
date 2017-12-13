@@ -11,8 +11,41 @@ namespace ediacaran
 
     struct base_class
     {
-        const class_type * m_class = nullptr;
-        size_t m_offset = 0; /**< offset of the subobject from the most derived type */
+    public:
+
+        template <typename DERIVED, typename BASE>
+            constexpr static base_class make() noexcept
+        {
+            return base_class(get_naked_type<BASE>(), &impl_up_cast<DERIVED,BASE>);
+        }
+
+        void * up_cast(void * i_derived) const noexcept
+        {
+            return (*m_up_caster)(i_derived);
+        }
+
+        const void * up_cast(const void * i_derived) const noexcept
+        {
+            return (*m_up_caster)(const_cast<void*>(i_derived));
+        }
+
+    private:
+
+        base_class(class_type const & i_class, void * (*i_up_caster)(void*) EDIACARAN_NOEXCEPT_FUNCTION_TYPE)
+            : m_class(i_class), m_up_caster(i_up_caster)
+        {
+        }
+
+        template <typename DERIVED, typename BASE>
+            static void * impl_up_cast(void * i_derived) noexcept
+        {
+            auto const derived = static_cast<DERIVED*>(i_derived);
+            return static_cast<BASE*>(derived);
+        }
+
+    private:
+        class_type const & m_class;
+        void * (* const m_up_caster)(void*) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
     };
 
     class class_type : public type_t
@@ -37,7 +70,7 @@ namespace ediacaran
         array_view<const property> const m_properties;
     };
 
-    template <typename CLASS> struct class_descriptor;
+    template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE*&>()));
 
     // makes a list of all the direct and indirect bases of CLASS
     template <typename...> struct all_bases;
@@ -53,30 +86,52 @@ namespace ediacaran
     };
 
     template <typename CLASS>
-    class_type make_static_class(
-      const char * i_name, std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
+    constexpr class_type make_static_class(
+      const char * i_name, 
+      const array_view<const property> & i_properties,
+      std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
     {
         return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
             array_view<const base_class>(),
-            array_view<const property>());
+            i_properties);
     }
 
     template <typename CLASS>
-    class_type make_static_class(
-      const char * i_name, std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
+    constexpr class_type make_static_class(
+      const char * i_name, 
+      const array_view<const property> & i_properties,
+      std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
     {
         return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
           base_array<CLASS, typename all_bases<CLASS>::type>::s_bases,
-          array_view<const property>());
+          i_properties);
     }
 
 
     namespace detail
     {
+        template <typename CLASS, typename = std::void_t<>>
+            struct PropTraits
+        {
+            constexpr static const array_view<const property> get()
+            {
+                return array_view<const property>();
+            }
+        };
+
+        template <typename CLASS>
+            struct PropTraits<CLASS, std::void_t<decltype(class_descriptor<CLASS>::properties)>>
+        {
+            constexpr static const array_view<const property> get()
+            {
+                return class_descriptor<CLASS>::properties;
+            }
+        };
+
         template <typename CLASS>
             constexpr class_type create_class()
         {
-            return make_static_class<CLASS>(class_descriptor<CLASS>::name);
+            return make_static_class<CLASS>(class_descriptor<CLASS>::name, PropTraits<CLASS>::get());
         }
 
         template <typename CLASS> const class_type s_class{create_class<CLASS>()};
@@ -93,7 +148,7 @@ namespace ediacaran
 
     template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
     {
-        inline static const base_class s_bases[sizeof...(BASES)] = {{&get_naked_type<BASES>(), 0}...};
+        inline static const base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
     };
 
     /*template <typename CLASS> - Not working with Visual Stdio: it seems that base_array is specialized anyway
