@@ -29,6 +29,8 @@ namespace ediacaran
             return (*m_up_caster)(const_cast<void*>(i_derived));
         }
 
+        constexpr class_type const & get_class() const noexcept { return m_class; }
+
     private:
 
         base_class(class_type const & i_class, void * (*i_up_caster)(void*) EDIACARAN_NOEXCEPT_FUNCTION_TYPE)
@@ -61,9 +63,9 @@ namespace ediacaran
         {
         }
 
-        constexpr array_view<const base_class> const & base_classes() noexcept { return m_base_classes; }
+        constexpr array_view<const base_class> const & base_classes() const noexcept { return m_base_classes; }
 
-        constexpr array_view<const property> const & properties() noexcept { return m_properties; }
+        constexpr array_view<const property> const & properties() const noexcept { return m_properties; }
 
       private:
         array_view<const base_class> const m_base_classes;
@@ -103,7 +105,7 @@ namespace ediacaran
       std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
     {
         return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-          base_array<CLASS, typename all_bases<CLASS>::type>::s_bases,
+          base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type> >::s_bases,
           i_properties);
     }
 
@@ -134,12 +136,12 @@ namespace ediacaran
             return make_static_class<CLASS>(class_descriptor<CLASS>::name, PropTraits<CLASS>::get());
         }
 
-        template <typename CLASS> const class_type s_class{create_class<CLASS>()};
+        template <typename CLASS> class_type const s_class{create_class<CLASS>()};
     }
 
     // get_naked_type
     template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
-    constexpr const class_type & get_naked_type() noexcept
+    constexpr class_type const & get_naked_type() noexcept
     {
         return detail::s_class<TYPE>;
     }

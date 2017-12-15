@@ -14,7 +14,7 @@ namespace ediacaran
     {
       public:
         constexpr symbol_t(const char * const i_name) noexcept : m_name(i_name) {}
-        constexpr const char * name() const noexcept { return m_name; }
+        constexpr string_view name() const noexcept { return m_name; }
 
       private:
         const char * const m_name;

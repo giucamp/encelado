@@ -187,6 +187,13 @@ namespace ediacaran
         return i_dest << (i_value ? "true" : "false");
     }
 
+    template <typename POINTER>
+    constexpr std::enable_if_t<std::is_same_v<typename std::remove_cv_t<POINTER>, void>, char_writer &> & operator<<(
+        char_writer & i_dest, POINTER * i_value) noexcept
+    {
+        return i_dest << reinterpret_cast<uintptr_t>(i_value);
+    }
+
     char_writer & operator<<(char_writer & i_dest, float i_value);
     char_writer & operator<<(char_writer & i_dest, double i_value);
     char_writer & operator<<(char_writer & i_dest, long double i_value);
