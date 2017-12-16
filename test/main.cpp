@@ -48,7 +48,7 @@ int main()
 
     ediacaran_test::type_list_tests();
     ediacaran_test::class_tests();
+    ediacaran_test::type_tests();
     ediacaran_test::qualified_type_ptr_tests();
     ediacaran_test::string_tests();
-    ediacaran_test::type_tests();
 }

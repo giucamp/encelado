@@ -50,8 +50,9 @@ namespace ediacaran
                 static_assert(std::numeric_limits<INT_TYPE>::radix == 2);
 
                 if constexpr (!std::is_signed_v<INT_TYPE>)
-                    o_dest << 'u';
-                o_dest << "int" << std::numeric_limits<INT_TYPE>::digits;
+                    o_dest << "uint" << std::numeric_limits<INT_TYPE>::digits;
+                else
+                    o_dest << "int" << (std::numeric_limits<INT_TYPE>::digits + 1);
             }
         };
     }
@@ -66,6 +67,8 @@ namespace ediacaran
     }
 
     constexpr type_t create_type(tag<bool>) noexcept { return create_static_type<bool>("bool"); }
+
+    constexpr type_t create_type(tag<char>) noexcept { return create_static_type<bool>("char"); }
 
     constexpr type_t create_type(tag<float>) noexcept { return create_static_type<float>("float"); }
 

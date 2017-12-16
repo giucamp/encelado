@@ -61,8 +61,8 @@ namespace ediacaran_test
         using this_class = TestBase_2_2;
         using bases = type_list<TestBase_3_1>;
         constexpr static property properties[] = {
-            ediacaran::make_property<decltype(&this_class::m_int2_2_1), &this_class::m_int2_2_1>("m_char_2_1_1"),
-            ediacaran::make_property<decltype(&this_class::m_int2_2_2), &this_class::m_int2_2_1>("m_int2_2_2")};
+            ediacaran::make_property<decltype(&this_class::m_int2_2_1), &this_class::m_int2_2_1>("m_int2_2_1"),
+            ediacaran::make_property<decltype(&this_class::m_int2_2_2), &this_class::m_int2_2_2>("m_int2_2_2")};
     } get_type_descriptor(TestBase_2_2*& i_dummy); 
 
     struct TestBase_2_3 : TestBase_3_2
@@ -167,7 +167,7 @@ namespace ediacaran_test
         for(auto & prop : i_class.properties())
         {
             char_writer string_out(chars);
-            string_out << i_class.name() << " -> " << prop.name() << ": ";
+            string_out << i_class.name() << " -> " << prop.name() << ": " << prop.qualified_type() << " = ";
             auto const primary_type = prop.qualified_type().primary_type();
             auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
             

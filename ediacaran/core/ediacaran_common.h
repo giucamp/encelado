@@ -105,7 +105,7 @@ namespace ediacaran
         constexpr static int compare(const char_type * i_first, const char_type * i_second, size_t i_size) noexcept
         {
             int result = 0;
-            for (size_t index = 0; result == 0 && index < i_size; index++)
+            for (size_t index = 0; result == 0 && index < i_size; index++, i_first++, i_second++)
                 result = *i_first - *i_second;
             return result;
         }
