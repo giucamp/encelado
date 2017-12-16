@@ -189,7 +189,7 @@ namespace ediacaran
 
     template <typename POINTER>
     constexpr std::enable_if_t<std::is_same_v<typename std::remove_cv_t<POINTER>, void>, char_writer &> & operator<<(
-        char_writer & i_dest, POINTER * i_value) noexcept
+      char_writer & i_dest, POINTER * i_value) noexcept
     {
         return i_dest << reinterpret_cast<uintptr_t>(i_value);
     }

@@ -9,7 +9,7 @@ namespace ediacaran_test
 {
     void type_list_tests()
     {
-            // push_back, contains
+        // push_back, contains
 
         using L = type_list<int, float, double>;
         using L1 = tl_push_back_t<L, type_list<std::string, int>, char>;
@@ -32,7 +32,7 @@ namespace ediacaran_test
         static_assert(tl_contains<int, float, int, double>::value);
         static_assert(!tl_contains<char, float, int, double>::value);
 
-            // tl_remove_duplicates_t
+        // tl_remove_duplicates_t
 
         using R1 = tl_remove_duplicates_t<L1>;
         static_assert(std::is_same_v<R1, type_list<int, float, double, std::string, char>>);
@@ -45,9 +45,9 @@ namespace ediacaran_test
 
         using R4 = tl_remove_duplicates_t<type_list<char, int, char, char, int, double>>;
         static_assert(std::is_same_v<R4, type_list<char, int, double>>);
-        
 
-            // difference
+
+        // difference
 
         using D = tl_difference<L1, type_list<int, const void>>::type;
         static_assert(std::is_same_v<D, type_list<float, double, std::string, char>>);

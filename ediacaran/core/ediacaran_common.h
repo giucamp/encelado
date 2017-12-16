@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 /** Assert that on failure should cause an halt of the program. Used only locally in this header. */
 #ifdef _MSC_VER
@@ -138,8 +139,7 @@ namespace ediacaran
 
     template <typename TYPE, size_t SIZE> constexpr size_t array_size(TYPE (&i_array)[SIZE]) { return SIZE; }
 
-    template <typename CLASS, typename MEMBER_TYPE>
-        inline size_t data_member_offset(MEMBER_TYPE (CLASS::*i_member))
+    template <typename CLASS, typename MEMBER_TYPE> inline size_t data_member_offset(MEMBER_TYPE(CLASS::*i_member))
     {
         return reinterpret_cast<size_t>(&(reinterpret_cast<CLASS *>(0)->*i_member));
     }
