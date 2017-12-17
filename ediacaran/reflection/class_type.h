@@ -169,3 +169,17 @@ namespace ediacaran
     }*/
 
 } // namespace ediacaran
+
+#define REFL_BEGIN_CLASS(Class,Name)            struct Edic_Reflect_##Class get_type_descriptor(Class*&);\
+                                                struct Edic_Reflect_##Class {\
+                                                    constexpr static char * name = Name; \
+                                                    using this_class = Class;
+#define REFL_BASES(...)                         using bases = type_list<__VA_ARGS__>;
+
+#define REFL_BEGIN_PROPERTIES                   constexpr static property properties[] = {
+
+#define REFL_DATA_MEMBER(DataMember, Name)      ediacaran::make_property<decltype(&this_class::DataMember), &this_class::DataMember>(Name),
+
+#define REFL_END_PROPERTIES                     };
+
+#define REFL_END_CLASS                          };
