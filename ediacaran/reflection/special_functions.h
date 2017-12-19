@@ -2,20 +2,18 @@
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
 
 #pragma once
+#include "ediacaran/core/address.h"
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
-#include "ediacaran/core/address.h"
-#include <memory>
 #include <algorithm>
+#include <memory>
 
 namespace ediacaran
 {
     class special_functions
     {
       public:
-        
-        using scalar_constructor_function = void (*)(
-          void * i_dest_start, void * i_dest_end);
+        using scalar_constructor_function = void (*)(void * i_dest_start, void * i_dest_end);
 
         using scalar_destructor_function = void (*)(
           void * i_dest_start, void * i_dest_end) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
@@ -29,8 +27,7 @@ namespace ediacaran
         using scalar_copy_assigner_function = void (*)(
           void * i_dest_start, void * i_dest_end, const void * i_source_start);
 
-        using scalar_move_assigner_function = void (*)(
-          void * i_dest_start, void * i_dest_end, void * i_source_start);
+        using scalar_move_assigner_function = void (*)(void * i_dest_start, void * i_dest_end, void * i_source_start);
 
         using to_chars_function = void (*)(
           const void * i_source, char_writer & i_dest) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
@@ -40,50 +37,48 @@ namespace ediacaran
 
         constexpr special_functions() noexcept = default;
 
-        constexpr special_functions(
-            scalar_constructor_function i_scalar_default_constructor, scalar_destructor_function i_scalar_destructor,
-            scalar_copy_constructor_function i_scalar_copy_constructor, scalar_move_constructor_function i_scalar_move_constructor,
-            scalar_copy_assigner_function i_scalar_copy_assigner, scalar_move_assigner_function i_scalar_move_assigner,
-            to_chars_function i_to_chars, from_chars_function i_from_chars
-         )
+        constexpr special_functions(scalar_constructor_function i_scalar_default_constructor,
+          scalar_destructor_function i_scalar_destructor, scalar_copy_constructor_function i_scalar_copy_constructor,
+          scalar_move_constructor_function i_scalar_move_constructor,
+          scalar_copy_assigner_function i_scalar_copy_assigner, scalar_move_assigner_function i_scalar_move_assigner,
+          to_chars_function i_to_chars, from_chars_function i_from_chars)
             : m_scalar_default_constructor(i_scalar_default_constructor), m_scalar_destructor(i_scalar_destructor),
-              m_scalar_copy_constructor(i_scalar_copy_constructor), m_scalar_move_constructor(i_scalar_move_constructor),
-              m_scalar_copy_assigner(i_scalar_copy_assigner), m_scalar_move_assigner(i_scalar_move_assigner),
-              m_to_chars(i_to_chars), m_from_chars(i_from_chars)
+              m_scalar_copy_constructor(i_scalar_copy_constructor),
+              m_scalar_move_constructor(i_scalar_move_constructor), m_scalar_copy_assigner(i_scalar_copy_assigner),
+              m_scalar_move_assigner(i_scalar_move_assigner), m_to_chars(i_to_chars), m_from_chars(i_from_chars)
         {
         }
 
         template <typename TYPE> constexpr static special_functions make() noexcept
         {
-            return special_functions(
-                make_default_constructor<TYPE>(), make_destructor<TYPE>(),
-                make_copy_constructor<TYPE>(), make_move_constructor<TYPE>(),
-                make_copy_assigner<TYPE>(), make_move_assigner<TYPE>(),
-                make_to_chars<TYPE>(), make_from_chars<TYPE>() );
+            return special_functions(make_default_constructor<TYPE>(), make_destructor<TYPE>(),
+              make_copy_constructor<TYPE>(), make_move_constructor<TYPE>(), make_copy_assigner<TYPE>(),
+              make_move_assigner<TYPE>(), make_to_chars<TYPE>(), make_from_chars<TYPE>());
         }
 
-        constexpr auto scalar_default_constructor() const noexcept      { return m_scalar_default_constructor; }
-        constexpr auto scalar_destructor() const noexcept               { return m_scalar_destructor; }
-        constexpr auto scalar_copy_constructor() const noexcept         { return m_scalar_copy_constructor; }
-        constexpr auto scalar_move_constructor() const noexcept         { return m_scalar_move_constructor; }
-        constexpr auto scalar_copy_assigner() const noexcept            { return m_scalar_copy_assigner; }
-        constexpr auto scalar_move_assigner() const noexcept            { return m_scalar_move_assigner; } 
-        constexpr auto to_chars() const noexcept                        { return m_to_chars; }
-        constexpr auto from_chars() const noexcept                      { return m_from_chars; }
+        constexpr auto scalar_default_constructor() const noexcept { return m_scalar_default_constructor; }
+        constexpr auto scalar_destructor() const noexcept { return m_scalar_destructor; }
+        constexpr auto scalar_copy_constructor() const noexcept { return m_scalar_copy_constructor; }
+        constexpr auto scalar_move_constructor() const noexcept { return m_scalar_move_constructor; }
+        constexpr auto scalar_copy_assigner() const noexcept { return m_scalar_copy_assigner; }
+        constexpr auto scalar_move_assigner() const noexcept { return m_scalar_move_assigner; }
+        constexpr auto to_chars() const noexcept { return m_to_chars; }
+        constexpr auto from_chars() const noexcept { return m_from_chars; }
 
       private:
-
-        template <typename TYPE> static const TYPE * get_source_end(void * i_dest_start, void * i_dest_end, const void * i_source_start) noexcept
+        template <typename TYPE>
+        static const TYPE * get_source_end(void * i_dest_start, void * i_dest_end, const void * i_source_start) noexcept
         {
-            return static_cast<const TYPE*>(address_add(i_source_start, address_diff(i_dest_end, i_dest_start)));
+            return static_cast<const TYPE *>(address_add(i_source_start, address_diff(i_dest_end, i_dest_start)));
         }
 
-        template <typename TYPE> static const TYPE * get_source_end(void * i_dest_start, void * i_dest_end, void * i_source_start) noexcept
+        template <typename TYPE>
+        static const TYPE * get_source_end(void * i_dest_start, void * i_dest_end, void * i_source_start) noexcept
         {
-            return static_cast<TYPE*>(address_add(i_source_start, address_diff(i_dest_end, i_dest_start)));
+            return static_cast<TYPE *>(address_add(i_source_start, address_diff(i_dest_end, i_dest_start)));
         }
 
-            // function implementations
+        // function implementations
 
         template <typename TYPE> static void scalar_default_construct_impl(void * i_dest_start, void * i_dest_end)
         {
@@ -95,32 +90,32 @@ namespace ediacaran
             std::destroy(static_cast<TYPE *>(i_dest_start), static_cast<TYPE *>(i_dest_end));
         }
 
-        template <typename TYPE> static void scalar_copy_construct_impl(void * i_dest_start, void * i_dest_end, const void * i_source_start)
+        template <typename TYPE>
+        static void scalar_copy_construct_impl(void * i_dest_start, void * i_dest_end, const void * i_source_start)
         {
-            std::uninitialized_copy(static_cast<const TYPE *>(i_source_start), 
-                get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
-                static_cast<TYPE *>(i_dest_start));
+            std::uninitialized_copy(static_cast<const TYPE *>(i_source_start),
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
         }
 
-        template <typename TYPE> static void scalar_move_construct_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
+        template <typename TYPE>
+        static void scalar_move_construct_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
         {
-            std::uninitialized_move(static_cast<const TYPE *>(i_source_start), 
-                get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
-                static_cast<TYPE *>(i_dest_start));
+            std::uninitialized_move(static_cast<const TYPE *>(i_source_start),
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
         }
 
-        template <typename TYPE> static void scalar_copy_assign_impl(void * i_dest_start, void * i_dest_end, const void * i_source_start)
+        template <typename TYPE>
+        static void scalar_copy_assign_impl(void * i_dest_start, void * i_dest_end, const void * i_source_start)
         {
             std::copy(static_cast<const TYPE *>(i_source_start),
-                get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
-                static_cast<TYPE *>(i_dest_start));
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
         }
 
-        template <typename TYPE> static void scalar_move_assign_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
+        template <typename TYPE>
+        static void scalar_move_assign_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
         {
             std::move(static_cast<const TYPE *>(i_source_start),
-                get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
-                static_cast<TYPE *>(i_dest_start));
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
         }
 
         template <typename TYPE> static void to_chars_impl(const void * i_source, char_writer & i_dest) noexcept
@@ -134,7 +129,7 @@ namespace ediacaran
             return try_parse(*static_cast<TYPE *>(i_dest), i_source, i_error_dest);
         }
 
-                // function getters
+        // function getters
 
         template <typename TYPE> constexpr static scalar_constructor_function make_default_constructor() noexcept
         {

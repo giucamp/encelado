@@ -3,7 +3,6 @@
 
 
 #pragma once
-#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/constexpr_string.h"
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/special_functions.h"
@@ -35,7 +34,7 @@ namespace ediacaran
         constexpr size_t alignment() const noexcept { return m_alignment; }
 
 
-                    // special functions
+        // special functions
 
         void construct(void * i_dest) const
         {

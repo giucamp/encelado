@@ -192,7 +192,7 @@ namespace ediacaran_test
 
     template <typename INT_TYPE, typename BIG_INT_TYPE> void typed_string_overflow_tests(bool i_negative = false)
     {
-        using namespace ediacaran; 
+        using namespace ediacaran;
 
         char buff[1024], error_buffer[1024];
 
@@ -240,8 +240,8 @@ namespace ediacaran_test
         using namespace ediacaran;
 
         string_builder builder;
-        int32_t const test_size = 5'000;
-        int32_t progress = 0;
+        size_t const test_size = 5'000;
+        size_t progress = 0;
         for (size_t j = 0; j < test_size; j += 1)
         {
             for (; progress < j; progress++)
@@ -249,7 +249,7 @@ namespace ediacaran_test
 
             auto string = builder.to_string();
             char_reader reader(string);
-            for (int32_t i = 0; i < j; i++)
+            for (size_t i = 0; i < j; i++)
             {
                 reader >> std::as_const(i) >> ' ';
                 reader >> std::as_const(i) >> ' ';

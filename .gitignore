@@ -4,3 +4,9 @@ ediacaran/vs2017/x64/
 test/vs2017/.vs/
 test/vs2017/x64/
 *.user
+cambrian/vs2017/Debug/
+ediacaran/vs2017/Debug/
+test/vs2017/Debug/
+cambrian/vs2017/Release/
+ediacaran/vs2017/Release/
+test/vs2017/Release/

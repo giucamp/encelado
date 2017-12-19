@@ -5,7 +5,7 @@
 
 #ifdef _MSC_VER
     // silent errors for unchecked iterators
-    #define _SCL_SECURE_NO_WARNINGS
+#    define _SCL_SECURE_NO_WARNINGS
 #endif
 
 #include <assert.h>
