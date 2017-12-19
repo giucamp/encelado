@@ -35,6 +35,11 @@ namespace ediacaran_test
         {
             m_prop = i_value;
         }
+
+        double get_readonly_prop() const
+        {
+            return 1.23;
+        }
     };
 
     REFL_BEGIN_CLASS("TestBase_3_2", TestBase_3_2)
@@ -43,6 +48,7 @@ namespace ediacaran_test
             REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
             REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
             REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
+            REFL_ACCESSOR_R_PROP("readonly_prop", get_readonly_prop)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -165,8 +171,10 @@ namespace ediacaran_test
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
-    void class_tests_print_props(const void * i_sub_object, class_type const & i_class)
+    void class_tests_print_props(const void * i_sub_object, ediacaran::class_type const & i_class)
     {
+        using namespace ediacaran;
+
         char chars[1024];
         for (auto & prop : i_class.properties())
         {
@@ -197,7 +205,7 @@ namespace ediacaran_test
         }
     }
 
-    void class_tests_print(void const * i_complete_object, class_type const & i_class)
+    void class_tests_print(void const * i_complete_object, ediacaran::class_type const & i_class)
     {
         class_tests_print_props(i_complete_object, i_class);
         for (auto & base : i_class.base_classes())
@@ -208,7 +216,7 @@ namespace ediacaran_test
 
     template <typename CLASS> void class_tests_print(CLASS const & i_object)
     {
-        class_tests_print(&i_object, get_naked_type<CLASS>());
+        class_tests_print(&i_object, ediacaran::get_naked_type<CLASS>());
     }
 
     // MMM_BasesTraits<CLASS>::bases - class_descriptor<CLASS>::bases if exists, type_list<> otherwise
@@ -232,8 +240,8 @@ namespace ediacaran_test
         //auto s = ::ediacaran::BasesTraits<TestClass>::bases::size;
         //auto s3 = ::ediacaran::detail::BasesTraits<TestClass>::gg;
 
-        auto s1 = ::ediacaran::class_descriptor<TestClass>::bases::size;
+        auto s1 = ediacaran::class_descriptor<TestClass>::bases::size;
 
-        const auto & t = get_naked_type<TestClass>();
+        const auto & t = ediacaran::get_naked_type<TestClass>();
     }
 }

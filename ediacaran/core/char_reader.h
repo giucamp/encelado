@@ -105,19 +105,19 @@ namespace ediacaran
     }
 
     // parse(char_reader)
-    template <typename TYPE> TYPE parse(char_reader & i_source)
+    template <typename TYPE> constexpr TYPE parse(char_reader & i_source)
     {
         static_assert(has_try_parse_v<TYPE>);
-        char error[512];
+        char error[512]{};
         char_writer error_writer(error);
-        TYPE value;
+        TYPE value{};
         if (!try_parse(value, i_source, error_writer))
             throw ParseError(error);
         return value;
     }
 
     // parse(string_view)
-    template <typename TYPE> TYPE parse(const string_view & i_source)
+    template <typename TYPE> constexpr TYPE parse(const string_view & i_source)
     {
         char_reader in(i_source);
         return parse<TYPE>(in);

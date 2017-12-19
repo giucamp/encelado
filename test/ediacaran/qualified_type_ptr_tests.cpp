@@ -9,7 +9,7 @@
 namespace ediacaran_test
 {
     template <size_t CV_COUNT>
-    void qualified_type_ptr_unit_test_cvs(const qualified_type_ptr & i_q_type, const CV_Flags (&i_cvs)[CV_COUNT])
+    void qualified_type_ptr_unit_test_cvs(ediacaran::qualified_type_ptr const & i_q_type, ediacaran::CV_Flags const  (&i_cvs)[CV_COUNT])
     {
         ENCELADO_TEST_ASSERT(i_q_type.indirection_levels() + 1 == CV_COUNT);
         for (size_t i = 0; i < CV_COUNT; i++)
@@ -20,6 +20,8 @@ namespace ediacaran_test
 
     template <typename TYPE> void qualified_type_ptr_unit_test_type()
     {
+        using namespace ediacaran;
+
         ENCELADO_TEST_ASSERT(get_qualified_type<TYPE &>() == get_qualified_type<TYPE * const>());
 
         // test <TYPE>
@@ -99,6 +101,8 @@ namespace ediacaran_test
 
     template <typename TYPE> void qualified_type_ptr_string_tests(const char * i_type_str)
     {
+        using namespace ediacaran;
+
         auto const qual_type = get_qualified_type<TYPE>();
         ENCELADO_TEST_ASSERT(qual_type == parse<qualified_type_ptr>(i_type_str));
 
@@ -109,6 +113,8 @@ namespace ediacaran_test
 
     void qualified_type_ptr_tests()
     {
+        using namespace ediacaran;
+        
         // test empty
         {
             qualified_type_ptr q_type_ptr;

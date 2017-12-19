@@ -96,30 +96,14 @@ namespace ediacaran
                 auto const object = static_cast<CLASS*>(i_object);
                 switch (i_operation)
                 {
-                case property::operation::get:                
-                {
-                    if(GETTER != nullptr)
-                    {
-                        new(i_value) property_type((object->*GETTER)());
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                case property::operation::get:
+                    new(i_value) property_type((object->*GETTER)());
+                    return true;
+                
                 case property::operation::set:
-                {
-                    if(SETTER != nullptr)
-                    {
-                        (object->*SETTER)(*static_cast<property_type*>(i_value));
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                    (object->*SETTER)(*static_cast<property_type*>(i_value));
+                    return true;
+
                 default:
                     EDIACARAN_ASSERT(false);
                     return false;
@@ -127,17 +111,49 @@ namespace ediacaran
             }
         };
 
+
+        template <typename CLASS, typename GETTER_RETURN_TYPE,
+            GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
+                struct PropertyAccessor<
+                        GETTER_RETURN_TYPE (CLASS::*)() const,
+                        nullptr_t,
+                        GETTER, nullptr>
+        {
+            using owner_class = CLASS;
+            using property_type = std::decay_t<GETTER_RETURN_TYPE>;
+
+            static bool func(property::operation i_operation, void * i_object, void * i_value, char_writer & o_error)
+            {
+                EDIACARAN_ASSERT(i_object != nullptr);
+                EDIACARAN_ASSERT(i_value != nullptr);
+                auto const object = static_cast<CLASS*>(i_object);
+                switch (i_operation)
+                {
+                case property::operation::get:                
+                    new(i_value) property_type((object->*GETTER)());
+                    return true;
+
+                case property::operation::set:
+                    return false;
+
+                default:
+                    EDIACARAN_ASSERT(false);
+                    return false;
+                }
+            }
+        };
+
+        constexpr property make_data_property(const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
+        {
+            return property(i_name, i_qualified_type, i_offset);
+        }
+
+        template <typename PROPERTY_ACCESSOR>
+            constexpr property make_accessor_property(const char * i_name)
+        {
+            return property(i_name, get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);
+        }
+
     } //namespace detail
-
-    constexpr property make_data_property(const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
-    {
-        return property(i_name, i_qualified_type, i_offset);
-    }
-
-    template <typename PROPERTY_ACCESSOR>
-        constexpr property make_accessor_property(const char * i_name)
-    {
-        return property(i_name, get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);
-    }
 
 } // namespace ediacaran

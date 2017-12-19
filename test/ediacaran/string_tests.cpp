@@ -15,6 +15,8 @@ namespace ediacaran_test
 {
     void string_conversion_tests()
     {
+        using namespace ediacaran;
+
         size_t const buffer_size = 1024 * 1024;
         auto const buff = std::make_unique<char[]>(buffer_size);
         memset(buff.get(), 7, buffer_size);
@@ -190,6 +192,8 @@ namespace ediacaran_test
 
     template <typename INT_TYPE, typename BIG_INT_TYPE> void typed_string_overflow_tests(bool i_negative = false)
     {
+        using namespace ediacaran; 
+
         char buff[1024], error_buffer[1024];
 
         BIG_INT_TYPE const max =
@@ -233,6 +237,8 @@ namespace ediacaran_test
 
     void string_builder_tests()
     {
+        using namespace ediacaran;
+
         string_builder builder;
         int32_t const test_size = 5'000;
         int32_t progress = 0;
@@ -253,6 +259,8 @@ namespace ediacaran_test
 
     void string_basic_tests()
     {
+        using namespace ediacaran;
+
         string_view const target("123 456 abc");
         auto str = to_string(123, ' ', 456, " abc");
         ENCELADO_TEST_ASSERT(target == str.c_str());
@@ -273,6 +281,8 @@ namespace ediacaran_test
         string_builder_tests();
         string_conversion_tests();
         string_overflow_tests();
+
+        using namespace ediacaran;
 
         static_assert(has_try_accept_v<bool>);
         static_assert(has_try_parse_v<bool>);
@@ -315,6 +325,7 @@ namespace ediacaran_test
         static_assert(!has_try_accept_v<void>);
         static_assert(!has_try_parse_v<void>);
 
-        parse<int>(string_view("42"));
+        static_assert(parse<int>("42") == 42);
+        static_assert(parse<int>("-42") == -42);
     }
 }

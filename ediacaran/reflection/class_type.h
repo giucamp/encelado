@@ -180,11 +180,15 @@ namespace ediacaran
 
 #define REFL_BEGIN_PROPERTIES                   constexpr static ediacaran::property properties[] = {
 
-#define REFL_DATA_PROP(Name, DataMember)        ediacaran::make_data_property(Name, ediacaran::get_qualified_type<decltype(this_class::DataMember)>(), offsetof(this_class, DataMember)),
+#define REFL_DATA_PROP(Name, DataMember)        ediacaran::detail::make_data_property(Name, ediacaran::get_qualified_type<decltype(this_class::DataMember)>(), offsetof(this_class, DataMember)),
 
-#define REFL_ACCESSOR_PROP(Name, Getter, Setter) make_accessor_property< ediacaran::detail::PropertyAccessor< \
+#define REFL_ACCESSOR_PROP(Name, Getter, Setter) ediacaran::detail::make_accessor_property< ediacaran::detail::PropertyAccessor< \
                                                 decltype(&this_class::Getter), decltype(&this_class::Setter), \
                                                 &this_class::Getter, &this_class::Setter> >(Name),
+
+#define REFL_ACCESSOR_R_PROP(Name, Getter)      ediacaran::detail::make_accessor_property< ediacaran::detail::PropertyAccessor< \
+                                                decltype(&this_class::Getter), nullptr_t, \
+                                                &this_class::Getter, nullptr> >(Name),
 
 #define REFL_END_PROPERTIES                     };
 

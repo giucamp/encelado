@@ -9,6 +9,8 @@ namespace ediacaran_test
 {
     void type_list_tests()
     {
+        using namespace ediacaran;
+
         // push_back, contains
 
         using L = type_list<int, float, double>;

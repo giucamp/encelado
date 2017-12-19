@@ -8,6 +8,7 @@ namespace ediacaran_test
 {
     void type_tests()
     {
+        using namespace ediacaran;
         static_assert(string_view(get_naked_type<bool>().name()) == "bool");
 
         static_assert(string_view(get_naked_type<int8_t>().name()) == "int8");
