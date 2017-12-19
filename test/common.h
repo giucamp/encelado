@@ -1,4 +1,5 @@
 
+#include <ediacaran/core/ediacaran_common.h>
 
 #define ENCELADO_TEST_ASSERT(expr)                                                                                     \
     if (!(expr))                                                                                                       \

@@ -3,6 +3,7 @@
 
 
 #pragma once
+#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/constexpr_string.h"
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/special_functions.h"
@@ -33,7 +34,48 @@ namespace ediacaran
 
         constexpr size_t alignment() const noexcept { return m_alignment; }
 
-        constexpr const special_functions & special_functions() const noexcept { return m_special_functions; }
+
+                    // special functions
+
+        void construct(void * i_dest) const
+        {
+            m_special_functions.scalar_default_constructor()(i_dest, address_add(i_dest, m_size));
+        }
+
+        void copy_construct(void * i_dest, const void * i_source) const
+        {
+            m_special_functions.scalar_copy_constructor()(i_dest, address_add(i_dest, m_size), i_source);
+        }
+
+        void move_construct(void * i_dest, void * i_source) const
+        {
+            m_special_functions.scalar_move_constructor()(i_dest, address_add(i_dest, m_size), i_source);
+        }
+
+        void copy_assign(void * i_dest, const void * i_source) const
+        {
+            m_special_functions.scalar_copy_assigner()(i_dest, address_add(i_dest, m_size), i_source);
+        }
+
+        void move_assign(void * i_dest, void * i_source) const
+        {
+            m_special_functions.scalar_move_assigner()(i_dest, address_add(i_dest, m_size), i_source);
+        }
+
+        void destroy(void * i_dest) const
+        {
+            m_special_functions.scalar_destructor()(i_dest, address_add(i_dest, m_size));
+        }
+
+        void to_chars(const void * i_source, char_writer & i_dest) const noexcept
+        {
+            (*m_special_functions.to_chars())(i_source, i_dest);
+        }
+
+        bool from_chars(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
+        {
+            (*m_special_functions.from_chars())(i_dest, i_source, i_error_dest);
+        }
 
       private:
         size_t const m_size;

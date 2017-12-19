@@ -9,81 +9,135 @@ namespace ediacaran
     class property : public symbol_t
     {
       public:
-        constexpr property() : symbol_t(""), m_getter(nullptr), m_setter(nullptr) {}
 
-        using getter = bool (*)(const void * i_source_object, void * i_dest_value, char_writer & o_error);
-        using setter = bool (*)(void * i_dest_object, const void * i_source_value, char_writer & o_error);
+        enum class operation
+        {
+            get,
+            set,
+        };
+
+        using accessor = bool (*)(operation i_operation, void * i_object, void * i_value, char_writer & o_error);
 
         constexpr property(
-          const char * i_name, const qualified_type_ptr & i_qualified_type, getter i_getter, setter i_setter) noexcept
-            : symbol_t(i_name), m_qualified_type(i_qualified_type), m_getter(i_getter), m_setter(i_setter)
+          const char * i_name, const qualified_type_ptr & i_qualified_type, accessor i_accessor) noexcept
+            : symbol_t(i_name), m_is_inplace_data(false), m_is_readonly(false), m_qualified_type(i_qualified_type), m_accessor(i_accessor)
         {
+        }
+
+        constexpr property(
+          const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset) noexcept
+            : symbol_t(i_name), m_is_inplace_data(true), m_is_readonly(false), m_qualified_type(i_qualified_type), m_offset(i_offset)
+        {
+        }
+        
+        constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
+
+        bool get(const void * i_source_object, void * o_dest_value, char_writer & o_error) const
+        {
+            if(!m_is_inplace_data)
+            {
+                return (*m_accessor)(operation::get, const_cast<void*>(i_source_object), o_dest_value, o_error);
+            }
+            else
+            {
+                auto const data = address_add(i_source_object, m_offset);
+                m_qualified_type.primary_type()->copy_construct(o_dest_value, data);
+                return true;
+            }
         }
 
         bool set(void * i_dest_object, const void * i_source_value, char_writer & o_error) const
         {
-            return (*m_setter)(i_dest_object, i_source_value, o_error);
+            if(!m_is_inplace_data)
+            {
+                return (*m_accessor)(operation::set, i_dest_object, const_cast<void*>(i_source_value), o_error);
+            }
+            else
+            {
+                auto const data = address_add(i_dest_object, m_offset);
+                m_qualified_type.primary_type()->copy_assign(data, i_source_value);
+                return true;
+            }
         }
-
-        bool get(const void * i_source_object, void * o_dest_value, char_writer & o_error) const
-        {
-            return (*m_getter)(i_source_object, o_dest_value, o_error);
-        }
-
-        constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
 
       private:
+        bool m_is_inplace_data : 1;
+        bool m_is_readonly : 1;
         qualified_type_ptr const m_qualified_type;
-        getter const m_getter;
-        setter const m_setter;
+        union
+        {
+            size_t m_offset;
+            accessor m_accessor;
+        };
     };
 
     namespace detail
     {
-        template <typename> struct DataMemberTraits
-        {
-        };
+        template <typename GETTER_TYPE, typename SETTER_TYPE, GETTER_TYPE, SETTER_TYPE>
+                struct PropertyAccessor;
 
-        template <typename CLASS, typename PROP_TYPE> struct DataMemberTraits<PROP_TYPE(CLASS::*)>
+
+        template <typename CLASS, typename GETTER_RETURN_TYPE, typename SETTER_PARAM_TYPE,
+            GETTER_RETURN_TYPE (CLASS::*GETTER)() const, void (CLASS::*SETTER)(SETTER_PARAM_TYPE i_value)>
+                struct PropertyAccessor<
+                        GETTER_RETURN_TYPE (CLASS::*)() const,
+                        void (CLASS::*)(SETTER_PARAM_TYPE i_value),
+                        GETTER, SETTER>
         {
-            using type = PROP_TYPE;
             using owner_class = CLASS;
+            using property_type = std::decay_t<GETTER_RETURN_TYPE>;
+            static_assert(std::is_same_v<property_type, std::decay_t<SETTER_PARAM_TYPE>>, 
+                "inconsistency between getter and setter");
+
+            static bool func(property::operation i_operation, void * i_object, void * i_value, char_writer & o_error)
+            {
+                EDIACARAN_ASSERT(i_object != nullptr);
+                EDIACARAN_ASSERT(i_value != nullptr);
+                auto const object = static_cast<CLASS*>(i_object);
+                switch (i_operation)
+                {
+                case property::operation::get:                
+                {
+                    if(GETTER != nullptr)
+                    {
+                        new(i_value) property_type((object->*GETTER)());
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                case property::operation::set:
+                {
+                    if(SETTER != nullptr)
+                    {
+                        (object->*SETTER)(*static_cast<property_type*>(i_value));
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                default:
+                    EDIACARAN_ASSERT(false);
+                    return false;
+                }
+            }
         };
 
-        template <typename CLASS, typename PROP_TYPE, PROP_TYPE(CLASS::*MEMBER)>
-        constexpr bool impl_data_get(const void * i_source_object, void * i_dest_value, char_writer & o_error)
-        {
-            auto const & source = static_cast<const CLASS *>(i_source_object)->*MEMBER;
-            new (i_dest_value) PROP_TYPE(source);
-            return true;
-        }
+    } //namespace detail
 
-        template <typename CLASS, typename PROP_TYPE, PROP_TYPE(CLASS::*MEMBER)>
-        constexpr bool impl_data_set(void * i_dest_object, const void * i_source_value, char_writer & o_error)
-        {
-            auto & dest = static_cast<CLASS *>(i_dest_object)->*MEMBER;
-            auto const & source = *static_cast<const PROP_TYPE *>(i_source_value);
-            dest = source;
-            return true;
-        }
+    constexpr property make_data_property(const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
+    {
+        return property(i_name, i_qualified_type, i_offset);
     }
 
-    template <typename POINTER_TO_MEMBER, POINTER_TO_MEMBER MEMB,
-      typename = typename detail::DataMemberTraits<POINTER_TO_MEMBER>::type>
-    constexpr property make_property(const char * i_name)
+    template <typename PROPERTY_ACCESSOR>
+        constexpr property make_accessor_property(const char * i_name)
     {
-        using traits = detail::DataMemberTraits<POINTER_TO_MEMBER>;
-        return property(i_name, get_qualified_type<traits::type>(),
-          &detail::impl_data_get<traits::owner_class, traits::type, MEMB>,
-          &detail::impl_data_set<traits::owner_class, traits::type, MEMB>);
+        return property(i_name, get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);
     }
-
-    /*template <typename CLASS, typename PROP_TYPE>
-        constexpr property make_property(const char * i_name, 
-            PROP_TYPE (CLASS::*i_getter)() const,
-            void (CLASS::*i_setter)(const PROP_TYPE & i_value) = nullptr )
-    {
-        return property(i_name, get_qualified_type<PROP_TYPE>(), i_getter, i_setter);
-    }*/
 
 } // namespace ediacaran

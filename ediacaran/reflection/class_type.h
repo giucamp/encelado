@@ -1,9 +1,11 @@
 #pragma once
 
+#include  <cstddef>
 #include "ediacaran/core/array_view.h"
 #include "ediacaran/core/type_list.h"
 #include "ediacaran/reflection/type.h"
 #include "ediacaran/reflection/property.h"
+#include "ediacaran/reflection/special_functions.h"
 
 namespace ediacaran
 {
@@ -55,7 +57,7 @@ namespace ediacaran
       public:
 
         constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
-          const ediacaran::special_functions & i_special_functions,
+          const special_functions & i_special_functions,
           const array_view<const base_class> & i_base_classes,
           const array_view<const property> & i_properties) noexcept
             : type_t(i_name, i_size, i_alignment, i_special_functions),
@@ -170,15 +172,19 @@ namespace ediacaran
 
 } // namespace ediacaran
 
-#define REFL_BEGIN_CLASS(Class,Name)            struct Edic_Reflect_##Class get_type_descriptor(Class*&);\
+#define REFL_BEGIN_CLASS(Name, Class)           struct Edic_Reflect_##Class get_type_descriptor(Class*&);\
                                                 struct Edic_Reflect_##Class {\
                                                     constexpr static char * name = Name; \
                                                     using this_class = Class;
-#define REFL_BASES(...)                         using bases = type_list<__VA_ARGS__>;
+#define REFL_BASES(...)                         using bases = ediacaran::type_list<__VA_ARGS__>;
 
-#define REFL_BEGIN_PROPERTIES                   constexpr static property properties[] = {
+#define REFL_BEGIN_PROPERTIES                   constexpr static ediacaran::property properties[] = {
 
-#define REFL_DATA_MEMBER(DataMember, Name)      ediacaran::make_property<decltype(&this_class::DataMember), &this_class::DataMember>(Name),
+#define REFL_DATA_PROP(Name, DataMember)        ediacaran::make_data_property(Name, ediacaran::get_qualified_type<decltype(this_class::DataMember)>(), offsetof(this_class, DataMember)),
+
+#define REFL_ACCESSOR_PROP(Name, Getter, Setter) make_accessor_property< ediacaran::detail::PropertyAccessor< \
+                                                decltype(&this_class::Getter), decltype(&this_class::Setter), \
+                                                &this_class::Getter, &this_class::Setter> >(Name),
 
 #define REFL_END_PROPERTIES                     };
 

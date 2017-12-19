@@ -15,7 +15,7 @@ namespace ediacaran_test
         virtual void f() {}
     };
 
-    REFL_BEGIN_CLASS(TestBase_3_1, "TestBase_3_1")
+    REFL_BEGIN_CLASS("TestBase_3_1", TestBase_3_1)
         REFL_BASES()
     REFL_END_CLASS;
 
@@ -23,12 +23,26 @@ namespace ediacaran_test
     {
         virtual void g() {}
         float m_float_3_2_1{};
+
+        int m_prop = 5;
+
+        int get_prop() const
+        {
+            return m_prop;
+        }
+
+        void set_prop(int i_value)
+        {
+            m_prop = i_value;
+        }
     };
 
-    REFL_BEGIN_CLASS(TestBase_3_2, "TestBase_3_2")
+    REFL_BEGIN_CLASS("TestBase_3_2", TestBase_3_2)
         REFL_BASES()
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_float_3_2_1, "m_float_3_2_1")
+            REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
+            REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
+            REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -39,10 +53,10 @@ namespace ediacaran_test
         char m_char_2_1_1{};
     };
 
-    REFL_BEGIN_CLASS(TestBase_2_1, "TestBase_2_1")
+    REFL_BEGIN_CLASS("TestBase_2_1", TestBase_2_1)
         REFL_BASES()
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_char_2_1_1, "m_char_2_1_1")
+            REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -52,11 +66,11 @@ namespace ediacaran_test
         int m_int2_2_2{};
     };
 
-    REFL_BEGIN_CLASS(TestBase_2_2, "TestBase_2_2")
+    REFL_BEGIN_CLASS("TestBase_2_2", TestBase_2_2)
         REFL_BASES(TestBase_3_1)
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_int2_2_1, "m_int2_2_1")
-            REFL_DATA_MEMBER(m_int2_2_2, "m_int2_2_2")
+            REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
+            REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -66,10 +80,10 @@ namespace ediacaran_test
     };
 
 
-    REFL_BEGIN_CLASS(TestBase_2_3, "TestBase_2_3")
+    REFL_BEGIN_CLASS("TestBase_2_3", TestBase_2_3)
         REFL_BASES(TestBase_3_2)
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_float_2_3_1, "m_float_2_3_1")
+            REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -79,11 +93,11 @@ namespace ediacaran_test
         double m_double_2_4_2{};
     };
 
-    REFL_BEGIN_CLASS(TestBase_2_4, "TestBase_2_4")
+    REFL_BEGIN_CLASS("TestBase_2_4", TestBase_2_4)
         REFL_BASES()
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_double_2_4_1, "m_double_2_4_1")
-            REFL_DATA_MEMBER(m_double_2_4_2, "m_double_2_4_2")
+            REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
+            REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -94,12 +108,12 @@ namespace ediacaran_test
         int8_t m_int8_2_3{};
     };
 
-    REFL_BEGIN_CLASS(TestBase_2_Base, "TestBase_2_Base")
+    REFL_BEGIN_CLASS("TestBase_2_Base", TestBase_2_Base)
         REFL_BASES()
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_int8_2_1, "m_int8_2_1")
-            REFL_DATA_MEMBER(m_int8_2_2, "m_int8_2_2")
-            REFL_DATA_MEMBER(m_int8_2_3, "m_int8_2_3")
+            REFL_DATA_PROP("m_int8_2_1", m_int8_2_1 )
+            REFL_DATA_PROP("m_int8_2_2", m_int8_2_2 )
+            REFL_DATA_PROP("m_int8_2_3", m_int8_2_3 )
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -110,10 +124,10 @@ namespace ediacaran_test
         const char * m_string_1 = "abc";
     };
 
-    REFL_BEGIN_CLASS(TestBase_1_1, "TestBase_1_1")
+    REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_1)
         REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_string_1, "m_string_1")
+            REFL_DATA_PROP("m_string_1", m_string_1)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -125,12 +139,12 @@ namespace ediacaran_test
     };
 
 
-    REFL_BEGIN_CLASS(TestBase_1_2, "TestBase_1_1")
+    REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_2)
         REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_string_2_1, "m_string_2_1")
-            REFL_DATA_MEMBER(m_string_2_2, "m_string_2_2")
-            REFL_DATA_MEMBER(m_string_2_3, "m_string_2_3")
+            REFL_DATA_PROP("m_string_2_1", m_string_2_1)
+            REFL_DATA_PROP("m_string_2_2", m_string_2_2)
+            REFL_DATA_PROP("m_string_2_3", m_string_2_3)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -141,26 +155,13 @@ namespace ediacaran_test
     {
         int m_integer = 42;
         float m_float = 42.f;
-
-        using t1 = int;
     };
-
-
-    /*struct {
-        constexpr static char * name = "TestClass";
-        using this_class = TestClass;
-        using bases = type_list<TestBase_1_1, TestBase_1_2>;
-        
-        constexpr static property properties[] = {
-            ediacaran::make_property<decltype(&this_class::m_integer), &this_class::m_integer>("integer"),
-            ediacaran::make_property<decltype(&this_class::m_float), &this_class::m_float>("float") };
-    } get_type_descriptor(TestClass*&);*/
     
-    REFL_BEGIN_CLASS(TestClass, "TestClass")
+    REFL_BEGIN_CLASS("TestClass", TestClass)
         REFL_BASES(TestBase_1_1, TestBase_1_2)
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_MEMBER(m_integer, "m_integer")
-            REFL_DATA_MEMBER(m_float, "m_float")
+            REFL_DATA_PROP("m_integer", m_integer)
+            REFL_DATA_PROP("m_float", m_float)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -186,11 +187,10 @@ namespace ediacaran_test
             }
             else
             {
-                primary_type->special_functions().to_chars()(buffer, string_out);
+                primary_type->to_chars(buffer, string_out);
             }
 
-            primary_type->special_functions().scalar_destructor()(
-              buffer, static_cast<char *>(buffer) + primary_type->size());
+            primary_type->destroy(buffer);
             operator delete (buffer, primary_type->size(), std::align_val_t{primary_type->alignment()});
 
             std::cout << chars << std::endl;

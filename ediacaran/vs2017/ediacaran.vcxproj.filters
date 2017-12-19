@@ -40,6 +40,9 @@
     <ClInclude Include="..\core\array_view.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\address.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

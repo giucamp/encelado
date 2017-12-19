@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\core\address.h" />
     <ClInclude Include="..\core\array_view.h" />
     <ClInclude Include="..\core\constexpr_string.h" />
     <ClInclude Include="..\core\ediacaran_common.h" />
