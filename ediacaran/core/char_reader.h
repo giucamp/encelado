@@ -14,14 +14,14 @@
 
 namespace ediacaran
 {
-    class ParseError : public std::exception
+    class ParseError : public std::runtime_error
     {
       public:
-        using std::exception::exception;
+        using std::runtime_error::runtime_error;
     };
 
 
-    /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters. 
+    /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters.
         While values are parsed or accepted, the treader advances in the string. */
     class char_reader
     {
@@ -48,7 +48,7 @@ namespace ediacaran
     };
     template <typename TYPE>
     struct has_try_parse<TYPE, std::void_t<decltype(try_parse(std::declval<TYPE &>(), std::declval<char_reader &>(),
-                                 std::declval<char_writer>()))>> : std::true_type
+                                 std::declval<char_writer&>()))>> : std::true_type
     {
     };
     template <typename TYPE> using has_try_parse_t = typename has_try_parse<TYPE>::type;

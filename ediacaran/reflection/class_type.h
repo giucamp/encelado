@@ -14,10 +14,7 @@ namespace ediacaran
     struct base_class
     {
       public:
-        template <typename DERIVED, typename BASE> constexpr static base_class make() noexcept
-        {
-            return base_class(get_naked_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
-        }
+        template <typename DERIVED, typename BASE> constexpr static base_class make() noexcept;
 
         void * up_cast(void * i_derived) const noexcept { return (*m_up_caster)(i_derived); }
 
@@ -66,6 +63,13 @@ namespace ediacaran
     };
 
     template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE *&>()));
+
+    template <typename...> struct base_array;
+
+    template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
+    {
+        inline static const base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
+    };
 
     // makes a list of all the direct and indirect bases of CLASS
     template <typename...> struct all_bases;
@@ -124,27 +128,10 @@ namespace ediacaran
         return detail::s_class<TYPE>;
     }
 
-    template <typename...> struct base_array;
-
-    template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
-    {
-        inline static const base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
-    };
-
-    /*template <typename CLASS> - Not working with Visual Stdio: it seems that base_array is specialized anyway
-        class_type make_static_class(const char * i_name)
-    {
-        if constexpr(all_bases<CLASS>::type::size == 0)
+        template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
         {
-            return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-                array_view<const base_class>());
+            return base_class(get_naked_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
         }
-        else
-        {
-            return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-                base_array<CLASS, typename all_bases<CLASS>::type>::s_bases);
-        }
-    }*/
 
 } // namespace ediacaran
 
@@ -152,7 +139,7 @@ namespace ediacaran
     struct Edic_Reflect_##Class get_type_descriptor(Class *&);                                                         \
     struct Edic_Reflect_##Class                                                                                        \
     {                                                                                                                  \
-        constexpr static char * name = Name;                                                                           \
+        constexpr static const char * name = Name;                                                                           \
         using this_class = Class;
 #define REFL_BASES(...) using bases = ediacaran::type_list<__VA_ARGS__>;
 

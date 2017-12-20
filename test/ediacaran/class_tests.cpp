@@ -177,7 +177,8 @@ namespace ediacaran_test
             auto const primary_type = prop.qualified_type().primary_type();
             auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
 
-            prop.get(i_sub_object, buffer, ediacaran::char_writer{});
+            ediacaran::char_writer err;
+            prop.get(i_sub_object, buffer, err);
 
             if (prop.qualified_type() == get_qualified_type<const char *>())
             {

@@ -1,0 +1,68 @@
+
+
+#include "../common.h"
+#include "ediacaran/reflection/qualified_type_ptr.h"
+#include "ediacaran/reflection/type.h"
+
+namespace ediacaran_test
+{
+    struct WriteAbc
+    {
+        constexpr void operator ()(ediacaran::char_writer & dest) const
+        {
+dest << "abc";
+        }
+    };
+
+        template <typename INT_TYPE> struct WriteIntTypeName
+        {
+            constexpr void operator()(ediacaran::char_writer & o_dest) noexcept
+            {
+                static_assert(std::numeric_limits<INT_TYPE>::radix == 2);
+
+                if constexpr (!std::is_signed_v<INT_TYPE>)
+                    o_dest << "uint" << std::numeric_limits<INT_TYPE>::digits;
+                else
+                    o_dest << "int" << (std::numeric_limits<INT_TYPE>::digits + 1);
+            }
+        };
+
+    void type_tests()
+    {
+        using namespace ediacaran;
+
+        constexpr auto ss = ediacaran::constexpr_string<WriteAbc>::get_string();
+        static_assert(string_view("abc") == ss.data());
+
+        constexpr auto ss1= ediacaran::constexpr_string<WriteIntTypeName<uint8_t>>::get_string();
+        static_assert(string_view("uint8") == ss1.data());
+
+        constexpr auto yy = get_naked_type<int8_t>();
+
+        constexpr auto yy12 = get_naked_type<int8_t>().m_name;
+
+        static_assert(get_naked_type<bool>().name() != yy12);
+
+        constexpr string_view yy1332{yy12};
+
+        constexpr auto yy11 = get_naked_type<int8_t>().name();
+
+        static_assert(string_view(get_naked_type<bool>().name()) == "bool");
+        static_assert(string_view(get_naked_type<bool>().name()) == "bool");
+        static_assert(string_view(get_naked_type<bool>().name()) == "bool");
+        static_assert(string_view(get_naked_type<bool>().name()) == "bool");
+
+        /*static_assert(string_view(get_naked_type<int8_t>().name()) == "int8");
+        static_assert(string_view(get_naked_type<uint8_t>().name()) == "uint8");
+        static_assert(string_view(get_naked_type<int16_t>().name()) == "int16");
+        static_assert(string_view(get_naked_type<uint16_t>().name()) == "uint16");
+        static_assert(string_view(get_naked_type<int32_t>().name()) == "int32");
+        static_assert(string_view(get_naked_type<uint32_t>().name()) == "uint32");
+        static_assert(string_view(get_naked_type<int64_t>().name()) == "int64");
+        static_assert(string_view(get_naked_type<uint64_t>().name()) == "uint64");
+
+        static_assert(string_view(get_naked_type<float>().name()) == "float");
+        static_assert(string_view(get_naked_type<double>().name()) == "double");
+        static_assert(string_view(get_naked_type<long double>().name()) == "long double");*/
+    }
+}

@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
+#include  <cstring>
 
 namespace ediacaran_test
 {

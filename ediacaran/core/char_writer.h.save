@@ -131,7 +131,7 @@ namespace ediacaran
         char buffer[buffer_size] = {};
         size_t length = 0;
         /* note: if the number is negative, we can't just negate the sign and use the same algorithm,
-			because the unary minus operator is lossy: for example, negating -128 as int8 produces an overflow, as
+			because the unary minus operator is lossy: for example, negating -128 as int8 produces an overflow, as 
 			128 can't be represented as int8 */
         if (is_negative)
         {
@@ -217,13 +217,5 @@ namespace ediacaran
         char_writer writer(o_char_array, i_array_size);
         (writer << ... << i_objects);
         return static_cast<size_t>(static_cast<ptrdiff_t>(i_array_size) - writer.remaining_size());
-    }
-
-    /** Returns the number of bytes required by the char array (including the null terminator) */
-    template <size_t SIZE, typename... TYPE>
-    constexpr size_t to_chars(char (&o_char_array)[SIZE], const TYPE &... i_objects)
-    {
-        char * const dest = o_char_array;
-        return to_chars(dest, SIZE, i_objects...);
     }
 }
