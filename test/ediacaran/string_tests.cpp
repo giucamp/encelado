@@ -273,6 +273,17 @@ namespace ediacaran_test
         required = to_chars(big_char_array, 123, ' ', 456, " abc");
         ENCELADO_TEST_ASSERT(required == target.size() + 1);
         ENCELADO_TEST_ASSERT(target == big_char_array);
+
+        char buff[10];
+        char_writer writer(buff);
+        for (int i = 0; i < 20; i++)
+            writer << 'a';
+        ENCELADO_TEST_ASSERT(strlen(buff) == 9);
+
+        writer = char_writer(buff);
+        for (int i = 0; i < 20; i++)
+            writer << "abcd";
+        ENCELADO_TEST_ASSERT(strlen(buff) == 9);
     }
 
     void string_tests()
@@ -327,5 +338,7 @@ namespace ediacaran_test
 
         static_assert(parse<int>("42") == 42);
         static_assert(parse<int>("-42") == -42);
+        static_assert(parse<bool>("true"));
+        static_assert(!parse<bool>("false"));
     }
 }

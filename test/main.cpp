@@ -19,10 +19,10 @@ void assert_failed(const char * i_source_file, const char * i_function, int i_li
 
 
 #if defined(__linux__) && !defined(__ANDROID__)
-#    include <execinfo.h>
-#    include <signal.h>
-#    include <stdlib.h>
-#    include <unistd.h>
+#include <execinfo.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 #endif
 
 #if defined(__linux__) && !defined(__ANDROID__)

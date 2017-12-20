@@ -107,7 +107,6 @@ namespace ediacaran
             }
         };
 
-
         template <typename CLASS, typename GETTER_RETURN_TYPE, GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
         struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, nullptr_t, GETTER, nullptr>
         {
@@ -127,6 +126,33 @@ namespace ediacaran
 
                 case property::operation::set:
                     return false;
+
+                default:
+                    EDIACARAN_ASSERT(false);
+                    return false;
+                }
+            }
+        };
+
+        template <typename CLASS, typename SETTER_PARAM_TYPE, void (CLASS::*SETTER)(SETTER_PARAM_TYPE i_value)>
+        struct PropertyAccessor<nullptr_t, void (CLASS::*)(SETTER_PARAM_TYPE i_value), nullptr, SETTER>
+        {
+            using owner_class = CLASS;
+            using property_type = std::decay_t<SETTER_PARAM_TYPE>;
+
+            static bool func(property::operation i_operation, void * i_object, void * i_value, char_writer & o_error)
+            {
+                EDIACARAN_ASSERT(i_object != nullptr);
+                EDIACARAN_ASSERT(i_value != nullptr);
+                auto const object = static_cast<CLASS *>(i_object);
+                switch (i_operation)
+                {
+                case property::operation::get:
+                    return false;
+
+                case property::operation::set:
+                    (object->*SETTER)(*static_cast<property_type *>(i_value));
+                    return true;
 
                 default:
                     EDIACARAN_ASSERT(false);

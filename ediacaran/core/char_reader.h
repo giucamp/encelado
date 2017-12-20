@@ -89,7 +89,7 @@ namespace ediacaran
 
     // generic try_accept without error_dest
     template <typename TYPE>
-    std::enable_if_t<has_try_accept_v<TYPE>, bool> try_accept(
+    constexpr std::enable_if_t<has_try_accept_v<TYPE>, bool> try_accept(
       const TYPE & i_expected_value, char_reader & i_source) noexcept
     {
         char_writer error;
@@ -157,22 +157,22 @@ namespace ediacaran
     }
 
     // try_accept for strings - they don't have a try_parse
-    inline bool try_accept(
+    constexpr bool try_accept(
       const string_view & i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
-        if (strncmp(i_source.next_chars(), i_expected.data(), i_expected.length()) == 0)
+        for (size_t index = 0; index < i_expected.size(); index++)
         {
-            i_source.skip(i_expected.length());
-            return true;
+            auto const source_char = i_source.next_chars()[index];
+            if (source_char == 0 || i_expected[index] != source_char)
+                return false;
         }
-        else
-        {
-            return false;
-        }
+
+        i_source.skip(i_expected.length());
+        return true;
     }
 
     // try_accept specialization for chars - optimization
-    inline bool try_accept(char i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool try_accept(char i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         if (*i_source.next_chars() == i_expected)
         {
@@ -199,8 +199,6 @@ namespace ediacaran
             return false;
         }
     }
-
-    bool try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
 
     template <typename INT_TYPE>
     constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && std::is_signed_v<INT_TYPE>, bool> try_parse(
@@ -315,6 +313,24 @@ namespace ediacaran
             o_dest = result;
             return true;
         }
+    }
+
+    constexpr bool try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    {
+        if (try_accept("true", i_source))
+        {
+            o_dest = true;
+            return true;
+        }
+
+        if (try_accept("false", i_source))
+        {
+            o_dest = false;
+            return true;
+        }
+
+        o_error_dest << "expected true or false";
+        return false;
     }
 
     bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;

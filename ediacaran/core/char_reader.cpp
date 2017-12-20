@@ -55,22 +55,4 @@ namespace ediacaran
     {
         return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtold);
     }
-
-    bool try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
-    {
-        if (try_accept("true", i_source))
-        {
-            o_dest = true;
-            return true;
-        }
-
-        if (try_accept("false", i_source))
-        {
-            o_dest = false;
-            return true;
-        }
-
-        o_error_dest << "expected true or false";
-        return false;
-    }
 }

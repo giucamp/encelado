@@ -166,9 +166,14 @@ namespace ediacaran
     ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<decltype(&this_class::Getter),       \
       decltype(&this_class::Setter), &this_class::Getter, &this_class::Setter>>(Name),
 
-#define REFL_ACCESSOR_R_PROP(Name, Getter)                                                                             \
+#define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                                            \
     ediacaran::detail::make_accessor_property<                                                                         \
       ediacaran::detail::PropertyAccessor<decltype(&this_class::Getter), nullptr_t, &this_class::Getter, nullptr>>(    \
+      Name),
+
+#define REFL_ACCESSOR_WO_PROP(Name, Setter)                                                                            \
+    ediacaran::detail::make_accessor_property<                                                                         \
+      ediacaran::detail::PropertyAccessor<nullptr_t, decltype(&this_class::Setter), nullptr, &this_class::Setter>>(    \
       Name),
 
 #define REFL_END_PROPERTIES                                                                                            \

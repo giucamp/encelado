@@ -4,8 +4,8 @@
 #pragma once
 
 #ifdef _MSC_VER
-    // silent errors for unchecked iterators
-#    define _SCL_SECURE_NO_WARNINGS
+// silent errors for unchecked iterators
+#define _SCL_SECURE_NO_WARNINGS
 #endif
 
 #include <assert.h>
@@ -16,74 +16,74 @@
 
 /** Assert that on failure should cause an halt of the program. Used only locally in this header. */
 #ifdef _MSC_VER
-#    define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                                       \
-        if (!(bool_expr))                                                                                              \
-        {                                                                                                              \
-            __debugbreak();                                                                                            \
-        }                                                                                                              \
-        else                                                                                                           \
-            (void)0
+#define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                                           \
+    if (!(bool_expr))                                                                                                  \
+    {                                                                                                                  \
+        __debugbreak();                                                                                                \
+    }                                                                                                                  \
+    else                                                                                                               \
+        (void)0
 #elif defined(__GNUC__)
-#    define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                                       \
-        if (!(bool_expr))                                                                                              \
-        {                                                                                                              \
-            __builtin_trap();                                                                                          \
-        }                                                                                                              \
-        else                                                                                                           \
-            (void)0
+#define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                                           \
+    if (!(bool_expr))                                                                                                  \
+    {                                                                                                                  \
+        __builtin_trap();                                                                                              \
+    }                                                                                                                  \
+    else                                                                                                               \
+        (void)0
 #else
-#    define EDIACARAN_CHECKING_ASSERT(bool_expr) assert(bool_expr)
+#define EDIACARAN_CHECKING_ASSERT(bool_expr) assert(bool_expr)
 #endif
 
 /** Macro that tells an invariant to the compiler as hint for the optimizer. . Used only locally in this header. */
 #if defined(__clang__)
-#    define EDIACARAN_ASSUME(bool_expr)                                                                                \
-        _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wassume\"")                              \
-          __builtin_assume((bool_expr)) _Pragma("clang diagnostic pop")
+#define EDIACARAN_ASSUME(bool_expr)                                                                                    \
+    _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wassume\"") __builtin_assume((bool_expr))    \
+      _Pragma("clang diagnostic pop")
 #elif defined(_MSC_VER)
-#    define EDIACARAN_ASSUME(bool_expr) __assume((bool_expr))
+#define EDIACARAN_ASSUME(bool_expr) __assume((bool_expr))
 #elif defined(__GNUC__)
-#    define EDIACARAN_ASSUME(bool_expr)                                                                                \
-        if (!(bool_expr))                                                                                              \
-        {                                                                                                              \
-            __builtin_unreachable();                                                                                   \
-        }                                                                                                              \
-        else                                                                                                           \
-            (void)0 // https://stackoverflow.com/questions/25667901/assume-clause-in-gcc
+#define EDIACARAN_ASSUME(bool_expr)                                                                                    \
+    if (!(bool_expr))                                                                                                  \
+    {                                                                                                                  \
+        __builtin_unreachable();                                                                                       \
+    }                                                                                                                  \
+    else                                                                                                               \
+        (void)0 // https://stackoverflow.com/questions/25667901/assume-clause-in-gcc
 #else
-#    define EDIACARAN_ASSUME(bool_expr) (void)0
+#define EDIACARAN_ASSUME(bool_expr) (void)0
 #endif
 
 #ifdef _DEBUG
-#    define EDIACARAN_ASSERT EDIACARAN_CHECKING_ASSERT
-#    define EDIACARAN_INTERNAL_ASSERT EDIACARAN_CHECKING_ASSERT
+#define EDIACARAN_ASSERT EDIACARAN_CHECKING_ASSERT
+#define EDIACARAN_INTERNAL_ASSERT EDIACARAN_CHECKING_ASSERT
 #else
-#    define EDIACARAN_ASSERT EDIACARAN_ASSUME
-#    define EDIACARAN_INTERNAL_ASSERT EDIACARAN_ASSUME
+#define EDIACARAN_ASSERT EDIACARAN_ASSUME
+#define EDIACARAN_INTERNAL_ASSERT EDIACARAN_ASSUME
 #endif
 
 
 /** Macro that tells to the compiler that a condition is true in most cases. This is just an hint to the optimizer. */
 #if defined(__GNUC__) && !defined(_MSC_VER)
-#    define EDIACARAN_LIKELY(bool_expr) (__builtin_expect(bool_expr, true), bool_expr)
+#define EDIACARAN_LIKELY(bool_expr) (__builtin_expect(bool_expr, true), bool_expr)
 #else
-#    define EDIACARAN_LIKELY(bool_expr) (bool_expr)
+#define EDIACARAN_LIKELY(bool_expr) (bool_expr)
 #endif
 
 /** Macro used in some circumstances to avoid inlining of a function, for
         example because the call handles a somewhat rare slow path. */
 #ifdef _MSC_VER
-#    define EDIACARAN_NO_INLINE __declspec(noinline)
+#define EDIACARAN_NO_INLINE __declspec(noinline)
 #elif defined(__GNUC__)
-#    define EDIACARAN_NO_INLINE __attribute__((noinline))
+#define EDIACARAN_NO_INLINE __attribute__((noinline))
 #else
-#    define EDIACARAN_NO_INLINE
+#define EDIACARAN_NO_INLINE
 #endif
 
 #if __cpp_noexcept_function_type
-#    define EDIACARAN_NOEXCEPT_FUNCTION_TYPE noexcept
+#define EDIACARAN_NOEXCEPT_FUNCTION_TYPE noexcept
 #else
-#    define EDIACARAN_NOEXCEPT_FUNCTION_TYPE
+#define EDIACARAN_NOEXCEPT_FUNCTION_TYPE
 #endif
 
 namespace ediacaran
