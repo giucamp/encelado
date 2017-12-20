@@ -60,7 +60,7 @@ namespace ediacaran
     };
     template <typename TYPE>
     struct has_try_accept<TYPE, std::void_t<decltype(std::declval<bool &>() = try_accept(std::declval<const TYPE &>(),
-                                                       std::declval<char_reader &>(), std::declval<char_writer>()))>>
+                                                       std::declval<char_reader &>(), std::declval<char_writer&>()))>>
         : std::true_type
     {
     };

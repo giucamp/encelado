@@ -54,10 +54,10 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_1", TestBase_2_1)
-    REFL_BASES()
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
-    REFL_END_PROPERTIES
+        REFL_BASES()
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_2 : TestBase_3_1
@@ -67,11 +67,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_2", TestBase_2_2)
-    REFL_BASES(TestBase_3_1)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
-    REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_3_1)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
+            REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_3 : TestBase_3_2
@@ -81,10 +81,10 @@ namespace ediacaran_test
 
 
     REFL_BEGIN_CLASS("TestBase_2_3", TestBase_2_3)
-    REFL_BASES(TestBase_3_2)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_3_2)
+        REFL_BEGIN_PROPERTIES
+           REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_4
@@ -94,11 +94,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_4", TestBase_2_4)
-    REFL_BASES()
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
-    REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
-    REFL_END_PROPERTIES
+        REFL_BASES()
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
+            REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_Base
@@ -109,12 +109,12 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_Base", TestBase_2_Base)
-    REFL_BASES()
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_int8_2_1", m_int8_2_1)
-    REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
-    REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
-    REFL_END_PROPERTIES
+        REFL_BASES()
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_int8_2_1", m_int8_2_1)
+            REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
+            REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     // layer 1
@@ -125,10 +125,10 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_1)
-    REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_string_1", m_string_1)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_string_1", m_string_1)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_1_2 : TestBase_2_3, TestBase_2_4, virtual TestBase_2_Base
@@ -140,12 +140,12 @@ namespace ediacaran_test
 
 
     REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_2)
-    REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_string_2_1", m_string_2_1)
-    REFL_DATA_PROP("m_string_2_2", m_string_2_2)
-    REFL_DATA_PROP("m_string_2_3", m_string_2_3)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_string_2_1", m_string_2_1)
+            REFL_DATA_PROP("m_string_2_2", m_string_2_2)
+            REFL_DATA_PROP("m_string_2_3", m_string_2_3)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
 
@@ -158,11 +158,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestClass", TestClass)
-    REFL_BASES(TestBase_1_1, TestBase_1_2)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_integer", m_integer)
-    REFL_DATA_PROP("m_float", m_float)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_1_1, TestBase_1_2)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_integer", m_integer)
+            REFL_DATA_PROP("m_float", m_float)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     void class_tests_print_props(const void * i_sub_object, ediacaran::class_type const & i_class)

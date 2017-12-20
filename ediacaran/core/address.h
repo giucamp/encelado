@@ -1,5 +1,5 @@
 #pragma once
-#include <ediacaran\core\ediacaran_common.h>
+#include <ediacaran/core/ediacaran_common.h>
 
 namespace ediacaran
 {

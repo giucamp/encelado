@@ -85,7 +85,7 @@ namespace ediacaran
             std::uninitialized_value_construct(static_cast<TYPE *>(i_dest_start), static_cast<TYPE *>(i_dest_end));
         }
 
-        template <typename TYPE> static void scalar_destroy_impl(void * i_dest_start, void * i_dest_end)
+        template <typename TYPE> static void scalar_destroy_impl(void * i_dest_start, void * i_dest_end) noexcept
         {
             std::destroy(static_cast<TYPE *>(i_dest_start), static_cast<TYPE *>(i_dest_end));
         }
