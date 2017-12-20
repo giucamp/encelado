@@ -73,7 +73,7 @@ namespace ediacaran
 
         bool from_chars(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
         {
-            (*m_special_functions.from_chars())(i_dest, i_source, i_error_dest);
+            return (*m_special_functions.from_chars())(i_dest, i_source, i_error_dest);
         }
 
       private:

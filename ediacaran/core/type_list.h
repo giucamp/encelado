@@ -79,7 +79,7 @@ namespace ediacaran
 
         template <typename... RESULTS> struct tl_remove_duplicates_impl<type_list<RESULTS...>, type_list<>>
         {
-            using type = typename type_list<RESULTS...>;
+            using type = type_list<RESULTS...>;
         };
 
         template <typename... RESULTS, typename CURR_TYPE, typename... NEXT_TYPES>

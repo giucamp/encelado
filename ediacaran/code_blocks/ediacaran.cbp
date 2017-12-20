@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ediacaran" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ediacaran" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ediacaran" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++17" />
+			<Add directory="../../../encelado" />
+		</Compiler>
+		<Unit filename="../core/address.h" />
+		<Unit filename="../core/array_view.h" />
+		<Unit filename="../core/char_reader.cpp" />
+		<Unit filename="../core/char_reader.h" />
+		<Unit filename="../core/char_writer.cpp" />
+		<Unit filename="../core/char_writer.h" />
+		<Unit filename="../core/constexpr_string.h" />
+		<Unit filename="../core/ediacaran_common.h" />
+		<Unit filename="../core/string_builder.h" />
+		<Unit filename="../core/type_list.h" />
+		<Unit filename="../reflection/class_type.h" />
+		<Unit filename="../reflection/namespace.cpp" />
+		<Unit filename="../reflection/namespace.h" />
+		<Unit filename="../reflection/property.h" />
+		<Unit filename="../reflection/qualified_type_ptr.cpp" />
+		<Unit filename="../reflection/qualified_type_ptr.h" />
+		<Unit filename="../reflection/qualified_type_ptr.inl" />
+		<Unit filename="../reflection/special_functions.h" />
+		<Unit filename="../reflection/type.h" />
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

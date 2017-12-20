@@ -1,0 +1,65 @@
+# depslib dependency file v1.0
+1513772655 source:/home/abc/proj/encelado/test/cambrian.cpp
+	"ediacaran/core/char_writer.h"
+	"ediacaran/reflection/qualified_type_ptr.h"
+	"ediacaran/reflection/type.h"
+	<iostream>
+	<string>
+
+1513772655 /home/abc/proj/encelado/ediacaran/core/char_writer.h
+	"ediacaran/core/ediacaran_common.h"
+	<algorithm>
+	<cstddef>
+	<string>
+	<string_view>
+	<type_traits>
+	<utility>
+
+1513772655 /home/abc/proj/encelado/ediacaran/core/ediacaran_common.h
+	<assert.h>
+	<cstdint>
+	<string>
+	<string_view>
+	<type_traits>
+
+1513772655 /home/abc/proj/encelado/ediacaran/reflection/qualified_type_ptr.h
+	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/reflection/type.h"
+	<array>
+	<limits>
+	<stdexcept>
+	<type_traits>
+	"qualified_type_ptr.inl"
+
+1513773008 /home/abc/proj/encelado/ediacaran/reflection/type.h
+	"ediacaran/core/constexpr_string.h"
+	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/reflection/special_functions.h"
+	<limits>
+
+1513772655 /home/abc/proj/encelado/ediacaran/core/constexpr_string.h
+	"ediacaran/core/char_writer.h"
+	<array>
+
+1513772655 /home/abc/proj/encelado/ediacaran/reflection/special_functions.h
+	"ediacaran/core/address.h"
+	"ediacaran/core/char_reader.h"
+	"ediacaran/core/char_writer.h"
+	<algorithm>
+	<memory>
+
+1513772655 /home/abc/proj/encelado/ediacaran/core/address.h
+	<ediacaran/core/ediacaran_common.h>
+
+1513772655 /home/abc/proj/encelado/ediacaran/core/char_reader.h
+	"ediacaran/core/char_writer.h"
+	"ediacaran/core/ediacaran_common.h"
+	<algorithm>
+	<cctype>
+	<cstddef>
+	<stdexcept>
+	<string_view>
+	<type_traits>
+
+1513772655 /home/abc/proj/encelado/ediacaran/reflection/qualified_type_ptr.inl
+
