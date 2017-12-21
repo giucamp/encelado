@@ -21,7 +21,7 @@ namespace ediacaran
             else
             {
                 EDIACARAN_INTERNAL_ASSERT(m_size == 0);
-                return (array_size(m_inplace_space) - 1) - static_cast<size_t>(m_writer.remaining_size());
+                return (std::extent_v<decltype(m_inplace_space)> - 1) - static_cast<size_t>(m_writer.remaining_size());
             }
         }
 
@@ -47,7 +47,7 @@ namespace ediacaran
             }
             else
             {
-                auto const size = (array_size(m_inplace_space) - 1) - static_cast<size_t>(m_writer.remaining_size());
+                auto const size = (std::extent_v<decltype(m_inplace_space)> - 1) - static_cast<size_t>(m_writer.remaining_size());
                 result.append(m_inplace_space, size);
             }
             EDIACARAN_INTERNAL_ASSERT(result.size() == string_size);
@@ -80,7 +80,7 @@ namespace ediacaran
             size_t prev_chunk_size;
             if (m_chunks.size() == 0)
             {
-                prev_chunk_size = array_size(m_inplace_space);
+                prev_chunk_size = std::extent_v<decltype(m_inplace_space)>;
                 m_inplace_size = (prev_chunk_size - 1) - static_cast<size_t>(remaining_size);
                 EDIACARAN_INTERNAL_ASSERT(m_size == 0);
                 m_size = m_inplace_size;

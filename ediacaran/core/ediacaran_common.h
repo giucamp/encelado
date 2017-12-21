@@ -35,7 +35,7 @@
 #define EDIACARAN_CHECKING_ASSERT(bool_expr) assert(bool_expr)
 #endif
 
-/** Macro that tells an invariant to the compiler as hint for the optimizer. . Used only locally in this header. */
+/** Macro that tells an invariant to the compiler as hint for the optimizer. Used only locally in this header. */
 #if defined(__clang__)
 #define EDIACARAN_ASSUME(bool_expr)                                                                                    \
     _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wassume\"") __builtin_assume((bool_expr))    \
@@ -141,6 +141,4 @@ namespace ediacaran
             hash = hash * 33 + c;
         return hash;
     }
-
-    template <typename TYPE, size_t SIZE> constexpr size_t array_size(TYPE (&i_array)[SIZE]) { return SIZE; }
 }

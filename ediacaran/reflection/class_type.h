@@ -26,7 +26,7 @@ namespace ediacaran
         constexpr class_type const & get_class() const noexcept { return m_class; }
 
       private:
-        base_class(class_type const & i_class, void * (*i_up_caster)(void *)EDIACARAN_NOEXCEPT_FUNCTION_TYPE)
+        constexpr base_class(class_type const & i_class, void * (*i_up_caster)(void *)EDIACARAN_NOEXCEPT_FUNCTION_TYPE)
             : m_class(i_class), m_up_caster(i_up_caster)
         {
         }
@@ -47,15 +47,53 @@ namespace ediacaran
       public:
         constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
           const special_functions & i_special_functions, const array_view<const base_class> & i_base_classes,
-          const array_view<const property> & i_properties) noexcept
+          const array_view<const property> & i_properties)
             : type_t(i_name, i_size, i_alignment, i_special_functions), m_base_classes(i_base_classes),
               m_properties(i_properties)
         {
+            check_duplicates();
         }
 
         constexpr array_view<const base_class> const & base_classes() const noexcept { return m_base_classes; }
 
         constexpr array_view<const property> const & properties() const noexcept { return m_properties; }
+
+      private:
+
+        constexpr void check_duplicates() const
+        {
+            if(m_properties.size() > 0)
+                for(auto prop_it = m_properties.begin(); prop_it != m_properties.end(); prop_it++)
+            {
+                for(auto other_prop_it = prop_it + 1; other_prop_it != m_properties.end(); other_prop_it++)
+                {
+                    if(prop_it->name() == other_prop_it->name())
+                    {
+                        char message[512]{};
+                        ediacaran::to_chars(message, "duplicate property ", prop_it->name(),
+                            " in class ", name());
+                        throw std::runtime_error(message);
+                    }
+                }
+
+                if(m_base_classes.size() > 0)
+                    for(auto & base : m_base_classes)
+                {
+                    auto & base_props = base.get_class().properties();
+                    if(base_props.size() > 0)
+                        for(auto & base_prop : base_props)
+                    {
+                        if(prop_it->name() == base_prop.name())
+                        {
+                            char message[512]{};
+                            ediacaran::to_chars(message, "shadowing property ", prop_it->name(), 
+                                " in class ", name(), ", already in ", base.get_class().name());
+                            throw std::runtime_error(message);
+                        }
+                    }
+                }
+            }
+        }
 
       private:
         array_view<const base_class> const m_base_classes;
@@ -68,7 +106,7 @@ namespace ediacaran
 
     template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
     {
-        inline static const base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
+        inline static constexpr base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
     };
 
     // makes a list of all the direct and indirect bases of CLASS
@@ -118,7 +156,7 @@ namespace ediacaran
             return make_static_class<CLASS>(class_descriptor<CLASS>::name, PropTraits<CLASS>::get());
         }
 
-        template <typename CLASS> class_type const s_class{create_class<CLASS>()};
+        template <typename CLASS> class_type constexpr s_class{create_class<CLASS>()};
     }
 
     // get_naked_type
@@ -128,10 +166,10 @@ namespace ediacaran
         return detail::s_class<TYPE>;
     }
 
-        template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
-        {
-            return base_class(get_naked_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
-        }
+    template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
+    {
+        return base_class(get_naked_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
+    }
 
 } // namespace ediacaran
 

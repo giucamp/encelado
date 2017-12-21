@@ -67,6 +67,21 @@ namespace ediacaran
             m_special_functions.scalar_destructor()(i_dest, address_add(i_dest, m_size));
         }
 
+        int compare(void const * i_first, void const * i_second) const noexcept
+        {
+            return m_special_functions.comparer()(i_first, i_second);
+        }
+
+        bool compare_equal(void const * i_first, void const * i_second) const noexcept
+        {
+            return m_special_functions.comparer()(i_first, i_second) == 0;
+        }
+
+        bool compare_less(void const * i_first, void const * i_second) const noexcept
+        {
+            return m_special_functions.comparer()(i_first, i_second) < 0;
+        }
+
         void to_chars(const void * i_source, char_writer & i_dest) const noexcept
         {
             (*m_special_functions.to_chars())(i_source, i_dest);

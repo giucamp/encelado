@@ -39,7 +39,6 @@ namespace ediacaran_test
         REFL_BASES()
         REFL_BEGIN_PROPERTIES
             REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
-            REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
             REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
             REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop)
             REFL_ACCESSOR_WO_PROP("writeonly_prop", set_writeonly_prop)
@@ -214,25 +213,27 @@ namespace ediacaran_test
         class_tests_print(&i_object, ediacaran::get_naked_type<CLASS>());
     }
 
-    // MMM_BasesTraits<CLASS>::bases - class_descriptor<CLASS>::bases if exists, type_list<> otherwise
-    template <typename CLASS, typename = std::void_t<>> struct MMM_BasesTraits
-    {
-        constexpr static bool boo = false;
-    };
-    template <typename CLASS> struct MMM_BasesTraits<CLASS, std::void_t<>>
-    {
-        constexpr static bool boo = true;
-    };
-
     void class_tests()
     {
-        static_assert(MMM_BasesTraits<TestClass>::boo);
+        try
+        {
+            ediacaran::property props[2] = {
+                ediacaran::property("prop", ediacaran::get_qualified_type<int>(), 2),
+                ediacaran::property("prop", ediacaran::get_qualified_type<int>(), 2)
+            };
+            ediacaran::class_type CC("abc", 1, 2,
+              ediacaran::special_functions{}, ediacaran::array_view<const ediacaran::base_class>{},
+            props);
+
+            ENCELADO_TEST_ASSERT(false); // should have thrown
+        }
+        catch(std::exception i_exc)
+        {
+            std::cout << "expected error: " << i_exc.what();
+        }
 
         TestClass test_object;
         class_tests_print(test_object);
-
-        //auto s = ::ediacaran::BasesTraits<TestClass>::bases::size;
-        //auto s3 = ::ediacaran::detail::BasesTraits<TestClass>::gg;
 
         auto s1 = ediacaran::class_descriptor<TestClass>::bases::size;
 
