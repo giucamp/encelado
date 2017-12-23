@@ -5,32 +5,13 @@
 
 namespace ediacaran
 {
-    void * dyn_value::uninitialized_allocate(const qualified_type_ptr & i_type)
-    {
-        if(!empty())
-            destroy();
-
-        auto const primary_type = i_type.primary_type();
-
-        if(!primary_type->is_destructible())
-        {
-            char err_message[512];
-            to_chars(err_message, "The type ", primary_type->name(), " is not destructible");
-            throw unsupported_error(err_message);
-        }
-
-        auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
-        m_type = i_type;
-        return m_object = buffer;
-    }
-
     dyn_value::dyn_value(const raw_ptr & i_source)
     {
         auto & type = i_source.type();
-        if(!type.is_empty())
+        if (!type.is_empty())
         {
             auto const primary_type = type.primary_type();
-            if(!primary_type->is_copy_constructible())
+            if (!primary_type->is_copy_constructible())
             {
                 char err_message[512];
                 to_chars(err_message, "The type ", primary_type->name(), " is not copy-constructible");
@@ -45,25 +26,62 @@ namespace ediacaran
             {
                 primary_type->copy_construct(m_object, i_source.object());
             }
-            catch(...)
+            catch (...)
             {
-                deallocate();
+                uninitialized_deallocate();
                 throw;
             }
         }
     }
 
-    bool dyn_value::operator == (const dyn_value & i_source) const
+    void * dyn_value::uninitialized_allocate(const qualified_type_ptr & i_type)
     {
-        if(m_type != i_source.m_type)
+        EDIACARAN_ASSERT(!i_type.is_empty());
+        
+        auto const primary_type = i_type.primary_type();
+        if (!primary_type->is_destructible())
+        {
+            char err_message[512];
+            to_chars(err_message, "The type ", primary_type->name(), " is not destructible");
+            throw unsupported_error(err_message);
+        }
+
+        auto const prev_primary_type = m_type.primary_type();
+        if(prev_primary_type == nullptr || primary_type->size() != prev_primary_type->size() || primary_type->alignment() != prev_primary_type->alignment())
+        {
+            auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
+            if (!empty())
+                destroy();
+            m_object = buffer;
+        }   
+        else
+        {
+            prev_primary_type->destroy(m_object);
+        }
+        m_type = i_type;
+        return m_object;
+    }
+
+    void dyn_value::uninitialized_deallocate() noexcept
+    {
+        EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
+        auto const primary_type = m_type.primary_type();
+        operator delete (m_object, primary_type->size(), std::align_val_t{primary_type->alignment()});
+        m_object = nullptr;
+        m_type = qualified_type_ptr{};
+    }
+
+    bool dyn_value::operator==(const dyn_value & i_source) const
+    {
+        if (m_type != i_source.m_type)
             return false;
 
-        if(m_type.is_empty())
+        if (m_type.is_empty())
             return true;
 
         auto const primary_type = m_type.primary_type();
 
-        if(!primary_type->is_comparable())
+        if (!primary_type->is_comparable())
         {
             char err_message[512];
             to_chars(err_message, "The type ", primary_type->name(), " is not comparable");

@@ -1,10 +1,10 @@
 
 
 #include "../common.h"
+#include "ediacaran/core/string_builder.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
 #include "ediacaran/utils/raw_ptr.h"
-#include "ediacaran/core/string_builder.h"
 
 namespace ediacaran_test
 {
@@ -34,7 +34,7 @@ namespace ediacaran_test
         raw_ptr ptr(&pppf);
         auto type_name = to_string(ptr.type());
         ENCELADO_TEST_ASSERT(type_name == "float const * const * *");
-        
+
         auto indirect = ptr.full_indirection();
         ENCELADO_TEST_ASSERT(indirect.object() == &f);
 

@@ -1,6 +1,6 @@
 #pragma once
-#include <ediacaran/reflection/type.h>
 #include <ediacaran/reflection/qualified_type_ptr.h>
+#include <ediacaran/reflection/type.h>
 #include <ediacaran/utils/raw_ptr.h>
 #include <utility>
 
@@ -8,38 +8,29 @@ namespace ediacaran
 {
     class dyn_value
     {
-    public:
-
+      public:
         dyn_value() noexcept = default;
-        
-        dyn_value(const dyn_value & i_source)
-            : dyn_value(raw_ptr(i_source))
-        {
 
-        }
+        dyn_value(const dyn_value & i_source) : dyn_value(raw_ptr(i_source)) {}
 
         dyn_value(const raw_ptr & i_source);
 
-        operator raw_ptr () const noexcept
-        {
-            return raw_ptr(m_object, m_type);
-        }
+        operator raw_ptr() const noexcept { return raw_ptr(m_object, m_type); }
 
-        dyn_value(dyn_value && i_source) noexcept
-            : m_object(i_source.m_object), m_type(i_source.m_type)
+        dyn_value(dyn_value && i_source) noexcept : m_object(i_source.m_object), m_type(i_source.m_type)
         {
             i_source.m_object = nullptr;
             i_source.m_type = qualified_type_ptr{};
         }
 
-        dyn_value & operator = (const dyn_value & i_source)
+        dyn_value & operator=(const dyn_value & i_source)
         {
             dyn_value copy(i_source);
             swap(*this, copy);
             return *this;
         }
 
-        dyn_value & operator = (dyn_value && i_source) noexcept
+        dyn_value & operator=(dyn_value && i_source) noexcept
         {
             dyn_value copy(i_source);
             swap(*this, i_source);
@@ -48,9 +39,18 @@ namespace ediacaran
 
         void * uninitialized_allocate(const qualified_type_ptr & i_type);
 
+        void uninitialized_deallocate() noexcept
+        {
+            EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
+            auto const primary_type = m_type.primary_type();
+            operator delete (m_object, primary_type->size(), std::align_val_t{primary_type->alignment()});
+            m_object = nullptr;
+            m_type = qualified_type_ptr{};
+        }
+
         ~dyn_value()
         {
-            if(m_object != nullptr)
+            if (m_object != nullptr)
                 destroy();
         }
 
@@ -60,50 +60,26 @@ namespace ediacaran
             std::swap(i_first.m_type, i_second.m_type);
         }
 
-        bool empty() const noexcept
-        {
-            return m_object != nullptr;
-        }
+        bool empty() const noexcept { return m_object != nullptr; }
 
-        bool operator == (const dyn_value & i_source) const;
+        bool operator==(const dyn_value & i_source) const;
 
-        bool operator != (const dyn_value & i_source) const
-        {
-            return !operator == (i_source);
-        }
+        bool operator!=(const dyn_value & i_source) const { return !operator==(i_source); }
 
-        const qualified_type_ptr & type() const noexcept
-        {
-            return m_type;
-        }
+        const qualified_type_ptr & type() const noexcept { return m_type; }
 
-        const void * object() const noexcept
-        {
-            return m_object;
-        }
+        const void * object() const noexcept { return m_object; }
 
-        void * object() noexcept
-        {
-            return m_object;
-        }
+        void * object() noexcept { return m_object; }
 
-    private:
-
+      private:
         void destroy() noexcept
         {
             m_type.primary_type()->destroy(m_object);
-            deallocate();
+            uninitialized_deallocate();
         }
 
-        void deallocate() noexcept
-        {
-            EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
-            auto const primary_type = m_type.primary_type();
-            operator delete (m_object, primary_type->size(), std::align_val_t{primary_type->alignment()});
-            m_object = nullptr;
-        }
-
-    private:
+      private:
         void * m_object{nullptr};
         qualified_type_ptr m_type;
     };

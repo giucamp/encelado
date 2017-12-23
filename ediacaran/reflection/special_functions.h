@@ -11,11 +11,15 @@
 namespace ediacaran
 {
     // trait has_comparer
-    template <typename, typename = std::void_t<>> struct has_comparer : std::false_type { };
-    template <typename TYPE> struct has_comparer<TYPE, std::void_t<decltype(
-            std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
-            std::declval<TYPE const &>() == std::declval<TYPE const &>()
-        )>> : std::true_type { };
+    template <typename, typename = std::void_t<>> struct has_comparer : std::false_type
+    {
+    };
+    template <typename TYPE>
+    struct has_comparer<TYPE, std::void_t<decltype(std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
+                                                   std::declval<TYPE const &>() == std::declval<TYPE const &>())>>
+        : std::true_type
+    {
+    };
     template <typename TYPE> using has_comparer_t = typename has_comparer<TYPE>::type;
     template <typename TYPE> constexpr bool has_comparer_v = has_comparer<TYPE>::value;
 
@@ -52,13 +56,12 @@ namespace ediacaran
           scalar_destructor_function i_scalar_destructor, scalar_copy_constructor_function i_scalar_copy_constructor,
           scalar_move_constructor_function i_scalar_move_constructor,
           scalar_copy_assigner_function i_scalar_copy_assigner, scalar_move_assigner_function i_scalar_move_assigner,
-          comparer_function i_comparer,
-          to_chars_function i_to_chars, try_parse_function i_try_parser)
+          comparer_function i_comparer, to_chars_function i_to_chars, try_parse_function i_try_parser)
             : m_scalar_default_constructor(i_scalar_default_constructor), m_scalar_destructor(i_scalar_destructor),
               m_scalar_copy_constructor(i_scalar_copy_constructor),
               m_scalar_move_constructor(i_scalar_move_constructor), m_scalar_copy_assigner(i_scalar_copy_assigner),
-              m_scalar_move_assigner(i_scalar_move_assigner), m_comparer(i_comparer),
-              m_stringizer(i_to_chars), m_try_parser(i_try_parser)
+              m_scalar_move_assigner(i_scalar_move_assigner), m_comparer(i_comparer), m_stringizer(i_to_chars),
+              m_try_parser(i_try_parser)
         {
         }
 
@@ -66,8 +69,7 @@ namespace ediacaran
         {
             return special_functions(make_default_constructor<TYPE>(), make_destructor<TYPE>(),
               make_copy_constructor<TYPE>(), make_move_constructor<TYPE>(), make_copy_assigner<TYPE>(),
-              make_move_assigner<TYPE>(), make_comparer<TYPE>(),
-              make_to_chars<TYPE>(), make_try_parse<TYPE>());
+              make_move_assigner<TYPE>(), make_comparer<TYPE>(), make_to_chars<TYPE>(), make_try_parse<TYPE>());
         }
 
         constexpr auto scalar_default_constructor() const noexcept { return m_scalar_default_constructor; }
@@ -133,14 +135,13 @@ namespace ediacaran
               get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
         }
 
-        template <typename TYPE>
-            static int comparer_impl(void const * i_first, void const * i_second) noexcept
+        template <typename TYPE> static int comparer_impl(void const * i_first, void const * i_second) noexcept
         {
             auto & first = *static_cast<TYPE const *>(i_first);
             auto & second = *static_cast<TYPE const *>(i_second);
-            if(first < second)
+            if (first < second)
                 return -1;
-            else if(first == second)
+            else if (first == second)
                 return 0;
             else
                 return 1;

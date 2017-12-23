@@ -154,8 +154,8 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(q_type_ptr == get_qualified_type<float volatile ** volatile const>());
         }
         {
-            ENCELADO_TEST_ASSERT(qualified_type_ptr(get_type<void>(), {}) ==
-                                 qualified_type_ptr(get_type<void>(), {CV_Flags::None}));
+            ENCELADO_TEST_ASSERT(
+              qualified_type_ptr(get_type<void>(), {}) == qualified_type_ptr(get_type<void>(), {CV_Flags::None}));
         }
 
         {

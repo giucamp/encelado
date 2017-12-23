@@ -18,6 +18,9 @@
     <ClCompile Include="..\ediacaran\type_list_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ediacaran\utils\inspect.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ediacaran">

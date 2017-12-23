@@ -10,10 +10,10 @@
 
 #include <assert.h>
 #include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <type_traits>
-#include <stdexcept>
 
 /** Assert that on failure should cause an halt of the program. Used only locally in this header. */
 #ifdef _MSC_VER

@@ -47,7 +47,8 @@ namespace ediacaran
             }
             else
             {
-                auto const size = (std::extent_v<decltype(m_inplace_space)> - 1) - static_cast<size_t>(m_writer.remaining_size());
+                auto const size =
+                  (std::extent_v<decltype(m_inplace_space)> - 1) - static_cast<size_t>(m_writer.remaining_size());
                 result.append(m_inplace_space, size);
             }
             EDIACARAN_INTERNAL_ASSERT(result.size() == string_size);
@@ -57,8 +58,8 @@ namespace ediacaran
         template <typename TYPE> string_builder & operator<<(const TYPE & i_value)
         {
             static_assert(is_stringizable_v<TYPE>, "Overloaded operator required: "
-                                                "char_writer & operator << "
-                                                "(const TYPE &)");
+                                                   "char_writer & operator << "
+                                                   "(const TYPE &)");
             for (;;)
             {
                 auto writer = m_writer;

@@ -216,25 +216,23 @@ namespace ediacaran_test
     }
 
     template <typename CLASS>
-    bool class_tests_set_property(CLASS & i_dest_object, 
-        ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value)
+    bool class_tests_set_property(
+      CLASS & i_dest_object, ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value)
     {
-        return class_tests_set_property(&i_dest_object, ediacaran::get_type<>(CLASS),
-            i_prop_name, i_prop_value, true);
+        return class_tests_set_property(&i_dest_object, ediacaran::get_type<>(CLASS), i_prop_name, i_prop_value, true);
     }
 
 
-    bool class_tests_set_property(void * i_dest, ediacaran::class_type const & i_class, 
-        ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value, 
-        bool i_look_bases)
+    bool class_tests_set_property(void * i_dest, ediacaran::class_type const & i_class,
+      ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value, bool i_look_bases)
     {
-        for(auto & prop : i_class.properties())
+        for (auto & prop : i_class.properties())
         {
-            if(prop.name() == i_prop_name)
+            if (prop.name() == i_prop_name)
             {
                 auto const primary_type = prop.qualified_type().primary_type();
                 auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
-                
+
                 //primary_type->from_chars(buffer, )
 
                 primary_type->destroy(buffer);
@@ -247,33 +245,31 @@ namespace ediacaran_test
 
     void class_tests()
     {
+        using namespace ediacaran;
         try
         {
-            ediacaran::property props[2] = {
-                ediacaran::property("prop", ediacaran::get_qualified_type<int>(), 2),
-                ediacaran::property("prop", ediacaran::get_qualified_type<int>(), 2)
-            };
-            ediacaran::class_type CC("abc", 1, 2,
-              ediacaran::special_functions{}, ediacaran::array_view<const ediacaran::base_class>{},
-            props);
+            property props[2] = {property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2),
+              property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2)};
+            class_type CC(
+              "abc", 1, 2, special_functions{}, array_view<const base_class>{}, props);
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }
-        catch(std::exception i_exc)
+        catch (std::exception i_exc)
         {
             std::cout << "expected error: " << i_exc.what() << std::endl;
         }
 
         TestClass test_object;
-        for(auto & prop : ediacaran::inspect_properties(&test_object))
+        for (auto & prop : inspect_properties(&test_object))
         {
-            std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;    
+            std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;
         }
 
         class_tests_print(test_object);
 
-        auto s1 = ediacaran::class_descriptor<TestClass>::bases::size;
+        auto s1 = class_descriptor<TestClass>::bases::size;
 
-        const auto & t = ediacaran::get_type<TestClass>();
+        const auto & t = get_type<TestClass>();
     }
 }

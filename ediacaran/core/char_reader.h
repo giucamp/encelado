@@ -41,7 +41,7 @@ namespace ediacaran
     };
     template <typename TYPE>
     struct has_try_parse<TYPE, std::void_t<decltype(try_parse(std::declval<TYPE &>(), std::declval<char_reader &>(),
-                                 std::declval<char_writer&>()))>> : std::true_type
+                                 std::declval<char_writer &>()))>> : std::true_type
     {
     };
     template <typename TYPE> using has_try_parse_t = typename has_try_parse<TYPE>::type;
@@ -53,7 +53,7 @@ namespace ediacaran
     };
     template <typename TYPE>
     struct has_try_accept<TYPE, std::void_t<decltype(std::declval<bool &>() = try_accept(std::declval<const TYPE &>(),
-                                                       std::declval<char_reader &>(), std::declval<char_writer&>()))>>
+                                                       std::declval<char_reader &>(), std::declval<char_writer &>()))>>
         : std::true_type
     {
     };

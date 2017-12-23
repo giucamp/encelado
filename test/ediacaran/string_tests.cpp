@@ -3,6 +3,7 @@
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/core/string_builder.h"
+#include <cstring>
 #include <memory>
 #include <random>
 #include <sstream>
@@ -10,7 +11,6 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
-#include  <cstring>
 
 namespace ediacaran_test
 {

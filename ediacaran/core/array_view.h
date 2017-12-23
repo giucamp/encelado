@@ -1,4 +1,5 @@
 #pragma once
+#include <ediacaran\core\ediacaran_common.h>
 #include <cstddef>
 #include <initializer_list>
 
@@ -35,13 +36,13 @@ namespace ediacaran
 
         constexpr TYPE & operator[](size_t i_index) noexcept
         {
-            assert(i_index < m_size);
+            EDIACARAN_ASSERT(i_index < m_size);
             return m_objects[i_index];
         }
 
         constexpr const TYPE & operator[](size_t i_index) const noexcept
         {
-            assert(i_index < m_size);
+            EDIACARAN_ASSERT(i_index < m_size);
             return m_objects[i_index];
         }
 
