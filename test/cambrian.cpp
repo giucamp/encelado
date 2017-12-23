@@ -19,7 +19,7 @@ int ha() { return 7786; }
 
 int h = ha();
 
-constexpr auto t = ediacaran::get_naked_type<int>();
+constexpr auto t = ediacaran::get_type<int>();
 
 
 /*int main()
@@ -38,5 +38,5 @@ constexpr auto t = ediacaran::get_naked_type<int>();
 
     std::cout << t.name();
     int h = 0;
-    //auto t1 = get_naked_type<std::string>();
+    //auto t1 = get_type<std::string>();
 }*/

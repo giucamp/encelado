@@ -198,17 +198,17 @@ namespace ediacaran
     char_writer & operator<<(char_writer & i_dest, double i_value);
     char_writer & operator<<(char_writer & i_dest, long double i_value);
 
-    // trait has_to_chars
-    template <typename, typename = std::void_t<>> struct has_to_chars : std::false_type
+    // trait is_stringizable
+    template <typename, typename = std::void_t<>> struct is_stringizable : std::false_type
     {
     };
     template <typename TYPE>
-    struct has_to_chars<TYPE, std::void_t<decltype(std::declval<char_writer &>() << std::declval<const TYPE &>())>>
+    struct is_stringizable<TYPE, std::void_t<decltype(std::declval<char_writer &>() << std::declval<const TYPE &>())>>
         : std::true_type
     {
     };
-    template <typename TYPE> using has_to_chars_t = typename has_to_chars<TYPE>::type;
-    template <typename TYPE> constexpr bool has_to_chars_v = has_to_chars<TYPE>::value;
+    template <typename TYPE> using is_stringizable_t = typename is_stringizable<TYPE>::type;
+    template <typename TYPE> constexpr bool is_stringizable_v = is_stringizable<TYPE>::value;
 
     /** Returns the number of bytes required by the char array (including the null terminator) */
     template <typename... TYPE>

@@ -14,13 +14,6 @@
 
 namespace ediacaran
 {
-    class ParseError : public std::runtime_error
-    {
-      public:
-        using std::runtime_error::runtime_error;
-    };
-
-
     /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters.
         While values are parsed or accepted, the treader advances in the string. */
     class char_reader
@@ -112,7 +105,7 @@ namespace ediacaran
         char_writer error_writer(error);
         TYPE value{};
         if (!try_parse(value, i_source, error_writer))
-            throw ParseError(error);
+            throw parse_error(error);
         return value;
     }
 
@@ -129,7 +122,7 @@ namespace ediacaran
         static_assert(has_try_parse_v<TYPE>);
         char error[512];
         if (!try_parse(o_dest, i_source, error))
-            throw ParseError(error);
+            throw parse_error(error);
         return i_source;
     }
 
@@ -140,7 +133,7 @@ namespace ediacaran
         char error[512];
         char_writer error_writer(error);
         if (!try_accept(i_expected_value, i_source, error_writer))
-            throw ParseError(error);
+            throw parse_error(error);
         return i_source;
     }
 

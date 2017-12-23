@@ -7,21 +7,21 @@ namespace ediacaran
 {
     global_namespace_::global_namespace_() : namespace_("")
     {
-        register_type("void", &get_naked_type<void>());
+        register_type("void", &get_type<void>());
 
-        register_type("int8", &get_naked_type<int32_t>());
-        register_type("int16", &get_naked_type<int32_t>());
-        register_type("int32", &get_naked_type<int32_t>());
-        register_type("int64", &get_naked_type<int32_t>());
+        register_type("int8", &get_type<int32_t>());
+        register_type("int16", &get_type<int32_t>());
+        register_type("int32", &get_type<int32_t>());
+        register_type("int64", &get_type<int32_t>());
 
-        register_type("uint8", &get_naked_type<uint32_t>());
-        register_type("uint16", &get_naked_type<uint32_t>());
-        register_type("uint32", &get_naked_type<uint32_t>());
-        register_type("uint64", &get_naked_type<uint32_t>());
+        register_type("uint8", &get_type<uint32_t>());
+        register_type("uint16", &get_type<uint32_t>());
+        register_type("uint32", &get_type<uint32_t>());
+        register_type("uint64", &get_type<uint32_t>());
 
-        register_type("float", &get_naked_type<float>());
-        register_type("double", &get_naked_type<double>());
-        register_type("long double", &get_naked_type<long double>());
+        register_type("float", &get_type<float>());
+        register_type("double", &get_type<double>());
+        register_type("long double", &get_type<long double>());
     }
 
     void global_namespace_::register_type(const char * i_full_name, const type_t * i_type)

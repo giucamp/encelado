@@ -188,7 +188,7 @@ namespace ediacaran
 		{
 			// the type is a pointer
 			EDIACARAN_INTERNAL_ASSERT(m_final_type != nullptr);
-			return &get_naked_type<void*>();
+			return &get_type<void*>();
 		}
 	}
 
@@ -210,7 +210,7 @@ namespace ediacaran
 		static_assert(detail::StaticQualification<TYPE>::s_indirection_levels <= qualified_type_ptr::s_max_indirection_levels,
 			"Maximum indirection level exceeded");
 
-		return qualified_type_ptr(&get_naked_type<typename detail::StaticQualification<TYPE>::UnderlyingType>(),
+		return qualified_type_ptr(&get_type<typename detail::StaticQualification<TYPE>::UnderlyingType>(),
 			detail::StaticQualification<TYPE>::s_indirection_levels,
 			detail::StaticQualification<TYPE>::s_constness_word,
 			detail::StaticQualification<TYPE>::s_volatileness_word);

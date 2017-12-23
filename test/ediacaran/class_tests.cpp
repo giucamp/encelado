@@ -2,6 +2,8 @@
 
 #include "../common.h"
 #include "ediacaran/reflection/class_type.h"
+#include "ediacaran/utils/dyn_value.h"
+#include "ediacaran/utils/inspect.h"
 #include <iostream>
 #include <new>
 #include <string>
@@ -189,7 +191,7 @@ namespace ediacaran_test
             }
             else
             {
-                primary_type->to_chars(buffer, string_out);
+                primary_type->stringize(buffer, string_out);
             }
 
             primary_type->destroy(buffer);
@@ -210,7 +212,37 @@ namespace ediacaran_test
 
     template <typename CLASS> void class_tests_print(CLASS const & i_object)
     {
-        class_tests_print(&i_object, ediacaran::get_naked_type<CLASS>());
+        class_tests_print(&i_object, ediacaran::get_type<CLASS>());
+    }
+
+    template <typename CLASS>
+    bool class_tests_set_property(CLASS & i_dest_object, 
+        ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value)
+    {
+        return class_tests_set_property(&i_dest_object, ediacaran::get_type<>(CLASS),
+            i_prop_name, i_prop_value, true);
+    }
+
+
+    bool class_tests_set_property(void * i_dest, ediacaran::class_type const & i_class, 
+        ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value, 
+        bool i_look_bases)
+    {
+        for(auto & prop : i_class.properties())
+        {
+            if(prop.name() == i_prop_name)
+            {
+                auto const primary_type = prop.qualified_type().primary_type();
+                auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
+                
+                //primary_type->from_chars(buffer, )
+
+                primary_type->destroy(buffer);
+                operator delete (buffer, primary_type->size(), std::align_val_t{primary_type->alignment()});
+                return true;
+            }
+        }
+        return false;
     }
 
     void class_tests()
@@ -229,14 +261,19 @@ namespace ediacaran_test
         }
         catch(std::exception i_exc)
         {
-            std::cout << "expected error: " << i_exc.what();
+            std::cout << "expected error: " << i_exc.what() << std::endl;
         }
 
         TestClass test_object;
+        for(auto & prop : ediacaran::inspect_properties(&test_object))
+        {
+            std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;    
+        }
+
         class_tests_print(test_object);
 
         auto s1 = ediacaran::class_descriptor<TestClass>::bases::size;
 
-        const auto & t = ediacaran::get_naked_type<TestClass>();
+        const auto & t = ediacaran::get_type<TestClass>();
     }
 }

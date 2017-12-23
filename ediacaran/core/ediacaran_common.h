@@ -13,6 +13,7 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <stdexcept>
 
 /** Assert that on failure should cause an halt of the program. Used only locally in this header. */
 #ifdef _MSC_VER
@@ -88,6 +89,18 @@
 
 namespace ediacaran
 {
+    class parse_error : public std::runtime_error
+    {
+      public:
+        using std::runtime_error::runtime_error;
+    };
+
+    class unsupported_error : public std::runtime_error
+    {
+      public:
+        using std::runtime_error::runtime_error;
+    };
+
     // workaround for P0426R0 not implemented
     class constexpr_char_traits : public std::char_traits<char>
     {

@@ -21,18 +21,85 @@ namespace ediacaran
         const char * const m_name;
     };
 
+    enum class type_kind
+    {
+        is_fundamental,
+        is_class,
+        is_enum
+    };
+
     class type_t : public symbol_t
     {
       public:
-        constexpr type_t(const char * const i_name, size_t i_size, size_t i_alignment,
+        constexpr type_t(type_kind i_kind, const char * const i_name, size_t i_size, size_t i_alignment,
           const ediacaran::special_functions & i_special_functions) noexcept
-            : symbol_t(i_name), m_size(i_size), m_alignment(i_alignment), m_special_functions(i_special_functions)
+            : symbol_t(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind), m_special_functions(i_special_functions)
         {
         }
 
         constexpr size_t size() const noexcept { return m_size; }
 
         constexpr size_t alignment() const noexcept { return m_alignment; }
+
+        constexpr bool is_fundamental() const noexcept
+        {
+            return m_kind == type_kind::is_fundamental;
+        }
+
+        constexpr bool is_class() const noexcept
+        {
+            return m_kind == type_kind::is_class;
+        }
+
+        constexpr bool is_enum() const noexcept
+        {
+            return m_kind == type_kind::is_enum;
+        }
+
+        constexpr bool is_constructible() const noexcept
+        {
+            return m_special_functions.scalar_default_constructor() != nullptr;
+        }
+
+        constexpr bool is_destructible() const noexcept
+        {
+            return m_special_functions.scalar_destructor() != nullptr;
+        }
+        
+        constexpr bool is_copy_constructible() const noexcept
+        {
+            return m_special_functions.scalar_copy_constructor() != nullptr;
+        }
+
+        constexpr bool is_move_constructible() const noexcept
+        {
+            return m_special_functions.scalar_move_constructor() != nullptr;
+        }
+
+        constexpr bool is_copy_assignable() const noexcept
+        {
+            return m_special_functions.scalar_copy_assigner() != nullptr;
+        }
+
+        constexpr bool is_move_assignable() const noexcept
+        {
+            return m_special_functions.scalar_move_assigner() != nullptr;
+        }
+
+        constexpr bool is_comparable() const noexcept
+        {
+            return m_special_functions.comparer() != nullptr;
+        }
+
+        constexpr bool is_stringizable() const noexcept
+        {
+            return m_special_functions.stringizer() != nullptr;
+        }
+
+        constexpr bool is_parsable() const noexcept
+        {
+            return m_special_functions.try_parser() != nullptr;
+        }
 
 
         // special functions
@@ -62,7 +129,7 @@ namespace ediacaran
             m_special_functions.scalar_move_assigner()(i_dest, address_add(i_dest, m_size), i_source);
         }
 
-        void destroy(void * i_dest) const
+        void destroy(void * i_dest) const noexcept
         {
             m_special_functions.scalar_destructor()(i_dest, address_add(i_dest, m_size));
         }
@@ -74,28 +141,35 @@ namespace ediacaran
 
         bool compare_equal(void const * i_first, void const * i_second) const noexcept
         {
-            return m_special_functions.comparer()(i_first, i_second) == 0;
+            return compare(i_first, i_second) == 0;
         }
 
         bool compare_less(void const * i_first, void const * i_second) const noexcept
         {
-            return m_special_functions.comparer()(i_first, i_second) < 0;
+            return compare(i_first, i_second) < 0;
         }
 
-        void to_chars(const void * i_source, char_writer & i_dest) const noexcept
+        void stringize(const void * i_source, char_writer & i_dest) const noexcept
         {
-            (*m_special_functions.to_chars())(i_source, i_dest);
+            (*m_special_functions.stringizer())(i_source, i_dest);
         }
 
-        bool from_chars(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
+        bool try_parse(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
         {
-            return (*m_special_functions.from_chars())(i_dest, i_source, i_error_dest);
+            return (*m_special_functions.try_parser())(i_dest, i_source, i_error_dest);
+        }
+
+        bool try_parse(void * i_dest, string_view const & i_source, char_writer & i_error_dest) const noexcept
+        {
+            char_reader source(i_source);
+            return try_parse(i_dest, source, i_error_dest);
         }
 
       private:
         size_t const m_size;
         size_t const m_alignment;
-        ediacaran::special_functions m_special_functions;
+        type_kind const m_kind;
+        ediacaran::special_functions const m_special_functions;
     };
 
     namespace detail
@@ -118,31 +192,31 @@ namespace ediacaran
     {
     };
 
-    template <typename TYPE> constexpr type_t create_static_type(const char * i_name) noexcept
+    template <typename TYPE> constexpr type_t make_fundamental_type(const char * i_name) noexcept
     {
-        return type_t{i_name, sizeof(TYPE), alignof(TYPE), special_functions::template make<TYPE>()};
+        return type_t{type_kind::is_fundamental, i_name, sizeof(TYPE), alignof(TYPE), special_functions::template make<TYPE>()};
     }
 
-    constexpr type_t create_type(tag<bool>) noexcept { return create_static_type<bool>("bool"); }
+    constexpr type_t create_type(tag<bool>) noexcept { return make_fundamental_type<bool>("bool"); }
 
-    constexpr type_t create_type(tag<char>) noexcept { return create_static_type<bool>("char"); }
+    constexpr type_t create_type(tag<char>) noexcept { return make_fundamental_type<bool>("char"); }
 
-    constexpr type_t create_type(tag<float>) noexcept { return create_static_type<float>("float"); }
+    constexpr type_t create_type(tag<float>) noexcept { return make_fundamental_type<float>("float"); }
 
-    constexpr type_t create_type(tag<double>) noexcept { return create_static_type<double>("double"); }
+    constexpr type_t create_type(tag<double>) noexcept { return make_fundamental_type<double>("double"); }
 
-    constexpr type_t create_type(tag<long double>) noexcept { return create_static_type<double>("long double"); }
+    constexpr type_t create_type(tag<long double>) noexcept { return make_fundamental_type<double>("long_double"); }
 
     template <typename INT_TYPE>
     constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>, type_t> create_type(
       tag<INT_TYPE>) noexcept
     {
-        return create_static_type<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data());
+        return make_fundamental_type<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data());
     }
 
-    constexpr type_t create_type(tag<void *>) noexcept { return create_static_type<void *>("pointer"); }
+    constexpr type_t create_type(tag<void *>) noexcept { return make_fundamental_type<void *>("pointer"); }
 
-    constexpr type_t create_type(tag<void>) noexcept { return type_t{"void", 1, 1, special_functions{}}; }
+    constexpr type_t create_type(tag<void>) noexcept { return type_t{type_kind::is_fundamental, "void", 1, 1, special_functions{}}; }
 
     namespace detail
     {
@@ -150,7 +224,7 @@ namespace ediacaran
     }
 
     template <typename TYPE, typename = std::enable_if_t<!(std::is_class_v<TYPE> || std::is_enum_v<TYPE>)>>
-    constexpr const type_t & get_naked_type() noexcept
+    constexpr const type_t & get_type() noexcept
     {
         return detail::s_type<TYPE>;
     }

@@ -33,12 +33,16 @@
     <ClInclude Include="..\reflection\qualified_type_ptr.h" />
     <ClInclude Include="..\reflection\special_functions.h" />
     <ClInclude Include="..\reflection\type.h" />
+    <ClInclude Include="..\utils\dyn_value.h" />
+    <ClInclude Include="..\utils\inspect.h" />
+    <ClInclude Include="..\utils\raw_ptr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_reader.cpp" />
     <ClCompile Include="..\core\char_writer.cpp" />
     <ClCompile Include="..\reflection\namespace.cpp" />
     <ClCompile Include="..\reflection\qualified_type_ptr.cpp" />
+    <ClCompile Include="..\utils\dyn_value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\reflection\qualified_type_ptr.inl" />

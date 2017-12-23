@@ -31,6 +31,8 @@ namespace ediacaran
 
         constexpr TYPE * cend() const noexcept { return m_objects + m_size; }
 
+        constexpr bool empty() const noexcept { return m_size == 0; }
+
         constexpr TYPE & operator[](size_t i_index) noexcept
         {
             assert(i_index < m_size);

@@ -29,8 +29,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<TYPE>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<TYPE>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<TYPE>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<TYPE>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<TYPE>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 0);
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(0));
@@ -44,8 +44,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<volatile TYPE>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<TYPE>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<TYPE>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<TYPE>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<TYPE>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 0);
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(q_type_ptr.is_volatile(0));
@@ -59,8 +59,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<const TYPE &>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<TYPE>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<TYPE>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 1);
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(1));
@@ -76,8 +76,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<TYPE * const * volatile **&>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<TYPE>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<TYPE>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 5);
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(1));
@@ -135,10 +135,10 @@ namespace ediacaran_test
 
         {
             qualified_type_ptr q_type_ptr(
-              get_naked_type<float>(), {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
+              get_type<float>(), {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<float>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<float>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(q_type_ptr.is_volatile(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(1));
@@ -154,16 +154,16 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(q_type_ptr == get_qualified_type<float volatile ** volatile const>());
         }
         {
-            ENCELADO_TEST_ASSERT(qualified_type_ptr(get_naked_type<void>(), {}) ==
-                                 qualified_type_ptr(get_naked_type<void>(), {CV_Flags::None}));
+            ENCELADO_TEST_ASSERT(qualified_type_ptr(get_type<void>(), {}) ==
+                                 qualified_type_ptr(get_type<void>(), {CV_Flags::None}));
         }
 
         {
             qualified_type_ptr q_type_ptr(
-              get_naked_type<void>(), {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
+              get_type<void>(), {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<void>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(q_type_ptr.is_volatile(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(1));
@@ -183,8 +183,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<void * const * volatile **&>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<void>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 5);
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(1));
@@ -206,8 +206,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<const void *>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<void>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 1);
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(1));
@@ -221,8 +221,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<void * const>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<void>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 1);
             ENCELADO_TEST_ASSERT(q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(1));
@@ -236,8 +236,8 @@ namespace ediacaran_test
         {
             const auto q_type_ptr = get_qualified_type<void *>();
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
-            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_naked_type<void>());
-            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_naked_type<void *>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
+            ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 1);
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(1));

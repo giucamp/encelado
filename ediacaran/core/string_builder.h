@@ -56,7 +56,7 @@ namespace ediacaran
 
         template <typename TYPE> string_builder & operator<<(const TYPE & i_value)
         {
-            static_assert(has_to_chars_v<TYPE>, "Overloaded operator required: "
+            static_assert(is_stringizable_v<TYPE>, "Overloaded operator required: "
                                                 "char_writer & operator << "
                                                 "(const TYPE &)");
             for (;;)

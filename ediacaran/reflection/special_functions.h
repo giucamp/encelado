@@ -43,7 +43,7 @@ namespace ediacaran
         using to_chars_function = void (*)(
           void const * i_source, char_writer & i_dest) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
 
-        using from_chars_function = bool (*)(
+        using try_parse_function = bool (*)(
           void * i_dest, char_reader & i_source, char_writer & i_error_dest) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
 
         constexpr special_functions() noexcept = default;
@@ -53,12 +53,12 @@ namespace ediacaran
           scalar_move_constructor_function i_scalar_move_constructor,
           scalar_copy_assigner_function i_scalar_copy_assigner, scalar_move_assigner_function i_scalar_move_assigner,
           comparer_function i_comparer,
-          to_chars_function i_to_chars, from_chars_function i_from_chars)
+          to_chars_function i_to_chars, try_parse_function i_try_parser)
             : m_scalar_default_constructor(i_scalar_default_constructor), m_scalar_destructor(i_scalar_destructor),
               m_scalar_copy_constructor(i_scalar_copy_constructor),
               m_scalar_move_constructor(i_scalar_move_constructor), m_scalar_copy_assigner(i_scalar_copy_assigner),
               m_scalar_move_assigner(i_scalar_move_assigner), m_comparer(i_comparer),
-              m_to_chars(i_to_chars), m_from_chars(i_from_chars)
+              m_stringizer(i_to_chars), m_try_parser(i_try_parser)
         {
         }
 
@@ -67,7 +67,7 @@ namespace ediacaran
             return special_functions(make_default_constructor<TYPE>(), make_destructor<TYPE>(),
               make_copy_constructor<TYPE>(), make_move_constructor<TYPE>(), make_copy_assigner<TYPE>(),
               make_move_assigner<TYPE>(), make_comparer<TYPE>(),
-              make_to_chars<TYPE>(), make_from_chars<TYPE>());
+              make_to_chars<TYPE>(), make_try_parse<TYPE>());
         }
 
         constexpr auto scalar_default_constructor() const noexcept { return m_scalar_default_constructor; }
@@ -77,8 +77,8 @@ namespace ediacaran
         constexpr auto scalar_copy_assigner() const noexcept { return m_scalar_copy_assigner; }
         constexpr auto scalar_move_assigner() const noexcept { return m_scalar_move_assigner; }
         constexpr auto comparer() const noexcept { return m_comparer; }
-        constexpr auto to_chars() const noexcept { return m_to_chars; }
-        constexpr auto from_chars() const noexcept { return m_from_chars; }
+        constexpr auto stringizer() const noexcept { return m_stringizer; }
+        constexpr auto try_parser() const noexcept { return m_try_parser; }
 
       private:
         template <typename TYPE>
@@ -146,7 +146,7 @@ namespace ediacaran
                 return 1;
         }
 
-        template <typename TYPE> static void to_chars_impl(void const * i_source, char_writer & i_dest) noexcept
+        template <typename TYPE> static void stringizer_impl(void const * i_source, char_writer & i_dest) noexcept
         {
             i_dest << *static_cast<TYPE const *>(i_source);
         }
@@ -214,13 +214,13 @@ namespace ediacaran
 
         template <typename TYPE> constexpr static to_chars_function make_to_chars() noexcept
         {
-            if constexpr (has_to_chars_v<TYPE>)
-                return &to_chars_impl<TYPE>;
+            if constexpr (is_stringizable_v<TYPE>)
+                return &stringizer_impl<TYPE>;
             else
                 return nullptr;
         }
 
-        template <typename TYPE> constexpr static from_chars_function make_from_chars() noexcept
+        template <typename TYPE> constexpr static try_parse_function make_try_parse() noexcept
         {
             if constexpr (has_try_parse_v<TYPE>)
                 return &try_parse_impl<TYPE>;
@@ -236,7 +236,7 @@ namespace ediacaran
         scalar_copy_assigner_function m_scalar_copy_assigner = nullptr;
         scalar_move_assigner_function m_scalar_move_assigner = nullptr;
         comparer_function m_comparer = nullptr;
-        to_chars_function m_to_chars = nullptr;
-        from_chars_function m_from_chars = nullptr;
+        to_chars_function m_stringizer = nullptr;
+        try_parse_function m_try_parser = nullptr;
     };
 }

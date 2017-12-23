@@ -48,7 +48,7 @@ namespace ediacaran
         constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
           const special_functions & i_special_functions, const array_view<const base_class> & i_base_classes,
           const array_view<const property> & i_properties)
-            : type_t(i_name, i_size, i_alignment, i_special_functions), m_base_classes(i_base_classes),
+            : type_t(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions), m_base_classes(i_base_classes),
               m_properties(i_properties)
         {
             check_duplicates();
@@ -159,16 +159,16 @@ namespace ediacaran
         template <typename CLASS> class_type constexpr s_class{create_class<CLASS>()};
     }
 
-    // get_naked_type
+    // get_type
     template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
-    constexpr class_type const & get_naked_type() noexcept
+    constexpr class_type const & get_type() noexcept
     {
         return detail::s_class<TYPE>;
     }
 
     template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
     {
-        return base_class(get_naked_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
+        return base_class(get_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
     }
 
 } // namespace ediacaran

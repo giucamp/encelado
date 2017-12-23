@@ -1,7 +1,7 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
 
-
+#pragma once
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/type.h"
 #include <array>
@@ -47,7 +47,7 @@ namespace ediacaran
                the type. A non-pointer types has zero indirection levels, while a pointer to a pointer has 2 indirection levels.
                References are considered like const pointer (that is \c get_qualified_type<float&>() == get_qualified_type<float*const>() ).
             - The **primary type**, that is is the type of the first indirection level. For non-pointer types it is the same of the
-               final type. For pointer types is always equal to the result of \c get_naked_type<Pointer>(). If an object of has to be
+               final type. For pointer types is always equal to the result of \c get_type<Pointer>(). If an object of has to be
                constructed, copied, or assigned, the primary type is what matters.
             - The **final type**, that is the type of the last indirection level. The final type is the type remaining after stripping away
               all the cv-qualification, pointer and reference parts from the C++ declaration. The final type can be thought as the type of
@@ -143,9 +143,9 @@ namespace ediacaran
         /** Constructs a non-empty qualified_type_ptr from a final type and an array of CV_Flags's that specifies the cv-qualifiers of the indirection levels.
             The size of the array of CV_Flags's determines the number of indirection levels.
             In the the following code <tt>q_type_ptr_1 == q_type_ptr_2</tt>:<br>
-            <tt>qualified_type_ptr q_type_ptr_1(get_naked_type<void>(), { CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile });<br>
+            <tt>qualified_type_ptr q_type_ptr_1(get_type<void>(), { CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile });<br>
             qualified_type_ptr q_type_ptr_2 = get_qualified_type<void volatile * * volatile const >();</tt><br>
-            @param i_final_type final type. May be get_naked_type<void>().
+            @param i_final_type final type. May be get_type<void>().
             @param i_cv_flags cv-qualification for each indirection level. The n-th element of this array specifies a combination of cv flags for the n-th indirection
                 level. The number of indirection levels of the type is the size of this array, minus 1. So, to construct a pointer to a pointer, specify an array
                 of 3 elements. If the array is empty, the number of indirection levels is zero. */

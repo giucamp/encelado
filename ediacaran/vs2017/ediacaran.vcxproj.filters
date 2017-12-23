@@ -43,6 +43,15 @@
     <ClInclude Include="..\core\address.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\utils\dyn_value.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utils\raw_ptr.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utils\inspect.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">
@@ -57,6 +66,9 @@
     <ClCompile Include="..\reflection\namespace.cpp">
       <Filter>reflection</Filter>
     </ClCompile>
+    <ClCompile Include="..\utils\dyn_value.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="core">
@@ -64,6 +76,9 @@
     </Filter>
     <Filter Include="reflection">
       <UniqueIdentifier>{09481940-c503-4049-b40f-353650f9d371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{5ff1a4fc-7456-4786-878c-2d968c6295b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
