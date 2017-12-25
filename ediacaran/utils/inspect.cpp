@@ -9,7 +9,7 @@ namespace ediacaran
         if (final_type->is_class())
         {
             m_class = static_cast<const class_type *>(final_type);
-            m_subobject = m_target.object();
+            m_subobject = const_cast<void*>(m_target.object());
             m_property = m_class->properties().data();
             if (m_class->properties().empty())
             {
@@ -36,7 +36,7 @@ namespace ediacaran
             {
                 auto const & base = complete_class->base_classes()[m_base_index];
                 m_class = &base.get_class();
-                m_subobject = base.up_cast(m_target.object());
+                m_subobject = const_cast<void*>(base.up_cast(m_target.object()));
                 if (!m_class->properties().empty())
                 {
                     m_property = m_class->properties().data();
@@ -59,13 +59,47 @@ namespace ediacaran
         auto value = const_cast<void*>(m_property->get_inplace(m_subobject));
         if(value == nullptr)
         {
-            value = m_dyn_value.uninitialized_allocate(property_type);
-            char error_msg[512];
-            char_writer error_writer(error_msg);
-            if(m_property->get(m_subobject, value, error_writer))
-
+            m_dyn_value.manual_construct(property_type, [&]{
+                char error_msg[512];
+                char_writer error_writer(error_msg);
+                if(!m_property->get(m_subobject, value, error_writer))
+                {
+                    throw std::runtime_error(error_msg);
+                }
+            });
         }
         return raw_ptr(value, property_type);
+    }
+
+    const char * property_inspector::iterator::get_string_value()
+    {
+        auto const min_size = sizeof(void*) * 4;
+        if(m_char_buffer.size() < min_size)
+        {
+            m_char_buffer.resize(min_size);
+        }
+        auto const value = get_prop_value().full_indirection();
+        
+        auto const final_type = value.type().final_type();
+        
+        char_writer writer(m_char_buffer.data(), m_char_buffer.size());
+
+        if(value.object() == nullptr)
+        {
+            return "(null)";
+        }
+        else
+        {
+            final_type->stringize(value.object(), writer);
+            if(writer.remaining_size() < 0)
+            {
+                m_char_buffer.resize(m_char_buffer.size() - writer.remaining_size());
+                writer = char_writer(m_char_buffer.data(), m_char_buffer.size());
+                final_type->stringize(value.object(), writer);
+            }
+        
+            return m_char_buffer.data();
+        }
     }
 
 } // namespace ediacaran

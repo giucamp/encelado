@@ -4,6 +4,7 @@
 #include "ediacaran/reflection/class_type.h"
 #include "ediacaran/utils/dyn_value.h"
 #include "ediacaran/utils/inspect.h"
+#include "ediacaran/core/string_builder.h"
 #include <iostream>
 #include <new>
 #include <string>
@@ -166,81 +167,21 @@ namespace ediacaran_test
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
-    void class_tests_print_props(const void * i_sub_object, ediacaran::class_type const & i_class)
+    void class_tests_print_props(ediacaran::raw_ptr i_source)
     {
         using namespace ediacaran;
-
-        char chars[1024];
-        for (auto & prop : i_class.properties())
+        
+        for (auto & prop : inspect_properties(i_source))
         {
-            char_writer string_out(chars);
-            string_out << i_class.name() << " -> " << prop.name() << ": " << prop.qualified_type() << " = ";
-            auto const primary_type = prop.qualified_type().primary_type();
-            auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
-
-            ediacaran::char_writer err;
-            prop.get(i_sub_object, buffer, err);
-
-            if (prop.qualified_type() == get_qualified_type<const char *>())
-            {
-                auto const string = *static_cast<const char **>(buffer);
-                if (string != nullptr)
-                    string_out << string;
-                else
-                    string_out << "NULL";
-            }
-            else
-            {
-                primary_type->stringize(buffer, string_out);
-            }
-
-            primary_type->destroy(buffer);
-            operator delete (buffer, primary_type->size(), std::align_val_t{primary_type->alignment()});
-
-            std::cout << chars << std::endl;
+            std::string str = prop.owning_class().name();
+            str += " -> ";
+            str += prop.name();
+            str += ": ";
+            str += to_string(prop.qualified_type());
+            str += "= ";
+            str += prop.get_string_value();
+            std::cout << str << std::endl;
         }
-    }
-
-    void class_tests_print(void const * i_complete_object, ediacaran::class_type const & i_class)
-    {
-        class_tests_print_props(i_complete_object, i_class);
-        for (auto & base : i_class.base_classes())
-        {
-            class_tests_print_props(base.up_cast(i_complete_object), base.get_class());
-        }
-    }
-
-    template <typename CLASS> void class_tests_print(CLASS const & i_object)
-    {
-        class_tests_print(&i_object, ediacaran::get_type<CLASS>());
-    }
-
-    template <typename CLASS>
-    bool class_tests_set_property(
-      CLASS & i_dest_object, ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value)
-    {
-        return class_tests_set_property(&i_dest_object, ediacaran::get_type<>(CLASS), i_prop_name, i_prop_value, true);
-    }
-
-
-    bool class_tests_set_property(void * i_dest, ediacaran::class_type const & i_class,
-      ediacaran::string_view i_prop_name, ediacaran::string_view i_prop_value, bool i_look_bases)
-    {
-        for (auto & prop : i_class.properties())
-        {
-            if (prop.name() == i_prop_name)
-            {
-                auto const primary_type = prop.qualified_type().primary_type();
-                auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
-
-                //primary_type->from_chars(buffer, )
-
-                primary_type->destroy(buffer);
-                operator delete (buffer, primary_type->size(), std::align_val_t{primary_type->alignment()});
-                return true;
-            }
-        }
-        return false;
     }
 
     void class_tests()
@@ -266,7 +207,7 @@ namespace ediacaran_test
             std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;
         }
 
-        class_tests_print(test_object);
+        class_tests_print_props(&test_object);
 
         auto s1 = class_descriptor<TestClass>::bases::size;
 

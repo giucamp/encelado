@@ -17,13 +17,13 @@ namespace ediacaran
     constexpr property_flags operator | (property_flags i_first, property_flags i_second)
     {
         return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) | 
-            static_cast<std::underlying_type_t<property_flags>>(i_first));
+            static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
     constexpr property_flags operator & (property_flags i_first, property_flags i_second)
     {
         return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) & 
-            static_cast<std::underlying_type_t<property_flags>>(i_first));
+            static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
     class property : public symbol_t
@@ -60,7 +60,7 @@ namespace ediacaran
 
         const void * get_inplace(const void * i_source_object) const noexcept
         {
-            if ((m_flags & (property_flags::inplace | property_flags::settable)) != (property_flags::inplace | property_flags::gettable))
+            if ((m_flags & (property_flags::inplace | property_flags::gettable)) != (property_flags::inplace | property_flags::gettable))
             {
                 return nullptr;
             }

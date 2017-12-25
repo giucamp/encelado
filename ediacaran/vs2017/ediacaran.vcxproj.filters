@@ -69,6 +69,12 @@
     <ClCompile Include="..\utils\dyn_value.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\utils\inspect.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utils\raw_ptr.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="core">

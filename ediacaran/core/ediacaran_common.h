@@ -101,6 +101,18 @@ namespace ediacaran
         using std::runtime_error::runtime_error;
     };
 
+    class constness_violation : public std::runtime_error
+    {
+    public:
+        using std::runtime_error::runtime_error;
+    };
+
+    class null_pointer_indirection : public std::runtime_error
+    {
+    public:
+        using std::runtime_error::runtime_error;
+    };
+
     // workaround for P0426R0 not implemented
     class constexpr_char_traits : public std::char_traits<char>
     {
@@ -143,6 +155,19 @@ namespace ediacaran
 
         operator std::string() { return std::string(data(), size()); }
     };
+
+    inline std::string operator + (const std::string & i_first, const string_view & i_second)
+    {
+        std::string res = i_first;
+        res.append(i_second.data(), i_second.size());
+        return res;
+    }
+
+    inline std::string & operator += (std::string & i_first, const string_view & i_second)
+    {
+        i_first.append(i_second.data(), i_second.size());
+        return i_first;
+    }
 
     using hash_t = size_t;
 

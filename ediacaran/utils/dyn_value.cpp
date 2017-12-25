@@ -20,17 +20,9 @@ namespace ediacaran
 
             EDIACARAN_INTERNAL_ASSERT(primary_type->is_destructible());
 
-            uninitialized_allocate(type);
-
-            try
-            {
+            manual_construct(type, [&]{
                 primary_type->copy_construct(m_object, i_source.object());
-            }
-            catch (...)
-            {
-                uninitialized_deallocate();
-                throw;
-            }
+            });
         }
     }
 

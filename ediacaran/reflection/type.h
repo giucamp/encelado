@@ -89,36 +89,43 @@ namespace ediacaran
 
         void construct(void * i_dest) const
         {
+            EDIACARAN_ASSERT(i_dest != nullptr);
             m_special_functions.scalar_default_constructor()(i_dest, address_add(i_dest, m_size));
         }
 
         void copy_construct(void * i_dest, const void * i_source) const
         {
+            EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
             m_special_functions.scalar_copy_constructor()(i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void move_construct(void * i_dest, void * i_source) const
         {
+            EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
             m_special_functions.scalar_move_constructor()(i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void copy_assign(void * i_dest, const void * i_source) const
         {
+            EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
             m_special_functions.scalar_copy_assigner()(i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void move_assign(void * i_dest, void * i_source) const
         {
+            EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
             m_special_functions.scalar_move_assigner()(i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void destroy(void * i_dest) const noexcept
         {
+            EDIACARAN_ASSERT(i_dest != nullptr);
             m_special_functions.scalar_destructor()(i_dest, address_add(i_dest, m_size));
         }
 
         int compare(void const * i_first, void const * i_second) const noexcept
         {
+            EDIACARAN_ASSERT(i_first != nullptr && i_second != nullptr);
             return m_special_functions.comparer()(i_first, i_second);
         }
 
@@ -134,11 +141,13 @@ namespace ediacaran
 
         void stringize(const void * i_source, char_writer & i_dest) const noexcept
         {
+            EDIACARAN_ASSERT(i_source != nullptr);
             (*m_special_functions.stringizer())(i_source, i_dest);
         }
 
         bool try_parse(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
         {
+            EDIACARAN_ASSERT(i_dest != nullptr);
             return (*m_special_functions.try_parser())(i_dest, i_source, i_error_dest);
         }
 

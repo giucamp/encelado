@@ -43,6 +43,8 @@
     <ClCompile Include="..\reflection\namespace.cpp" />
     <ClCompile Include="..\reflection\qualified_type_ptr.cpp" />
     <ClCompile Include="..\utils\dyn_value.cpp" />
+    <ClCompile Include="..\utils\inspect.cpp" />
+    <ClCompile Include="..\utils\raw_ptr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\reflection\qualified_type_ptr.inl" />

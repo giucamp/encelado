@@ -47,20 +47,16 @@ namespace ediacaran
 
         const qualified_type_ptr & type() const noexcept { return m_type; }
 
-        void * object() const noexcept { return m_object; }
+        const void * object() const noexcept { return m_object; }
 
-        raw_ptr full_indirection() const noexcept
+        void * editable_object() const
         {
-            auto const indirection_levels = m_type.indirection_levels();
-
-            auto object = m_object;
-            for (size_t level = 0; level < indirection_levels; level++)
-                object = *static_cast<void **>(object);
-
-            return raw_ptr(
-              object, qualified_type_ptr(m_type.final_type(), 0, m_type.is_const(indirection_levels) ? 1 : 0,
-                        m_type.is_volatile(indirection_levels) ? 1 : 0));
+            if(m_type.is_const(0))
+                throw constness_violation("constness_violation");
+            return m_object;
         }
+
+        raw_ptr full_indirection() const noexcept;
 
       private:
         void * m_object{nullptr};

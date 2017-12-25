@@ -160,7 +160,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\ediacaran\utils\inspect.cpp" />
     <ClCompile Include="..\cambrian.cpp" />
     <ClCompile Include="..\ediacaran\class_tests.cpp" />
     <ClCompile Include="..\ediacaran\qualified_type_ptr_tests.cpp" />

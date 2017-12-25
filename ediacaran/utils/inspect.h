@@ -1,6 +1,7 @@
 #pragma once
 #include <ediacaran/reflection/class_type.h>
 #include <ediacaran/utils/dyn_value.h>
+#include <vector>
 
 namespace ediacaran
 {
@@ -14,9 +15,19 @@ namespace ediacaran
         class content
         {
           public:
-            content(const class iterator & m_parent) noexcept
+            content(class iterator & m_parent) noexcept
                 : m_parent(m_parent)
             {
+            }
+
+            string_view name() const noexcept
+            {
+                return m_parent.m_property->name();
+            }
+
+            const qualified_type_ptr & qualified_type() const noexcept
+            {
+                return m_parent.m_property->qualified_type();
             }
 
             class_type const & owning_class() const noexcept { return *m_parent.m_class; }
@@ -25,8 +36,13 @@ namespace ediacaran
 
             raw_ptr get_value() const { return m_parent.get_prop_value(); }
 
+            const char * get_string_value() const
+            {
+                return m_parent.get_string_value();
+            }
+
           private:
-            const class iterator & m_parent;
+            class iterator & m_parent;
         };
 
         class end_marker
@@ -38,7 +54,7 @@ namespace ediacaran
           public:
             iterator(const raw_ptr & i_target) noexcept;
 
-            content operator*() const noexcept { return content(*this); }
+            content operator*() noexcept { return content(*this); }
 
             iterator & operator++() noexcept
             {
@@ -65,6 +81,8 @@ namespace ediacaran
 
             bool operator!=(const iterator & i_source) const noexcept { return m_property != i_source.m_property; }
 
+            const char * get_string_value();
+
           private:
             friend class content;
             void next_base() noexcept;
@@ -77,6 +95,7 @@ namespace ediacaran
             size_t m_base_index = 0;
             raw_ptr const m_target;
             dyn_value m_dyn_value;
+            std::vector<char> m_char_buffer;
         };
 
         iterator begin() const noexcept { return iterator(m_target); }

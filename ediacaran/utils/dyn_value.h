@@ -39,13 +39,21 @@ namespace ediacaran
 
         void * uninitialized_allocate(const qualified_type_ptr & i_type);
 
-        void uninitialized_deallocate() noexcept
+        void uninitialized_deallocate() noexcept;
+
+        template <typename CALLABLE>
+            void manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
         {
-            EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
-            auto const primary_type = m_type.primary_type();
-            operator delete (m_object, primary_type->size(), std::align_val_t{primary_type->alignment()});
-            m_object = nullptr;
-            m_type = qualified_type_ptr{};
+            try
+            {
+                uninitialized_allocate(i_type);
+                std::forward<CALLABLE>(i_constructor)();
+            }
+            catch(...)
+            {
+                uninitialized_deallocate();
+                throw;
+            }
         }
 
         ~dyn_value()

@@ -101,7 +101,7 @@ namespace ediacaran
         struct Chunk
         {
             std::unique_ptr<char[]> m_chars;
-            size_t m_size; /**< for all the chunks but the last: number of chars written in this chunck
+            size_t m_size; /**< for all the chunks but the last: number of chars written in this chunk
                 for the last chunk: capacity of the chunk (number of allocated bytes) */
 
             Chunk(size_t i_size) : m_chars(new char[i_size]), m_size(i_size) {}
