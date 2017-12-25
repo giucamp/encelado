@@ -1,9 +1,10 @@
 #pragma once
 
+#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/array_view.h"
 #include "ediacaran/core/type_list.h"
 #include "ediacaran/reflection/property.h"
-#include "ediacaran/reflection/special_functions.h"
+#include "ediacaran/reflection/action.h"
 #include "ediacaran/reflection/type.h"
 #include <cstddef>
 

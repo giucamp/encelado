@@ -157,6 +157,11 @@ namespace ediacaran_test
     {
         int m_integer = 42;
         float m_float = 42.f;
+
+        int action(const float, double)
+        {
+            return 5;
+        }
     };
 
     REFL_BEGIN_CLASS("TestClass", TestClass)
@@ -210,6 +215,8 @@ namespace ediacaran_test
         class_tests_print_props(&test_object);
 
         auto s1 = class_descriptor<TestClass>::bases::size;
+
+        action a = make_action<decltype(&TestClass::action), &TestClass::action>("action");
 
         const auto & t = get_type<TestClass>();
     }

@@ -52,6 +52,9 @@
     <ClInclude Include="..\utils\inspect.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\reflection\action.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

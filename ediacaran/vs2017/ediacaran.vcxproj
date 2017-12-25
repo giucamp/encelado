@@ -27,6 +27,7 @@
     <ClInclude Include="..\core\char_writer.h" />
     <ClInclude Include="..\core\string_builder.h" />
     <ClInclude Include="..\core\type_list.h" />
+    <ClInclude Include="..\reflection\action.h" />
     <ClInclude Include="..\reflection\class_type.h" />
     <ClInclude Include="..\reflection\namespace.h" />
     <ClInclude Include="..\reflection\property.h" />
