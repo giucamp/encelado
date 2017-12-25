@@ -42,18 +42,19 @@ namespace ediacaran
         void uninitialized_deallocate() noexcept;
 
         template <typename CALLABLE>
-            void manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
+            void * manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
         {
             try
             {
                 uninitialized_allocate(i_type);
-                std::forward<CALLABLE>(i_constructor)();
+                std::forward<CALLABLE>(i_constructor)(m_object);
             }
             catch(...)
             {
                 uninitialized_deallocate();
                 throw;
             }
+            return m_object;
         }
 
         ~dyn_value()
@@ -68,7 +69,7 @@ namespace ediacaran
             std::swap(i_first.m_type, i_second.m_type);
         }
 
-        bool empty() const noexcept { return m_object != nullptr; }
+        bool empty() const noexcept { return m_object == nullptr; }
 
         bool operator==(const dyn_value & i_source) const;
 

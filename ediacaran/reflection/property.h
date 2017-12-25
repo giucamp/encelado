@@ -58,6 +58,16 @@ namespace ediacaran
 
         constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
 
+        constexpr bool can_get() const noexcept
+        {
+            return (m_flags & property_flags::gettable) != property_flags::none;
+        }
+
+        constexpr bool can_set() const noexcept
+        {
+            return (m_flags & property_flags::settable) != property_flags::none;
+        }
+
         const void * get_inplace(const void * i_source_object) const noexcept
         {
             if ((m_flags & (property_flags::inplace | property_flags::gettable)) != (property_flags::inplace | property_flags::gettable))
@@ -86,6 +96,7 @@ namespace ediacaran
         {
             if ((m_flags & property_flags::gettable) == property_flags::none)
             {
+                o_error << "the property " << name() << " is not gettable";
                 return false;
             }
             if ((m_flags & property_flags::inplace) == property_flags::none)

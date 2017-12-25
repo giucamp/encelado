@@ -20,8 +20,8 @@ namespace ediacaran
 
             EDIACARAN_INTERNAL_ASSERT(primary_type->is_destructible());
 
-            manual_construct(type, [&]{
-                primary_type->copy_construct(m_object, i_source.object());
+            manual_construct(type, [&](void * i_dest){
+                primary_type->copy_construct(i_dest, i_source.object());
             });
         }
     }

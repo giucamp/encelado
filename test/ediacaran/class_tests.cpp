@@ -178,7 +178,7 @@ namespace ediacaran_test
             str += prop.name();
             str += ": ";
             str += to_string(prop.qualified_type());
-            str += "= ";
+            str += " = ";
             str += prop.get_string_value();
             std::cout << str << std::endl;
         }

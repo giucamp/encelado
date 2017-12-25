@@ -59,10 +59,10 @@ namespace ediacaran
         auto value = const_cast<void*>(m_property->get_inplace(m_subobject));
         if(value == nullptr)
         {
-            m_dyn_value.manual_construct(property_type, [&]{
+            value = m_dyn_value.manual_construct(property_type, [&](void * i_dest){
                 char error_msg[512];
                 char_writer error_writer(error_msg);
-                if(!m_property->get(m_subobject, value, error_writer))
+                if(!m_property->get(m_subobject, i_dest, error_writer))
                 {
                     throw std::runtime_error(error_msg);
                 }
@@ -73,23 +73,28 @@ namespace ediacaran
 
     const char * property_inspector::iterator::get_string_value()
     {
+        if(!m_property->can_get())
+        {
+            return "(can't get)";
+        }
+
         auto const min_size = sizeof(void*) * 4;
         if(m_char_buffer.size() < min_size)
         {
             m_char_buffer.resize(min_size);
         }
+       
         auto const value = get_prop_value().full_indirection();
-        
-        auto const final_type = value.type().final_type();
-        
-        char_writer writer(m_char_buffer.data(), m_char_buffer.size());
-
         if(value.object() == nullptr)
         {
             return "(null)";
         }
         else
         {
+            auto const final_type = value.type().final_type();
+        
+            char_writer writer(m_char_buffer.data(), m_char_buffer.size());
+
             final_type->stringize(value.object(), writer);
             if(writer.remaining_size() < 0)
             {
