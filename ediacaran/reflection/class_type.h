@@ -182,9 +182,10 @@ namespace ediacaran
 #define REFL_BEGIN_PROPERTIES constexpr static ediacaran::property properties[] = {
 
 #define REFL_DATA_PROP(Name, DataMember)                                                                               \
-    ediacaran::detail::make_data_property( \
-    std::is_const_v<decltype(this_class::DataMember)> ? ediacaran::property_flags::gettable : \
-      (ediacaran::property_flags::gettable | ediacaran::property_flags::settable), \
+    ediacaran::detail::make_data_property(                                                                             \
+      std::is_const_v<decltype(this_class::DataMember)>                                                                \
+        ? ediacaran::property_flags::gettable                                                                          \
+        : (ediacaran::property_flags::gettable | ediacaran::property_flags::settable),                                 \
       Name, ediacaran::get_qualified_type<decltype(this_class::DataMember)>(), offsetof(this_class, DataMember)),
 
 #define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                                       \

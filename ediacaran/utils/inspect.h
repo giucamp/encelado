@@ -15,20 +15,11 @@ namespace ediacaran
         class content
         {
           public:
-            content(class iterator & m_parent) noexcept
-                : m_parent(m_parent)
-            {
-            }
+            content(class iterator & m_parent) noexcept : m_parent(m_parent) {}
 
-            string_view name() const noexcept
-            {
-                return m_parent.m_property->name();
-            }
+            string_view name() const noexcept { return m_parent.m_property->name(); }
 
-            const qualified_type_ptr & qualified_type() const noexcept
-            {
-                return m_parent.m_property->qualified_type();
-            }
+            const qualified_type_ptr & qualified_type() const noexcept { return m_parent.m_property->qualified_type(); }
 
             class_type const & owning_class() const noexcept { return *m_parent.m_class; }
 
@@ -36,10 +27,7 @@ namespace ediacaran
 
             raw_ptr get_value() const { return m_parent.get_prop_value(); }
 
-            const char * get_string_value() const
-            {
-                return m_parent.get_string_value();
-            }
+            const char * get_string_value() const { return m_parent.get_string_value(); }
 
           private:
             class iterator & m_parent;

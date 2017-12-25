@@ -42,14 +42,14 @@ namespace ediacaran
         void uninitialized_deallocate() noexcept;
 
         template <typename CALLABLE>
-            void * manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
+        void * manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
         {
             try
             {
                 uninitialized_allocate(i_type);
                 std::forward<CALLABLE>(i_constructor)(m_object);
             }
-            catch(...)
+            catch (...)
             {
                 uninitialized_deallocate();
                 throw;

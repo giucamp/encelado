@@ -131,15 +131,9 @@ namespace ediacaran
                    (is_volatile(i_indirection_level) ? CV_Flags::Volatile : CV_Flags::None);
         }
 
-        constexpr size_t constness_word() const noexcept
-        {
-            return m_constness_word;
-        }
+        constexpr size_t constness_word() const noexcept { return m_constness_word; }
 
-        constexpr size_t volatileness_word() const noexcept
-        {
-            return m_volatileness_word;
-        }
+        constexpr size_t volatileness_word() const noexcept { return m_volatileness_word; }
 
 
         // special functions

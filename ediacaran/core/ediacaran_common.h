@@ -103,13 +103,13 @@ namespace ediacaran
 
     class constness_violation : public std::runtime_error
     {
-    public:
+      public:
         using std::runtime_error::runtime_error;
     };
 
     class null_pointer_indirection : public std::runtime_error
     {
-    public:
+      public:
         using std::runtime_error::runtime_error;
     };
 
@@ -156,14 +156,14 @@ namespace ediacaran
         operator std::string() { return std::string(data(), size()); }
     };
 
-    inline std::string operator + (const std::string & i_first, const string_view & i_second)
+    inline std::string operator+(const std::string & i_first, const string_view & i_second)
     {
         std::string res = i_first;
         res.append(i_second.data(), i_second.size());
         return res;
     }
 
-    inline std::string & operator += (std::string & i_first, const string_view & i_second)
+    inline std::string & operator+=(std::string & i_first, const string_view & i_second)
     {
         i_first.append(i_second.data(), i_second.size());
         return i_first;

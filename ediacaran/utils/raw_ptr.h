@@ -51,7 +51,7 @@ namespace ediacaran
 
         void * editable_object() const
         {
-            if(m_type.is_const(0))
+            if (m_type.is_const(0))
                 throw constness_violation("constness_violation");
             return m_object;
         }

@@ -20,16 +20,14 @@ namespace ediacaran
 
             EDIACARAN_INTERNAL_ASSERT(primary_type->is_destructible());
 
-            manual_construct(type, [&](void * i_dest){
-                primary_type->copy_construct(i_dest, i_source.object());
-            });
+            manual_construct(type, [&](void * i_dest) { primary_type->copy_construct(i_dest, i_source.object()); });
         }
     }
 
     void * dyn_value::uninitialized_allocate(const qualified_type_ptr & i_type)
     {
         EDIACARAN_ASSERT(!i_type.is_empty());
-        
+
         auto const primary_type = i_type.primary_type();
         if (!primary_type->is_destructible())
         {
@@ -39,13 +37,14 @@ namespace ediacaran
         }
 
         auto const prev_primary_type = m_type.primary_type();
-        if(prev_primary_type == nullptr || primary_type->size() != prev_primary_type->size() || primary_type->alignment() != prev_primary_type->alignment())
+        if (prev_primary_type == nullptr || primary_type->size() != prev_primary_type->size() ||
+            primary_type->alignment() != prev_primary_type->alignment())
         {
             auto const buffer = operator new (primary_type->size(), std::align_val_t{primary_type->alignment()});
             if (!empty())
                 destroy();
             m_object = buffer;
-        }   
+        }
         else
         {
             prev_primary_type->destroy(m_object);

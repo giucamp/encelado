@@ -1,10 +1,10 @@
 
 
 #include "../common.h"
+#include "ediacaran/core/string_builder.h"
 #include "ediacaran/reflection/class_type.h"
 #include "ediacaran/utils/dyn_value.h"
 #include "ediacaran/utils/inspect.h"
-#include "ediacaran/core/string_builder.h"
 #include <iostream>
 #include <new>
 #include <string>
@@ -170,7 +170,7 @@ namespace ediacaran_test
     void class_tests_print_props(ediacaran::raw_ptr i_source)
     {
         using namespace ediacaran;
-        
+
         for (auto & prop : inspect_properties(i_source))
         {
             std::string str = prop.owning_class().name();
@@ -189,10 +189,10 @@ namespace ediacaran_test
         using namespace ediacaran;
         try
         {
-            property props[2] = {property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2),
+            property props[2] = {
+              property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2),
               property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2)};
-            class_type CC(
-              "abc", 1, 2, special_functions{}, array_view<const base_class>{}, props);
+            class_type CC("abc", 1, 2, special_functions{}, array_view<const base_class>{}, props);
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }

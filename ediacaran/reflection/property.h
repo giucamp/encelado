@@ -14,43 +14,45 @@ namespace ediacaran
         settable = 1 << 2,
     };
 
-    constexpr property_flags operator | (property_flags i_first, property_flags i_second)
+    constexpr property_flags operator|(property_flags i_first, property_flags i_second)
     {
-        return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) | 
-            static_cast<std::underlying_type_t<property_flags>>(i_second));
+        return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) |
+                                           static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
-    constexpr property_flags operator & (property_flags i_first, property_flags i_second)
+    constexpr property_flags operator&(property_flags i_first, property_flags i_second)
     {
-        return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) & 
-            static_cast<std::underlying_type_t<property_flags>>(i_second));
+        return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) &
+                                           static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
     class property : public symbol_t
     {
       public:
-
         enum class operation
         {
             get,
             set,
         };
 
-        enum class accessor_tag {};
+        enum class accessor_tag
+        {
+        };
 
-        enum class offset_tag {};
+        enum class offset_tag
+        {
+        };
 
         using accessor = bool (*)(operation i_operation, void * i_object, void * i_value, char_writer & o_error);
 
-        constexpr property(accessor_tag, property_flags const i_flags,
-          const char * i_name, const qualified_type_ptr & i_qualified_type, accessor i_accessor)
-            : symbol_t(i_name), m_flags(i_flags), m_qualified_type(i_qualified_type),
-              m_accessor(i_accessor)
+        constexpr property(accessor_tag, property_flags const i_flags, const char * i_name,
+          const qualified_type_ptr & i_qualified_type, accessor i_accessor)
+            : symbol_t(i_name), m_flags(i_flags), m_qualified_type(i_qualified_type), m_accessor(i_accessor)
         {
         }
 
-        constexpr property(offset_tag, property_flags const i_flags,
-               const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset) noexcept
+        constexpr property(offset_tag, property_flags const i_flags, const char * i_name,
+          const qualified_type_ptr & i_qualified_type, size_t i_offset) noexcept
             : symbol_t(i_name), m_flags(i_flags | property_flags::inplace), m_qualified_type(i_qualified_type),
               m_offset(i_offset)
         {
@@ -58,19 +60,14 @@ namespace ediacaran
 
         constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
 
-        constexpr bool can_get() const noexcept
-        {
-            return (m_flags & property_flags::gettable) != property_flags::none;
-        }
+        constexpr bool can_get() const noexcept { return (m_flags & property_flags::gettable) != property_flags::none; }
 
-        constexpr bool can_set() const noexcept
-        {
-            return (m_flags & property_flags::settable) != property_flags::none;
-        }
+        constexpr bool can_set() const noexcept { return (m_flags & property_flags::settable) != property_flags::none; }
 
         const void * get_inplace(const void * i_source_object) const noexcept
         {
-            if ((m_flags & (property_flags::inplace | property_flags::gettable)) != (property_flags::inplace | property_flags::gettable))
+            if ((m_flags & (property_flags::inplace | property_flags::gettable)) !=
+                (property_flags::inplace | property_flags::gettable))
             {
                 return nullptr;
             }
@@ -82,7 +79,8 @@ namespace ediacaran
 
         void * edit_inplace(void * i_source_object) const noexcept
         {
-            if ((m_flags & (property_flags::inplace | property_flags::settable)) != (property_flags::inplace | property_flags::settable))
+            if ((m_flags & (property_flags::inplace | property_flags::settable)) !=
+                (property_flags::inplace | property_flags::settable))
             {
                 return nullptr;
             }
@@ -224,16 +222,17 @@ namespace ediacaran
             }
         };
 
-        constexpr property make_data_property(property_flags const i_flags,
-          const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
+        constexpr property make_data_property(property_flags const i_flags, const char * i_name,
+          const qualified_type_ptr & i_qualified_type, size_t i_offset)
         {
             return property(property::offset_tag{}, i_flags, i_name, i_qualified_type, i_offset);
         }
 
-        template <typename PROPERTY_ACCESSOR> constexpr property make_accessor_property(property_flags const i_flags, const char * i_name)
+        template <typename PROPERTY_ACCESSOR>
+        constexpr property make_accessor_property(property_flags const i_flags, const char * i_name)
         {
-            return property(property::accessor_tag{}, i_flags,
-              i_name, get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);
+            return property(property::accessor_tag{}, i_flags, i_name,
+              get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);
         }
 
     } //namespace detail

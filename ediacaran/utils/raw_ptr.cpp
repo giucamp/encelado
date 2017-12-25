@@ -10,7 +10,7 @@ namespace ediacaran
         auto volatileness_word = m_type.volatileness_word();
         auto object = m_object;
 
-        while(indirection_levels > 0 && object != nullptr)
+        while (indirection_levels > 0 && object != nullptr)
         {
             indirection_levels--;
             constness_word >>= 1;
@@ -18,8 +18,8 @@ namespace ediacaran
             object = *static_cast<void **>(object);
         }
 
-        return raw_ptr(object, qualified_type_ptr(m_type.final_type(), 
-            indirection_levels, constness_word, volatileness_word));
+        return raw_ptr(
+          object, qualified_type_ptr(m_type.final_type(), indirection_levels, constness_word, volatileness_word));
     }
 
 } // namespace ediacaran
