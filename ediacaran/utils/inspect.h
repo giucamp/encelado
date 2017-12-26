@@ -23,7 +23,7 @@ namespace ediacaran
 
             class_type const & owning_class() const noexcept { return *m_parent.m_class; }
 
-            property const & property() const noexcept { return *m_parent.m_property; }
+            class property const & property() const noexcept { return *m_parent.m_property; }
 
             raw_ptr get_value() const { return m_parent.get_prop_value(); }
 

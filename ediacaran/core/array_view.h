@@ -1,6 +1,6 @@
 #pragma once
 #include <cstddef>
-#include <ediacaran\core\ediacaran_common.h>
+#include <ediacaran/core/ediacaran_common.h>
 #include <initializer_list>
 
 namespace ediacaran

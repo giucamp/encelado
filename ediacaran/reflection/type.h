@@ -224,4 +224,7 @@ namespace ediacaran
     {
         return detail::s_type<TYPE>;
     }
+
+    template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
+    constexpr class class_type const & get_type() noexcept;
 }

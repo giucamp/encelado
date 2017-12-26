@@ -44,10 +44,13 @@
 		<Unit filename="../core/char_reader.h" />
 		<Unit filename="../core/char_writer.cpp" />
 		<Unit filename="../core/char_writer.h" />
+		<Unit filename="../core/char_writer.h.save" />
 		<Unit filename="../core/constexpr_string.h" />
 		<Unit filename="../core/ediacaran_common.h" />
+		<Unit filename="../core/ediacaran_common.h.save" />
 		<Unit filename="../core/string_builder.h" />
 		<Unit filename="../core/type_list.h" />
+		<Unit filename="../reflection/action.h" />
 		<Unit filename="../reflection/class_type.h" />
 		<Unit filename="../reflection/namespace.cpp" />
 		<Unit filename="../reflection/namespace.h" />
@@ -57,9 +60,12 @@
 		<Unit filename="../reflection/qualified_type_ptr.inl" />
 		<Unit filename="../reflection/special_functions.h" />
 		<Unit filename="../reflection/type.h" />
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="../utils/dyn_value.cpp" />
+		<Unit filename="../utils/dyn_value.h" />
+		<Unit filename="../utils/inspect.cpp" />
+		<Unit filename="../utils/inspect.h" />
+		<Unit filename="../utils/raw_ptr.cpp" />
+		<Unit filename="../utils/raw_ptr.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

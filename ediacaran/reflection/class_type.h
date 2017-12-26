@@ -124,7 +124,7 @@ namespace ediacaran
     };
 
     template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name, 
+    constexpr class_type make_static_class(const char * i_name,
       const array_view<const property> & i_properties,
       const array_view<const action> & i_actions,
       std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
@@ -161,10 +161,10 @@ namespace ediacaran
             constexpr static const array_view<const action> get() { return array_view<const action>(); }
         };
 
-        /*template <typename CLASS> struct ActionTraits<CLASS, std::void_t<decltype(class_descriptor<CLASS>::actions)>>
+        template <typename CLASS> struct ActionTraits<CLASS, std::void_t<decltype(class_descriptor<CLASS>::actions)>>
         {
             constexpr static const array_view<const action> get() { return class_descriptor<CLASS>::actions; }
-        };*/
+        };
 
         template <typename CLASS> constexpr class_type create_class()
         {

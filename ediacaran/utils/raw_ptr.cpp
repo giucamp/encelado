@@ -1,4 +1,3 @@
-#pragma once
 #include <ediacaran/utils/raw_ptr.h>
 
 namespace ediacaran

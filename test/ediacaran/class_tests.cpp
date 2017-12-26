@@ -189,7 +189,7 @@ namespace ediacaran_test
     {
         using namespace ediacaran;
 
-        for (auto & prop : inspect_properties(i_source))
+        for (auto const & prop : inspect_properties(i_source))
         {
             std::string str = prop.owning_class().name();
             str += " -> ";
@@ -205,6 +205,7 @@ namespace ediacaran_test
     void class_tests()
     {
         using namespace ediacaran;
+        get_type<TestClass>();
         try
         {
             property props[2] = {
@@ -220,7 +221,7 @@ namespace ediacaran_test
         }
 
         TestClass test_object;
-        for (auto & prop : inspect_properties(&test_object))
+        for (auto const & prop : inspect_properties(&test_object))
         {
             std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;
         }
