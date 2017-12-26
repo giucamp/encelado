@@ -99,12 +99,14 @@ namespace ediacaran
         array_view<const parameter> const m_parameters;
     };
 
-    template <typename METHOD_TYPE, METHOD_TYPE METHOD> 
-        constexpr action make_action(const char * i_name)
+    namespace detail
     {
-        using action_invoker = detail::ActionInvoker<METHOD_TYPE, METHOD, std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
-        return action(i_name, &action_invoker::func);
+        template <typename METHOD_TYPE, METHOD_TYPE METHOD> 
+            constexpr action make_action(const char * i_name)
+        {
+            using action_invoker = detail::ActionInvoker<METHOD_TYPE, METHOD, std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
+            return action(i_name, &action_invoker::func);
+        }
     }
-
 
 } // namespace ediacaran

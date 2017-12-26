@@ -48,9 +48,10 @@ namespace ediacaran
       public:
         constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
           const special_functions & i_special_functions, const array_view<const base_class> & i_base_classes,
-          const array_view<const property> & i_properties)
+          const array_view<const property> & i_properties,
+          const array_view<const action> & i_actions)
             : type_t(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
-              m_base_classes(i_base_classes), m_properties(i_properties)
+              m_base_classes(i_base_classes), m_properties(i_properties), m_actions(i_actions)
         {
             check_duplicates();
         }
@@ -97,6 +98,7 @@ namespace ediacaran
       private:
         array_view<const base_class> const m_base_classes;
         array_view<const property> const m_properties;
+        array_view<const action> const m_actions;
     };
 
     template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE *&>()));
@@ -122,19 +124,23 @@ namespace ediacaran
     };
 
     template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
+    constexpr class_type make_static_class(const char * i_name, 
+      const array_view<const property> & i_properties,
+      const array_view<const action> & i_actions,
       std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
     {
         return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-          array_view<const base_class>(), i_properties);
+          array_view<const base_class>(), i_properties, i_actions);
     }
 
     template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
+    constexpr class_type make_static_class(const char * i_name,
+      const array_view<const property> & i_properties,
+      const array_view<const action> & i_actions,
       std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
     {
         return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-          base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases, i_properties);
+          base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases, i_properties, i_actions);
     }
 
 
@@ -150,9 +156,19 @@ namespace ediacaran
             constexpr static const array_view<const property> get() { return class_descriptor<CLASS>::properties; }
         };
 
+        template <typename CLASS, typename = std::void_t<>> struct ActionTraits
+        {
+            constexpr static const array_view<const action> get() { return array_view<const action>(); }
+        };
+
+        /*template <typename CLASS> struct ActionTraits<CLASS, std::void_t<decltype(class_descriptor<CLASS>::actions)>>
+        {
+            constexpr static const array_view<const action> get() { return class_descriptor<CLASS>::actions; }
+        };*/
+
         template <typename CLASS> constexpr class_type create_class()
         {
-            return make_static_class<CLASS>(class_descriptor<CLASS>::name, PropTraits<CLASS>::get());
+            return make_static_class<CLASS>(class_descriptor<CLASS>::name, PropTraits<CLASS>::get(), ActionTraits<CLASS>::get());
         }
 
         template <typename CLASS> class_type constexpr s_class{create_class<CLASS>()};
@@ -205,6 +221,14 @@ namespace ediacaran
       ediacaran::property_flags::settable, Name),
 
 #define REFL_END_PROPERTIES                                                                                            \
+    }                                                                                                                  \
+    ;
+
+#define REFL_BEGIN_ACTIONS constexpr static ediacaran::action actions[] = {
+
+#define REFL_ACTION(Name, Method) ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(Name),
+
+#define REFL_END_ACTIONS                                                                                               \
     }                                                                                                                  \
     ;
 

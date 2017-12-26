@@ -158,9 +158,18 @@ namespace ediacaran_test
         int m_integer = 42;
         float m_float = 42.f;
 
-        int action(const float, double)
+        int action_1(int a, const float b, double c)
         {
-            return 5;
+            m_integer += a;
+            m_float += b;
+            return m_integer;
+        }
+
+        int action_2(int a, const float b)
+        {
+            m_integer += a *2;
+            m_float += b * 2;
+            return m_integer;
         }
     };
 
@@ -170,6 +179,10 @@ namespace ediacaran_test
             REFL_DATA_PROP("m_integer", m_integer)
             REFL_DATA_PROP("m_float", m_float)
         REFL_END_PROPERTIES
+        REFL_BEGIN_ACTIONS
+            REFL_ACTION("action_1", action_1)
+            REFL_ACTION("action_2", action_2)
+        REFL_END_ACTIONS
     REFL_END_CLASS;
 
     void class_tests_print_props(ediacaran::raw_ptr i_source)
@@ -197,7 +210,7 @@ namespace ediacaran_test
             property props[2] = {
               property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2),
               property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2)};
-            class_type CC("abc", 1, 2, special_functions{}, array_view<const base_class>{}, props);
+            class_type CC("abc", 1, 2, special_functions{}, array_view<const base_class>{}, props, array_view<const action>{});
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }
@@ -215,8 +228,6 @@ namespace ediacaran_test
         class_tests_print_props(&test_object);
 
         auto s1 = class_descriptor<TestClass>::bases::size;
-
-        action a = make_action<decltype(&TestClass::action), &TestClass::action>("action");
 
         const auto & t = get_type<TestClass>();
     }
