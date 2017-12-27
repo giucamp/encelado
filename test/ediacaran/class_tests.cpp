@@ -179,8 +179,8 @@ namespace ediacaran_test
             REFL_DATA_PROP("m_integer", m_integer)
             REFL_DATA_PROP("m_float", m_float)
         REFL_END_PROPERTIES
-        constexpr static const char * par_names_1[] = {"a", "b", "c"};
-        constexpr static const char * par_names_2[] = {"a", "b"};
+        constexpr static const char * par_names_1[] = {"i_a", "i_b", "i_c"};
+        constexpr static const char * par_names_2[] = {"i_a", "i_b"};
         REFL_BEGIN_ACTIONS
             REFL_ACTION("action_1", action_1, par_names_1)
             REFL_ACTION("action_2", action_2, par_names_2)
@@ -233,5 +233,18 @@ namespace ediacaran_test
         auto s1 = class_descriptor<TestClass>::bases::size;
 
         const auto & t = get_type<TestClass>();
+        for (auto const & act : t.actions())
+        {
+            std::cout << act.name().data() << std::endl;
+
+            for (auto const & act : t.actions())
+            {
+                for (auto const & par : act.parameters())
+                {
+                    std::cout << "\t" << par.name().data() << std::endl;
+                }
+            }
+        }
+        std::cout << "------------------" << std::endl;
     }
 }

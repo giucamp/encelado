@@ -59,6 +59,8 @@ namespace ediacaran
         constexpr array_view<const base_class> const & base_classes() const noexcept { return m_base_classes; }
 
         constexpr array_view<const property> const & properties() const noexcept { return m_properties; }
+        
+        constexpr array_view<const action> const & actions() const noexcept { return m_actions; }
 
       private:
         constexpr void check_duplicates() const
