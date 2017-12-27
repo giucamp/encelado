@@ -141,7 +141,7 @@ namespace ediacaran_test
     };
 
 
-    REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_2)
+    REFL_BEGIN_CLASS("TestBase_1_2", TestBase_1_2)
         REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
         REFL_BEGIN_PROPERTIES
             REFL_DATA_PROP("m_string_2_1", m_string_2_1)
@@ -179,9 +179,11 @@ namespace ediacaran_test
             REFL_DATA_PROP("m_integer", m_integer)
             REFL_DATA_PROP("m_float", m_float)
         REFL_END_PROPERTIES
+        constexpr static const char * par_names_1[] = {"a", "b", "c"};
+        constexpr static const char * par_names_2[] = {"a", "b"};
         REFL_BEGIN_ACTIONS
-            REFL_ACTION("action_1", action_1)
-            REFL_ACTION("action_2", action_2)
+            REFL_ACTION("action_1", action_1, par_names_1)
+            REFL_ACTION("action_2", action_2, par_names_2)
         REFL_END_ACTIONS
     REFL_END_CLASS;
 

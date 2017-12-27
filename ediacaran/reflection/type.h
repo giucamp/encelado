@@ -7,6 +7,7 @@
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/special_functions.h"
 #include <limits>
+#include <type_traits>
 
 namespace ediacaran
 {
@@ -224,7 +225,4 @@ namespace ediacaran
     {
         return detail::s_type<TYPE>;
     }
-
-    template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
-    constexpr class class_type const & get_type() noexcept;
 }

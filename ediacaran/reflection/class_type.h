@@ -79,7 +79,7 @@ namespace ediacaran
                     if (m_base_classes.size() > 0)
                         for (auto & base : m_base_classes)
                         {
-                            auto & base_props = base.get_class().properties();
+                            auto & base_props = base.get_class().m_properties;
                             if (base_props.size() > 0)
                                 for (auto & base_prop : base_props)
                                 {
@@ -146,32 +146,13 @@ namespace ediacaran
 
     namespace detail
     {
-        template <typename CLASS, typename = std::void_t<>> struct PropTraits
+        struct Edic_Reflect_Defaults
         {
-            constexpr static const array_view<const property> get() { return array_view<const property>(); }
+            constexpr static array_view<const property> properties{};
+            constexpr static array_view<const action> actions{};
         };
 
-        template <typename CLASS> struct PropTraits<CLASS, std::void_t<decltype(class_descriptor<CLASS>::properties)>>
-        {
-            constexpr static const array_view<const property> get() { return class_descriptor<CLASS>::properties; }
-        };
-
-        template <typename CLASS, typename = std::void_t<>> struct ActionTraits
-        {
-            constexpr static const array_view<const action> get() { return array_view<const action>(); }
-        };
-
-        template <typename CLASS> struct ActionTraits<CLASS, std::void_t<decltype(class_descriptor<CLASS>::actions)>>
-        {
-            constexpr static const array_view<const action> get() { return class_descriptor<CLASS>::actions; }
-        };
-
-        template <typename CLASS> constexpr class_type create_class()
-        {
-            return make_static_class<CLASS>(class_descriptor<CLASS>::name, PropTraits<CLASS>::get(), ActionTraits<CLASS>::get());
-        }
-
-        template <typename CLASS> class_type constexpr s_class{create_class<CLASS>()};
+        template <typename CLASS> class_type constexpr s_class{make_static_class<CLASS>(class_descriptor<CLASS>::name, class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions)};
     }
 
     // get_type
@@ -190,7 +171,7 @@ namespace ediacaran
 
 #define REFL_BEGIN_CLASS(Name, Class)                                                                                  \
     struct Edic_Reflect_##Class get_type_descriptor(Class *&);                                                         \
-    struct Edic_Reflect_##Class                                                                                        \
+    struct Edic_Reflect_##Class : ediacaran::detail::Edic_Reflect_Defaults                                             \
     {                                                                                                                  \
         constexpr static const char * name = Name;                                                                     \
         using this_class = Class;
@@ -226,7 +207,8 @@ namespace ediacaran
 
 #define REFL_BEGIN_ACTIONS constexpr static ediacaran::action actions[] = {
 
-#define REFL_ACTION(Name, Method) ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(Name),
+#define REFL_ACTION(Name, Method, ParameterNames ) ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method, \
+        ParameterNames>(Name),
 
 #define REFL_END_ACTIONS                                                                                               \
     }                                                                                                                  \
