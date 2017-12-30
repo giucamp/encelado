@@ -7,7 +7,7 @@ namespace ediacaran
 {
     dyn_value::dyn_value(const raw_ptr & i_source)
     {
-        auto & type = i_source.type();
+        auto & type = i_source.qualified_type();
         if (!type.is_empty())
         {
             auto const primary_type = type.primary_type();
@@ -36,7 +36,7 @@ namespace ediacaran
             throw unsupported_error(err_message);
         }
 
-        auto const prev_primary_type = m_type.primary_type();
+        auto const prev_primary_type = m_qualified_type.primary_type();
         if (prev_primary_type == nullptr || primary_type->size() != prev_primary_type->size() ||
             primary_type->alignment() != prev_primary_type->alignment())
         {
@@ -49,28 +49,28 @@ namespace ediacaran
         {
             prev_primary_type->destroy(m_object);
         }
-        m_type = i_type;
+        m_qualified_type = i_type;
         return m_object;
     }
 
     void dyn_value::uninitialized_deallocate() noexcept
     {
         EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
-        auto const primary_type = m_type.primary_type();
+        auto const primary_type = m_qualified_type.primary_type();
         operator delete (m_object, primary_type->size(), std::align_val_t{primary_type->alignment()});
         m_object = nullptr;
-        m_type = qualified_type_ptr{};
+        m_qualified_type = qualified_type_ptr{};
     }
 
     bool dyn_value::operator==(const dyn_value & i_source) const
     {
-        if (m_type != i_source.m_type)
+        if (m_qualified_type != i_source.m_qualified_type)
             return false;
 
-        if (m_type.is_empty())
+        if (m_qualified_type.is_empty())
             return true;
 
-        auto const primary_type = m_type.primary_type();
+        auto const primary_type = m_qualified_type.primary_type();
 
         if (!primary_type->is_comparable())
         {
@@ -79,7 +79,7 @@ namespace ediacaran
             throw unsupported_error(err_message);
         }
 
-        return m_type.primary_type()->compare_equal(m_object, i_source.m_object);
+        return m_qualified_type.primary_type()->compare_equal(m_object, i_source.m_object);
     }
 
 } // namespace ediacaran

@@ -187,7 +187,6 @@ namespace ediacaran
         uintptr_t m_volatileness_word : s_max_indirection_levels;
     };
 
-
     char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
 
     bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;

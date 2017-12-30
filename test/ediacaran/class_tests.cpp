@@ -237,12 +237,9 @@ namespace ediacaran_test
         {
             std::cout << act.name().data() << std::endl;
 
-            for (auto const & act : t.actions())
+            for (auto const & par : act.parameters())
             {
-                for (auto const & par : act.parameters())
-                {
-                    std::cout << "\t" << par.name().data() << std::endl;
-                }
+                std::cout << "\t" << par.name().data() << std::endl;
             }
         }
         std::cout << "------------------" << std::endl;

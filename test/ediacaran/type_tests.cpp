@@ -32,13 +32,13 @@ namespace ediacaran_test
         auto const * ppf = &pf;
         auto pppf = &ppf;
         raw_ptr ptr(&pppf);
-        auto type_name = to_string(ptr.type());
+        auto type_name = to_string(ptr.qualified_type());
         ENCELADO_TEST_ASSERT(type_name == "float const * const * *");
 
         auto indirect = ptr.full_indirection();
         ENCELADO_TEST_ASSERT(indirect.object() == &f);
 
-        auto final_type_name = to_string(indirect.type());
+        auto final_type_name = to_string(indirect.qualified_type());
         ENCELADO_TEST_ASSERT(final_type_name == "float const");
     }
 }

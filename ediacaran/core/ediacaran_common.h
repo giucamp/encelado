@@ -113,6 +113,12 @@ namespace ediacaran
         using std::runtime_error::runtime_error;
     };
 
+    class mismatching_arguments : public std::runtime_error
+    {
+    public:
+        using std::runtime_error::runtime_error;
+    };
+
     // workaround for P0426R0 not implemented
     class constexpr_char_traits : public std::char_traits<char>
     {

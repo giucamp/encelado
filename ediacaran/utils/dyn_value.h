@@ -15,12 +15,12 @@ namespace ediacaran
 
         dyn_value(const raw_ptr & i_source);
 
-        operator raw_ptr() const noexcept { return raw_ptr(m_object, m_type); }
+        operator raw_ptr() const noexcept { return raw_ptr(m_object, m_qualified_type); }
 
-        dyn_value(dyn_value && i_source) noexcept : m_object(i_source.m_object), m_type(i_source.m_type)
+        dyn_value(dyn_value && i_source) noexcept : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
         {
             i_source.m_object = nullptr;
-            i_source.m_type = qualified_type_ptr{};
+            i_source.m_qualified_type = qualified_type_ptr{};
         }
 
         dyn_value & operator=(const dyn_value & i_source)
@@ -66,7 +66,7 @@ namespace ediacaran
         friend void swap(dyn_value & i_first, dyn_value & i_second) noexcept
         {
             std::swap(i_first.m_object, i_second.m_object);
-            std::swap(i_first.m_type, i_second.m_type);
+            std::swap(i_first.m_qualified_type, i_second.m_qualified_type);
         }
 
         bool empty() const noexcept { return m_object == nullptr; }
@@ -75,7 +75,7 @@ namespace ediacaran
 
         bool operator!=(const dyn_value & i_source) const { return !operator==(i_source); }
 
-        const qualified_type_ptr & type() const noexcept { return m_type; }
+        const qualified_type_ptr & qualified_type() const noexcept { return m_qualified_type; }
 
         const void * object() const noexcept { return m_object; }
 
@@ -84,13 +84,13 @@ namespace ediacaran
       private:
         void destroy() noexcept
         {
-            m_type.primary_type()->destroy(m_object);
+            m_qualified_type.primary_type()->destroy(m_object);
             uninitialized_deallocate();
         }
 
       private:
         void * m_object{nullptr};
-        qualified_type_ptr m_type;
+        qualified_type_ptr m_qualified_type;
     };
 
 } // namespace ediacaran
