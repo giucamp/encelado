@@ -120,7 +120,7 @@ namespace ediacaran
     };
 
     template <typename EXCEPTION_TYPE>
-        void except(const char * i_message)
+        [[noreturn]] void except(const char * i_message)
     {
         throw EXCEPTION_TYPE(i_message);
     }

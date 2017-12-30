@@ -228,7 +228,7 @@ namespace ediacaran
     }
 
     template <typename EXCEPTION_TYPE, typename... PARAMS>
-        constexpr void except(const PARAMS &... i_arguments)
+        [[noreturn]] constexpr void except(const PARAMS &... i_arguments)
     {
         char message[512]{};
         char_writer writer(message);

@@ -329,4 +329,6 @@ namespace ediacaran
     bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
     bool try_parse(double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
     bool try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
+
+    string_view try_parse_identifier(char_reader & i_source) noexcept;
 }

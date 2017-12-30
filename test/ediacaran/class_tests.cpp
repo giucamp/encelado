@@ -152,20 +152,28 @@ namespace ediacaran_test
 
     struct TestClass : TestBase_1_1, TestBase_1_2
     {
-        int m_integer = 42;
-        float m_float = 42.f;
+        int m_integer = 77;
+        float m_float = 88;
 
-        int action_1(int a, const float b, double c)
+        int add(int i_int_par, const float i_flt_par, bool i_invert)
         {
-            m_integer += a;
-            m_float += b;
+            if(!i_invert)
+            {
+                m_integer += i_int_par;
+                m_float += i_flt_par;
+            }
+            else
+            {
+                m_integer -= i_int_par;
+                m_float -= i_flt_par;
+            }
             return m_integer;
         }
 
-        int action_2(int a, const float b)
+        int set(int i_int_par, const float i_flt_par)
         {
-            m_integer += a *2;
-            m_float += b * 2;
+            m_integer = i_int_par;
+            m_float = i_flt_par;
             return m_integer;
         }
     };
@@ -173,14 +181,14 @@ namespace ediacaran_test
     REFL_BEGIN_CLASS("TestClass", TestClass)
         REFL_BASES(TestBase_1_1, TestBase_1_2)
         REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_integer", m_integer)
-            REFL_DATA_PROP("m_float", m_float)
+            REFL_DATA_PROP("integer", m_integer)
+            REFL_DATA_PROP("float", m_float)
         REFL_END_PROPERTIES
-        constexpr static const char * par_names_1[] = {"i_a", "i_b", "i_c"};
-        constexpr static const char * par_names_2[] = {"i_a", "i_b"};
+        constexpr static const char * par_names_1[] = {"i_int_par", "i_flt_par", "i_invert"};
+        constexpr static const char * par_names_2[] = {"i_int_par", "i_flt_par"};
         REFL_BEGIN_ACTIONS
-            REFL_ACTION("action_1", action_1, par_names_1)
-            REFL_ACTION("action_2", action_2, par_names_2)
+            REFL_ACTION("add", add, par_names_1)
+            REFL_ACTION("set", set, par_names_2)
         REFL_END_ACTIONS
     REFL_END_CLASS;
 
@@ -242,6 +250,15 @@ namespace ediacaran_test
                 std::cout << "\t" << par.name().data() << std::endl;
             }
         }
+        std::cout << "------------------" << std::endl;
+
+        raw_ptr obj(&test_object);
+        auto int_v = get_property_value(obj, "integer").to_string();
+        auto flt_v = get_property_value(obj, "float").to_string();
+        auto action_res = invoke_action(obj, "add(4, 5, false)").to_string();
+        auto int_v_1 = get_property_value(obj, "integer").to_string();
+        auto flt_v_2 = get_property_value(obj, "float").to_string();
+
         std::cout << "------------------" << std::endl;
     }
 }

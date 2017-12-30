@@ -111,9 +111,25 @@ namespace ediacaran
 
             class action const & action() const noexcept { return *m_parent.m_action; }
 
-            raw_ptr invoke(const array_view<const raw_ptr> & i_arguments)
+            raw_ptr invoke(const array_view<const raw_ptr> & i_arguments) const
             {
                 return m_parent.invoke(i_arguments);
+            }
+
+            raw_ptr invoke(const array_view<string_view> & i_arguments) const
+            {
+                return m_parent.invoke(i_arguments);
+            }
+
+            raw_ptr invoke(char_reader & i_arguments) const
+            {
+                return m_parent.invoke(i_arguments);
+            }
+
+            raw_ptr invoke(const string_view & i_arguments) const
+            {
+                char_reader arguments_source(i_arguments);
+                return m_parent.invoke(arguments_source);
             }
 
         private:
@@ -156,13 +172,13 @@ namespace ediacaran
 
             bool operator!=(const iterator & i_source) const noexcept { return m_action != i_source.m_action; }
 
-            const char * get_string_value();
-
         private:
             friend class content;
             void next_base() noexcept;
 
             raw_ptr invoke(const array_view<const raw_ptr> & i_arguments);
+            raw_ptr invoke(const array_view<string_view> & i_arguments);
+            raw_ptr invoke(char_reader & i_arguments_source);
 
         private:
             void * m_subobject = nullptr;
@@ -185,5 +201,23 @@ namespace ediacaran
     inline property_inspector inspect_properties(const raw_ptr & i_target) { return property_inspector(i_target); }
 
     inline action_inspector inspect_actions(const raw_ptr & i_target) { return action_inspector(i_target); }
+
+    dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source);
+
+    inline dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name_source)
+    {
+        char_reader source(i_property_name_source);
+        return get_property_value(i_target, source);
+    }
+
+    // expects "action(par1, par2, ...)"
+    dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments);
+
+    // expects "action(par1, par2, ...)"
+    inline dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments)
+    {
+        char_reader source(i_action_and_arguments);
+        return invoke_action(i_target, source);
+    }
 
 } // namespace ediacaran

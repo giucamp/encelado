@@ -149,13 +149,42 @@ namespace ediacaran
         bool try_parse(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
-            return (*m_special_functions.try_parser())(i_dest, i_source, i_error_dest);
+            auto const try_parser = m_special_functions.try_parser();
+            if(try_parser == nullptr)
+            {
+                i_error_dest << "the type " << name() << " does not support parsing";
+                return false;
+            }
+            else
+                return (*try_parser)(i_dest, i_source, i_error_dest);
         }
 
         bool try_parse(void * i_dest, string_view const & i_source, char_writer & i_error_dest) const noexcept
         {
             char_reader source(i_source);
             return try_parse(i_dest, source, i_error_dest);
+        }
+
+        void parse(void * i_dest, char_reader & i_source) const
+        {
+            EDIACARAN_ASSERT(i_dest != nullptr);
+            auto const try_parser = m_special_functions.try_parser();
+            if (try_parser == nullptr)
+            {
+                except<unsupported_error>("the type ", name(), " does not support parsing");
+            }
+            char error[512];
+            char_writer error_writer(error);
+            if (!(*try_parser)(i_dest, i_source, error_writer))
+            {
+                except<parse_error>(error);
+            }
+        }
+
+        void parse(void * i_dest, string_view const & i_source) const
+        {
+            char_reader source(i_source);
+            return parse(i_dest, source);
         }
 
       private:
