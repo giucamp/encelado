@@ -119,6 +119,12 @@ namespace ediacaran
         using std::runtime_error::runtime_error;
     };
 
+    template <typename EXCEPTION_TYPE>
+        void except(const char * i_message)
+    {
+        throw EXCEPTION_TYPE(i_message);
+    }
+
     // workaround for P0426R0 not implemented
     class constexpr_char_traits : public std::char_traits<char>
     {

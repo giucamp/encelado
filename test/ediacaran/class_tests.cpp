@@ -34,8 +34,6 @@ namespace ediacaran_test
         void set_prop(int i_value) { m_prop = i_value; }
 
         double get_readonly_prop() const { return 1.23; }
-
-        void set_writeonly_prop(char) { }
     };
 
     REFL_BEGIN_CLASS("TestBase_3_2", TestBase_3_2)
@@ -44,7 +42,6 @@ namespace ediacaran_test
             REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
             REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
             REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop)
-            REFL_ACCESSOR_WO_PROP("writeonly_prop", set_writeonly_prop)
         REFL_END_PROPERTIES
     REFL_END_CLASS;
 
@@ -191,15 +188,18 @@ namespace ediacaran_test
     {
         using namespace ediacaran;
 
+        std::string string;
         for (auto const & prop : inspect_properties(i_source))
         {
+            prop.get_value().to_string(string);
+
             std::string str = prop.owning_class().name();
             str += " -> ";
             str += prop.name();
             str += ": ";
             str += to_string(prop.qualified_type());
             str += " = ";
-            str += prop.get_string_value();
+            str += string;
             std::cout << str << std::endl;
         }
     }
@@ -211,8 +211,8 @@ namespace ediacaran_test
         try
         {
             property props[2] = {
-              property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2),
-              property(property::offset_tag{}, property_flags::inplace, "prop", get_qualified_type<int>(), 2)};
+              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
+              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
             class_type CC("abc", 1, 2, special_functions{}, array_view<const base_class>{}, props, array_view<const action>{});
 
             ENCELADO_TEST_ASSERT(false); // should have thrown

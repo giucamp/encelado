@@ -27,8 +27,6 @@ namespace ediacaran
 
             raw_ptr get_value() const { return m_parent.get_prop_value(); }
 
-            const char * get_string_value() const { return m_parent.get_string_value(); }
-
           private:
             class iterator & m_parent;
         };
@@ -73,7 +71,6 @@ namespace ediacaran
             friend class content;
             void next_base() noexcept;
             raw_ptr get_prop_value();
-            const char * get_string_value();
 
           private:
             void * m_subobject = nullptr;
@@ -82,7 +79,6 @@ namespace ediacaran
             size_t m_base_index = 0;
             raw_ptr const m_target;
             dyn_value m_dyn_value;
-            std::vector<char> m_char_buffer;
         };
 
         iterator begin() const noexcept { return iterator(m_target); }

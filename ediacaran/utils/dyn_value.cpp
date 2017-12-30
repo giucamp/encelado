@@ -13,9 +13,7 @@ namespace ediacaran
             auto const primary_type = type.primary_type();
             if (!primary_type->is_copy_constructible())
             {
-                char err_message[512];
-                to_chars(err_message, "The type ", primary_type->name(), " is not copy-constructible");
-                throw unsupported_error(err_message);
+                except<unsupported_error>("The type ", primary_type->name(), " is not copy-constructible");
             }
 
             EDIACARAN_INTERNAL_ASSERT(primary_type->is_destructible());
@@ -31,9 +29,7 @@ namespace ediacaran
         auto const primary_type = i_type.primary_type();
         if (!primary_type->is_destructible())
         {
-            char err_message[512];
-            to_chars(err_message, "The type ", primary_type->name(), " is not destructible");
-            throw unsupported_error(err_message);
+            except<unsupported_error>("The type ", primary_type->name(), " is not destructible");
         }
 
         auto const prev_primary_type = m_qualified_type.primary_type();
@@ -74,9 +70,7 @@ namespace ediacaran
 
         if (!primary_type->is_comparable())
         {
-            char err_message[512];
-            to_chars(err_message, "The type ", primary_type->name(), " is not comparable");
-            throw unsupported_error(err_message);
+            except<unsupported_error>("The type ", primary_type->name(), " is not comparable");
         }
 
         return m_qualified_type.primary_type()->compare_equal(m_object, i_source.m_object);

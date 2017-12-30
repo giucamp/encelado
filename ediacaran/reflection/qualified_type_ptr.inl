@@ -143,9 +143,10 @@ namespace ediacaran
         : m_final_type(&i_final_type), m_indirection_levels(0), m_constness_word(0), m_volatileness_word(0)
     {
         if (i_cv_flags_size > s_max_indirection_levels)
-            throw std::runtime_error("The number of indirection levels exceeds "
-                                     "s_max_indirection_levels");
-
+        {
+            except<std::runtime_error>("The number of indirection levels (", i_cv_flags_size, ") exceeds "
+                                     "s_max_indirection_levels (", s_max_indirection_levels, ")");
+        }
         uintptr_t constness_word = 0, volatileness_word = 0;
 
         for (size_t index = 0; index < i_cv_flags_size; index++)

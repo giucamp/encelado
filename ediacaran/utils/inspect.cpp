@@ -66,47 +66,11 @@ namespace ediacaran
                 char_writer error_writer(error_msg);
                 if (!m_property->get(m_subobject, i_dest, error_writer))
                 {
-                    throw std::runtime_error(error_msg);
+                    except<std::runtime_error>(error_msg);
                 }
             });
         }
         return raw_ptr(value, property_type);
-    }
-
-    const char * property_inspector::iterator::get_string_value()
-    {
-        if (!m_property->can_get())
-        {
-            return "(can't get)";
-        }
-
-        auto const min_size = sizeof(void *) * 4;
-        if (m_char_buffer.size() < min_size)
-        {
-            m_char_buffer.resize(min_size);
-        }
-
-        auto const value = get_prop_value().full_indirection();
-        if (value.object() == nullptr)
-        {
-            return "(null)";
-        }
-        else
-        {
-            auto const final_type = value.qualified_type().final_type();
-
-            char_writer writer(m_char_buffer.data(), m_char_buffer.size());
-
-            final_type->stringize(value.object(), writer);
-            if (writer.remaining_size() < 0)
-            {
-                m_char_buffer.resize(m_char_buffer.size() - writer.remaining_size());
-                writer = char_writer(m_char_buffer.data(), m_char_buffer.size());
-                final_type->stringize(value.object(), writer);
-            }
-
-            return m_char_buffer.data();
-        }
     }
 
     raw_ptr action_inspector::iterator::invoke(const array_view<const raw_ptr> & i_arguments)
@@ -114,17 +78,17 @@ namespace ediacaran
         auto const & parameters = m_action->parameters();
 
         if(i_arguments.size() != parameters.size())
-            throw mismatching_arguments(to_string("The action ", m_action->name(), " expects ",
-                parameters.size(), ", ", i_arguments.size(), " were provided"));
+            except<mismatching_arguments>("The action ", m_action->name(), " expects ",
+                parameters.size(), ", ", i_arguments.size(), " were provided");
         
         std::vector<void*> arguments(i_arguments.size());
         for(size_t i = 0; i < i_arguments.size(); i++)
         {
             if (i_arguments[i].qualified_type() != parameters[i].qualified_type())
             {
-                throw mismatching_arguments(to_string("The argument ", i, " (", parameters[i].name(),
+                except<mismatching_arguments>("The argument ", i, " (", parameters[i].name(),
                     ") of the action ", m_action->name(), " is expected to have type ",
-                    parameters[i].qualified_type(), ", a ", i_arguments[i].qualified_type(), " was provided"));
+                    parameters[i].qualified_type(), ", a ", i_arguments[i].qualified_type(), " was provided");
             }
             arguments[i] = const_cast<void*>(i_arguments[i].object());
         }

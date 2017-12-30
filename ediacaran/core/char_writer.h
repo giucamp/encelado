@@ -226,4 +226,13 @@ namespace ediacaran
         char * const dest = o_char_array;
         return to_chars(dest, SIZE, i_objects...);
     }
+
+    template <typename EXCEPTION_TYPE, typename... PARAMS>
+        constexpr void except(const PARAMS &... i_arguments)
+    {
+        char message[512]{};
+        char_writer writer(message);
+        (writer << ... << i_arguments);
+        except<EXCEPTION_TYPE>(message);
+    }
 }

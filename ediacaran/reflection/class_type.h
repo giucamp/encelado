@@ -72,9 +72,7 @@ namespace ediacaran
                     {
                         if (prop_it->name() == other_prop_it->name())
                         {
-                            char message[512]{};
-                            ediacaran::to_chars(message, "duplicate property ", prop_it->name(), " in class ", name());
-                            throw std::runtime_error(message);
+                            except<std::runtime_error>("duplicate property ", prop_it->name(), " in class ", name());
                         }
                     }
 
@@ -87,10 +85,8 @@ namespace ediacaran
                                 {
                                     if (prop_it->name() == base_prop.name())
                                     {
-                                        char message[512]{};
-                                        ediacaran::to_chars(message, "shadowing property ", prop_it->name(),
-                                          " in class ", name(), ", already in ", base.get_class().name());
-                                        throw std::runtime_error(message);
+                                        except<std::runtime_error>("shadowing property ", prop_it->name(),
+                                            " in class ", name(), ", already in ", base.get_class().name());
                                     }
                                 }
                         }
@@ -183,25 +179,16 @@ namespace ediacaran
 
 #define REFL_DATA_PROP(Name, DataMember)                                                                               \
     ediacaran::detail::make_data_property(                                                                             \
-      std::is_const_v<decltype(this_class::DataMember)>                                                                \
-        ? ediacaran::property_flags::gettable                                                                          \
-        : (ediacaran::property_flags::gettable | ediacaran::property_flags::settable),                                 \
       Name, ediacaran::get_qualified_type<decltype(this_class::DataMember)>(), offsetof(this_class, DataMember)),
 
 #define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                                       \
     ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<decltype(&this_class::Getter),       \
-      decltype(&this_class::Setter), &this_class::Getter, &this_class::Setter>>(                                       \
-      ediacaran::property_flags::gettable | ediacaran::property_flags::settable, Name),
+      decltype(&this_class::Setter), &this_class::Getter, &this_class::Setter>>(Name),
 
 #define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                                            \
     ediacaran::detail::make_accessor_property<                                                                         \
       ediacaran::detail::PropertyAccessor<decltype(&this_class::Getter), nullptr_t, &this_class::Getter, nullptr>>(    \
-      ediacaran::property_flags::gettable, Name),
-
-#define REFL_ACCESSOR_WO_PROP(Name, Setter)                                                                            \
-    ediacaran::detail::make_accessor_property<                                                                         \
-      ediacaran::detail::PropertyAccessor<nullptr_t, decltype(&this_class::Setter), nullptr, &this_class::Setter>>(    \
-      ediacaran::property_flags::settable, Name),
+      Name),
 
 #define REFL_END_PROPERTIES                                                                                            \
     }                                                                                                                  \
