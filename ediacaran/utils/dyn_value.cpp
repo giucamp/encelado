@@ -5,10 +5,7 @@
 
 namespace ediacaran
 {
-    dyn_value::dyn_value(const qualified_type_ptr & i_qualified_type)
-    {
-        assign(i_qualified_type);
-    }
+    dyn_value::dyn_value(const qualified_type_ptr & i_qualified_type) { assign(i_qualified_type); }
 
     void dyn_value::assign(const qualified_type_ptr & i_qualified_type)
     {
@@ -19,9 +16,7 @@ namespace ediacaran
             {
                 except<unsupported_error>("The type ", final_type->name(), " is not constructible");
             }
-            manual_construct(i_qualified_type, [=](void * i_dest) {
-                final_type->construct(i_dest);
-            });
+            manual_construct(i_qualified_type, [=](void * i_dest) { final_type->construct(i_dest); });
         }
     }
 

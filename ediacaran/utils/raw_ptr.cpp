@@ -11,7 +11,7 @@ namespace ediacaran
 
         while (indirection_levels > 0)
         {
-            if(object == nullptr)
+            if (object == nullptr)
                 except<null_pointer_indirection>("Indirection of null pointer");
 
             indirection_levels--;
@@ -20,8 +20,7 @@ namespace ediacaran
             object = *static_cast<void **>(object);
         }
 
-        return raw_ptr(object,
-            qualified_type_ptr(m_qualified_type.final_type(), 0, constness_word, volatileness_word));
+        return raw_ptr(object, qualified_type_ptr(m_qualified_type.final_type(), 0, constness_word, volatileness_word));
     }
 
     raw_ptr raw_ptr::try_full_indirection() const noexcept

@@ -5,6 +5,8 @@
 
 namespace ediacaran
 {
+    property_inspector inspect_properties(const raw_ptr & i_target) { return property_inspector(i_target); }
+
     property_inspector::iterator::iterator(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
     {
         auto const final_type = m_target.qualified_type().final_type();
@@ -83,7 +85,7 @@ namespace ediacaran
         if (i_value.qualified_type() != m_property->qualified_type())
         {
             except<std::runtime_error>("The property ", m_property->name(), " expects a ", m_property->qualified_type(),
-                ", a ", i_value.qualified_type(), " was provided");
+              ", a ", i_value.qualified_type(), " was provided");
         }
 
         char error[512];
@@ -100,7 +102,7 @@ namespace ediacaran
         if (!property_type.is_pointer())
         {
             m_dyn_value.assign(m_property->qualified_type());
-            property_type.final_type()->parse(const_cast<void*>(m_dyn_value.object()), i_source);
+            property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
             char error[512];
             char_writer error_writer(error);
             if (!m_property->set(m_subobject, m_dyn_value.object(), error_writer))
@@ -111,7 +113,7 @@ namespace ediacaran
         else
         {
             auto final_value = get_prop_value().full_indirection();
-            final_value.qualified_type().final_type()->parse(const_cast<void*>(m_dyn_value.object()), i_source);
+            final_value.qualified_type().final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
         }
     }
 
@@ -156,7 +158,7 @@ namespace ediacaran
     namespace detail
     {
         template <typename VALUE>
-            void set_property_value_impl(const raw_ptr & i_target, char_reader & i_property_name_source, VALUE && i_value)
+        void set_property_value_impl(const raw_ptr & i_target, char_reader & i_property_name_source, VALUE && i_value)
         {
             auto const property_name = try_parse_identifier(i_property_name_source);
             if (property_name.empty())
@@ -202,7 +204,8 @@ namespace ediacaran
         except_on_tailing(property_name);
     }
 
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
     {
         detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
     }
@@ -214,17 +217,21 @@ namespace ediacaran
         except_on_tailing(property_name);
     }
 
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source)
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source)
     {
         detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
     }
 
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source)
+    void set_property_value(
+      const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source)
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value_source);
         except_on_tailing(property_name);
     }
+
+    action_inspector inspect_actions(const raw_ptr & i_target) { return action_inspector(i_target); }
 
     action_inspector::iterator::iterator(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
     {
@@ -406,6 +413,14 @@ namespace ediacaran
             except<parse_error>("Missing ')'");
         }
 
+        return return_value;
+    }
+
+    dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments)
+    {
+        char_reader source(i_action_and_arguments);
+        dyn_value return_value = invoke_action(i_target, source);
+        except_on_tailing(source);
         return return_value;
     }
 

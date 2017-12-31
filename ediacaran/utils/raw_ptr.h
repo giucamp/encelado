@@ -19,7 +19,8 @@ namespace ediacaran
         {
         }
 
-        template <typename TYPE> explicit raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
+        template <typename TYPE>
+        explicit raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
         {
         }
 

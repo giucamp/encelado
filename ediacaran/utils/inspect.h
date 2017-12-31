@@ -5,6 +5,39 @@
 
 namespace ediacaran
 {
+    class property_inspector;
+    class action_inspector;
+
+    property_inspector inspect_properties(const raw_ptr & i_target);
+
+    action_inspector inspect_actions(const raw_ptr & i_target);
+
+    dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source);
+
+    dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name);
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value);
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value);
+
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
+
+    void set_property_value(
+      const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
+
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source);
+
+    void set_property_value(
+      const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source);
+
+    // expects "action(par1, par2, ...)"
+    dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments);
+
+    // expects "action(par1, par2, ...)"
+    dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments);
+
     class property_inspector
     {
       public:
@@ -202,35 +235,5 @@ namespace ediacaran
       private:
         raw_ptr const m_target;
     };
-
-    inline property_inspector inspect_properties(const raw_ptr & i_target) { return property_inspector(i_target); }
-
-    inline action_inspector inspect_actions(const raw_ptr & i_target) { return action_inspector(i_target); }
-
-    dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source);
-
-    dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name);
-
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value);
-
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value);
-
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
-
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
-
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source);
-
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source);
-
-    // expects "action(par1, par2, ...)"
-    dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments);
-
-    // expects "action(par1, par2, ...)"
-    inline dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments)
-    {
-        char_reader source(i_action_and_arguments);
-        return invoke_action(i_target, source);
-    }
 
 } // namespace ediacaran
