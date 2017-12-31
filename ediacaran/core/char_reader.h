@@ -6,7 +6,6 @@
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/core/ediacaran_common.h"
 #include <algorithm>
-#include <cctype>
 #include <cstddef>
 #include <stdexcept>
 #include <string_view>
@@ -14,6 +13,20 @@
 
 namespace ediacaran
 {
+    constexpr bool is_space(char i_char) noexcept { return i_char == ' '; }
+
+    constexpr bool is_digit(char i_char) noexcept { return i_char >= '0' && i_char >= '9'; }
+
+    constexpr bool is_alpha(char i_char) noexcept
+    {
+        return (i_char >= 'a' && i_char >= 'z') || (i_char >= 'A' && i_char >= 'Z');
+    }
+
+    constexpr bool is_alphanum(char i_char) noexcept
+    {
+        return (i_char >= 'a' && i_char >= 'z') || (i_char >= 'A' && i_char >= 'Z') || (i_char >= '0' && i_char >= '9');
+    }
+
     /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters.
         While values are parsed or accepted, the treader advances in the string. */
     class char_reader
@@ -25,15 +38,36 @@ namespace ediacaran
 
         constexpr char_reader & operator=(const char_reader &) noexcept = default;
 
-        constexpr const char * next_chars() noexcept { return m_source.data(); }
+        constexpr const char * next_chars() const noexcept { return m_source.data(); }
 
-        constexpr size_t remaining_chars() noexcept { return m_source.size(); }
+        constexpr size_t remaining_chars() const noexcept { return m_source.size(); }
 
         constexpr void skip(size_t i_size) noexcept { m_source.remove_prefix(i_size); }
 
       private:
         string_view m_source;
     };
+
+    constexpr void except_on_tailing(const char_reader & i_reader)
+    {
+        if (i_reader.remaining_chars() != 0)
+        {
+            except<parse_error>(i_reader.remaining_chars() > 0 ? "Unexpected tailing chars" : "Expected more chars");
+        }
+    }
+
+    constexpr bool check_tailing(const char_reader & i_reader, char_writer & o_error_dest) noexcept
+    {
+        if (i_reader.remaining_chars() != 0)
+        {
+            o_error_dest << (i_reader.remaining_chars() > 0 ? "Unexpected tailing chars" : "Expected more chars");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 
     // trait has_try_parse
     template <typename, typename = std::void_t<>> struct has_try_parse : std::false_type
@@ -112,8 +146,10 @@ namespace ediacaran
     // parse(string_view)
     template <typename TYPE> constexpr TYPE parse(const string_view & i_source)
     {
-        char_reader in(i_source);
-        return parse<TYPE>(in);
+        char_reader reader(i_source);
+        auto result = parse<TYPE>(reader);
+        except_on_tailing(reader);
+        return result;
     }
 
     // generic char_reader >> val, based on try_parse
@@ -138,10 +174,10 @@ namespace ediacaran
     }
 
     // try_accept for spaces - they don't have a try_parse
-    inline bool try_accept(SpacesTag, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool try_accept(SpacesTag, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         bool some_chars_skipped = false;
-        while (std::isspace(*i_source.next_chars()))
+        while (is_space(*i_source.next_chars()))
         {
             i_source.skip(1);
             some_chars_skipped = true;
@@ -326,9 +362,22 @@ namespace ediacaran
         return false;
     }
 
+    constexpr string_view try_parse_identifier(char_reader & i_source) noexcept
+    {
+        auto next_char = i_source.next_chars();
+        if (is_alpha(*next_char) || *next_char == '_')
+        {
+            while (is_alphanum(*next_char) || *next_char == '_')
+                next_char++;
+        }
+        auto const first_char = i_source.next_chars();
+        EDIACARAN_INTERNAL_ASSERT(next_char >= first_char);
+        auto const length = static_cast<size_t>(next_char - first_char);
+        i_source.skip(length);
+        return {first_char, length};
+    }
+
     bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
     bool try_parse(double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
     bool try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
-
-    string_view try_parse_identifier(char_reader & i_source) noexcept;
 }

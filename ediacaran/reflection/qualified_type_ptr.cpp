@@ -68,8 +68,9 @@ namespace ediacaran
                     break;
                 }
             }
-            else if (try_accept('&', source) || try_accept("&&", source))
+            else if (try_accept('&', source))
             {
+                try_accept('&', source);
                 constness_word <<= 1;
                 constness_word |= 1;
                 volatileness_word <<= 1;

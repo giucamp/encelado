@@ -2,8 +2,8 @@
 #include <ediacaran/core/char_writer.h>
 #include <ediacaran/reflection/qualified_type_ptr.h>
 #include <ediacaran/reflection/type.h>
-#include <utility>
 #include <string>
+#include <utility>
 
 namespace ediacaran
 {
@@ -14,9 +14,14 @@ namespace ediacaran
 
         raw_ptr(const raw_ptr & i_source) noexcept = default;
 
-        raw_ptr(void * i_object, const qualified_type_ptr & i_type) noexcept : m_object(i_object), m_qualified_type(i_type) {}
+        raw_ptr(void * i_object, const qualified_type_ptr & i_type) noexcept
+            : m_object(i_object), m_qualified_type(i_type)
+        {
+        }
 
-        template <typename TYPE> raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>()) {}
+        template <typename TYPE> raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
+        {
+        }
 
         raw_ptr(raw_ptr && i_source) noexcept : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
         {
@@ -58,7 +63,9 @@ namespace ediacaran
             return m_object;
         }
 
-        raw_ptr full_indirection() const noexcept;
+        raw_ptr full_indirection() const;
+
+        raw_ptr try_full_indirection() const noexcept;
 
         void to_string(char_writer & o_dest) const noexcept;
 

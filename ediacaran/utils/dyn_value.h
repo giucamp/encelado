@@ -13,11 +13,12 @@ namespace ediacaran
 
         dyn_value(const dyn_value & i_source) : dyn_value(raw_ptr(i_source)) {}
 
+        dyn_value(const qualified_type_ptr & i_qualified_type);
+
         dyn_value(const raw_ptr & i_source);
 
-        operator raw_ptr() const noexcept { return raw_ptr(m_object, m_qualified_type); }
-
-        dyn_value(dyn_value && i_source) noexcept : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
+        dyn_value(dyn_value && i_source) noexcept
+            : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
         {
             i_source.m_object = nullptr;
             i_source.m_qualified_type = qualified_type_ptr{};
@@ -36,6 +37,10 @@ namespace ediacaran
             swap(*this, i_source);
             return *this;
         }
+
+        void assign(const qualified_type_ptr & i_qualified_type);
+
+        operator raw_ptr() const noexcept { return raw_ptr(m_object, m_qualified_type); }
 
         template <typename CALLABLE>
         void * manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
@@ -77,23 +82,13 @@ namespace ediacaran
 
         void * edit_object() noexcept { return m_object; }
 
-        void to_string(char_writer & o_dest) const noexcept
-        {
-            raw_ptr(m_object, m_qualified_type).to_string(o_dest);
-        }
+        void to_string(char_writer & o_dest) const noexcept { raw_ptr(m_object, m_qualified_type).to_string(o_dest); }
 
-        void to_string(std::string & o_dest) const
-        {
-            raw_ptr(m_object, m_qualified_type).to_string(o_dest);
-        }
+        void to_string(std::string & o_dest) const { raw_ptr(m_object, m_qualified_type).to_string(o_dest); }
 
-        std::string to_string() const
-        {
-            return raw_ptr(m_object, m_qualified_type).to_string();
-        }
+        std::string to_string() const { return raw_ptr(m_object, m_qualified_type).to_string(); }
 
       private:
-
         void * uninitialized_allocate(const qualified_type_ptr & i_type);
 
         void uninitialized_deallocate() noexcept;
@@ -114,7 +109,9 @@ namespace ediacaran
     inline dyn_value parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source)
     {
         char_reader source(i_source);
-        return parse_value(i_qualified_type, source);
+        dyn_value result = parse_value(i_qualified_type, source);
+        except_on_tailing(source);
+        return result;
     }
 
 } // namespace ediacaran

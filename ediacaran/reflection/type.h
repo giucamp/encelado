@@ -150,7 +150,7 @@ namespace ediacaran
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
             auto const try_parser = m_special_functions.try_parser();
-            if(try_parser == nullptr)
+            if (try_parser == nullptr)
             {
                 i_error_dest << "the type " << name() << " does not support parsing";
                 return false;
@@ -162,7 +162,7 @@ namespace ediacaran
         bool try_parse(void * i_dest, string_view const & i_source, char_writer & i_error_dest) const noexcept
         {
             char_reader source(i_source);
-            return try_parse(i_dest, source, i_error_dest);
+            return try_parse(i_dest, source, i_error_dest) && check_tailing(source, i_error_dest);
         }
 
         void parse(void * i_dest, char_reader & i_source) const
@@ -184,7 +184,8 @@ namespace ediacaran
         void parse(void * i_dest, string_view const & i_source) const
         {
             char_reader source(i_source);
-            return parse(i_dest, source);
+            parse(i_dest, source);
+            except_on_tailing(source);
         }
 
       private:

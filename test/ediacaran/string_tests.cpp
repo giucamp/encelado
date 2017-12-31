@@ -147,7 +147,7 @@ namespace ediacaran_test
                 objects.pop_back();
                 break;
             }
-            ENCELADO_TEST_ASSERT(!std::isspace(*next_char));
+            ENCELADO_TEST_ASSERT(!is_space(*next_char));
             auto const start_of_buff = buff.get();
             auto const buff_len = strlen(start_of_buff);
             auto const end_of_buff = start_of_buff + buff_len;

@@ -70,11 +70,11 @@ namespace ediacaran
                 }
 
                 // accept identifier
-                if (std::isalpha(*curr_char))
+                if (is_alpha(*curr_char) || *curr_char == '_')
                 {
                     curr_char++;
                     some_identifier_found = true;
-                    while (std::isalnum(*curr_char) || *curr_char == '_')
+                    while (is_alphanum(*curr_char) || *curr_char == '_')
                     {
                         curr_char++;
                     }

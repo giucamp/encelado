@@ -21,11 +21,19 @@ namespace ediacaran
 
             const qualified_type_ptr & qualified_type() const noexcept { return m_parent.m_property->qualified_type(); }
 
+            bool is_settable() const { return m_parent.m_property->is_settable(); }
+
             class_type const & owning_class() const noexcept { return *m_parent.m_class; }
 
             class property const & property() const noexcept { return *m_parent.m_property; }
 
             raw_ptr get_value() const { return m_parent.get_prop_value(); }
+
+            void set_value(const raw_ptr & i_value) { m_parent.set_prop_value(i_value); }
+
+            void set_value(char_reader & i_source) { m_parent.set_prop_value(i_source); }
+
+            void set_value(const string_view & i_source) { m_parent.set_prop_value(i_source); }
 
           private:
             class iterator & m_parent;
@@ -71,6 +79,9 @@ namespace ediacaran
             friend class content;
             void next_base() noexcept;
             raw_ptr get_prop_value();
+            void set_prop_value(const raw_ptr & i_value);
+            void set_prop_value(char_reader & i_source);
+            void set_prop_value(const string_view & i_source);
 
           private:
             void * m_subobject = nullptr;
@@ -91,19 +102,22 @@ namespace ediacaran
 
     class action_inspector
     {
-    public:
+      public:
         action_inspector(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection()) {}
 
         class iterator;
 
         class content
         {
-        public:
+          public:
             content(class iterator & m_parent) noexcept : m_parent(m_parent) {}
 
             string_view name() const noexcept { return m_parent.m_action->name(); }
 
-            const qualified_type_ptr & qualified_return_type() const noexcept { return m_parent.m_action->qualified_return_type(); }
+            const qualified_type_ptr & qualified_return_type() const noexcept
+            {
+                return m_parent.m_action->qualified_return_type();
+            }
 
             array_view<const parameter> const & parameters() const noexcept { return m_parent.m_action->parameters(); }
 
@@ -111,20 +125,11 @@ namespace ediacaran
 
             class action const & action() const noexcept { return *m_parent.m_action; }
 
-            raw_ptr invoke(const array_view<const raw_ptr> & i_arguments) const
-            {
-                return m_parent.invoke(i_arguments);
-            }
+            raw_ptr invoke(const array_view<const raw_ptr> & i_arguments) const { return m_parent.invoke(i_arguments); }
 
-            raw_ptr invoke(const array_view<string_view> & i_arguments) const
-            {
-                return m_parent.invoke(i_arguments);
-            }
+            raw_ptr invoke(const array_view<string_view> & i_arguments) const { return m_parent.invoke(i_arguments); }
 
-            raw_ptr invoke(char_reader & i_arguments) const
-            {
-                return m_parent.invoke(i_arguments);
-            }
+            raw_ptr invoke(char_reader & i_arguments) const { return m_parent.invoke(i_arguments); }
 
             raw_ptr invoke(const string_view & i_arguments) const
             {
@@ -132,7 +137,7 @@ namespace ediacaran
                 return m_parent.invoke(arguments_source);
             }
 
-        private:
+          private:
             class iterator & m_parent;
         };
 
@@ -142,7 +147,7 @@ namespace ediacaran
 
         class iterator
         {
-        public:
+          public:
             iterator(const raw_ptr & i_target) noexcept;
 
             content operator*() noexcept { return content(*this); }
@@ -172,7 +177,7 @@ namespace ediacaran
 
             bool operator!=(const iterator & i_source) const noexcept { return m_action != i_source.m_action; }
 
-        private:
+          private:
             friend class content;
             void next_base() noexcept;
 
@@ -180,7 +185,7 @@ namespace ediacaran
             raw_ptr invoke(const array_view<string_view> & i_arguments);
             raw_ptr invoke(char_reader & i_arguments_source);
 
-        private:
+          private:
             void * m_subobject = nullptr;
             const class_type * m_class = nullptr;
             const action * m_action = nullptr;
@@ -194,7 +199,7 @@ namespace ediacaran
 
         end_marker end() const noexcept { return end_marker{}; }
 
-    private:
+      private:
         raw_ptr const m_target;
     };
 

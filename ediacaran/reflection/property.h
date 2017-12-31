@@ -43,16 +43,16 @@ namespace ediacaran
 
         using accessor = bool (*)(operation i_operation, void * i_object, void * i_value, char_writer & o_error);
 
-        constexpr property(accessor_tag, const char * i_name,
-          const qualified_type_ptr & i_qualified_type, accessor i_accessor)
-            : symbol_t(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type), m_accessor(i_accessor)
+        constexpr property(
+          accessor_tag, const char * i_name, const qualified_type_ptr & i_qualified_type, accessor i_accessor)
+            : symbol_t(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type),
+              m_accessor(i_accessor)
         {
         }
 
-        constexpr property(offset_tag, const char * i_name,
-          const qualified_type_ptr & i_qualified_type, size_t i_offset) noexcept
-            : symbol_t(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type),
-              m_offset(i_offset)
+        constexpr property(
+          offset_tag, const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset) noexcept
+            : symbol_t(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type), m_offset(i_offset)
         {
         }
 
@@ -62,7 +62,10 @@ namespace ediacaran
 
         constexpr bool is_settable() const noexcept { return !m_qualified_type.is_const(0); }
 
-        constexpr bool is_inplace() const noexcept { return (m_flags & property_flags::inplace) == property_flags::inplace; }
+        constexpr bool is_inplace() const noexcept
+        {
+            return (m_flags & property_flags::inplace) == property_flags::inplace;
+        }
 
         const void * get_inplace(const void * i_source_object) const noexcept
         {
@@ -190,14 +193,13 @@ namespace ediacaran
             }
         };
 
-        constexpr property make_data_property(const char * i_name,
-          const qualified_type_ptr & i_qualified_type, size_t i_offset)
+        constexpr property make_data_property(
+          const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
         {
             return property(property::offset_tag{}, i_name, i_qualified_type, i_offset);
         }
 
-        template <typename PROPERTY_ACCESSOR>
-        constexpr property make_accessor_property(const char * i_name)
+        template <typename PROPERTY_ACCESSOR> constexpr property make_accessor_property(const char * i_name)
         {
             return property(property::accessor_tag{}, i_name,
               get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);

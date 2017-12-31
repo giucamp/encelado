@@ -115,12 +115,11 @@ namespace ediacaran
 
     class mismatching_arguments : public std::runtime_error
     {
-    public:
+      public:
         using std::runtime_error::runtime_error;
     };
 
-    template <typename EXCEPTION_TYPE>
-        [[noreturn]] void except(const char * i_message)
+    template <typename EXCEPTION_TYPE>[[noreturn]] void except(const char * i_message)
     {
         throw EXCEPTION_TYPE(i_message);
     }

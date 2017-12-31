@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/array_view.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/type_list.h"
-#include "ediacaran/reflection/property.h"
 #include "ediacaran/reflection/action.h"
+#include "ediacaran/reflection/property.h"
 #include "ediacaran/reflection/type.h"
 #include <cstddef>
 
@@ -48,8 +48,7 @@ namespace ediacaran
       public:
         constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
           const special_functions & i_special_functions, const array_view<const base_class> & i_base_classes,
-          const array_view<const property> & i_properties,
-          const array_view<const action> & i_actions)
+          const array_view<const property> & i_properties, const array_view<const action> & i_actions)
             : type_t(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
               m_base_classes(i_base_classes), m_properties(i_properties), m_actions(i_actions)
         {
@@ -59,7 +58,7 @@ namespace ediacaran
         constexpr array_view<const base_class> const & base_classes() const noexcept { return m_base_classes; }
 
         constexpr array_view<const property> const & properties() const noexcept { return m_properties; }
-        
+
         constexpr array_view<const action> const & actions() const noexcept { return m_actions; }
 
       private:
@@ -85,8 +84,8 @@ namespace ediacaran
                                 {
                                     if (prop_it->name() == base_prop.name())
                                     {
-                                        except<std::runtime_error>("shadowing property ", prop_it->name(),
-                                            " in class ", name(), ", already in ", base.get_class().name());
+                                        except<std::runtime_error>("shadowing property ", prop_it->name(), " in class ",
+                                          name(), ", already in ", base.get_class().name());
                                     }
                                 }
                         }
@@ -122,8 +121,7 @@ namespace ediacaran
     };
 
     template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name,
-      const array_view<const property> & i_properties,
+    constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
       const array_view<const action> & i_actions,
       std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
     {
@@ -132,8 +130,7 @@ namespace ediacaran
     }
 
     template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name,
-      const array_view<const property> & i_properties,
+    constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
       const array_view<const action> & i_actions,
       std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
     {
@@ -150,7 +147,9 @@ namespace ediacaran
             constexpr static array_view<const action> actions{};
         };
 
-        template <typename CLASS> class_type constexpr s_class{make_static_class<CLASS>(class_descriptor<CLASS>::name, class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions)};
+        template <typename CLASS>
+        class_type constexpr s_class{make_static_class<CLASS>(
+          class_descriptor<CLASS>::name, class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions)};
     }
 
     // get_type
@@ -196,8 +195,8 @@ namespace ediacaran
 
 #define REFL_BEGIN_ACTIONS constexpr static ediacaran::action actions[] = {
 
-#define REFL_ACTION(Name, Method, ParameterNames ) ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method, \
-        ParameterNames>(Name),
+#define REFL_ACTION(Name, Method, ParameterNames)                                                                      \
+    ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method, ParameterNames>(Name),
 
 #define REFL_END_ACTIONS                                                                                               \
     }                                                                                                                  \

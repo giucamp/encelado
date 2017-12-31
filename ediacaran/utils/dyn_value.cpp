@@ -5,6 +5,26 @@
 
 namespace ediacaran
 {
+    dyn_value::dyn_value(const qualified_type_ptr & i_qualified_type)
+    {
+        assign(i_qualified_type);
+    }
+
+    void dyn_value::assign(const qualified_type_ptr & i_qualified_type)
+    {
+        if (!i_qualified_type.is_empty())
+        {
+            auto const final_type = i_qualified_type.final_type();
+            if (!final_type->is_copy_constructible())
+            {
+                except<unsupported_error>("The type ", final_type->name(), " is not constructible");
+            }
+            manual_construct(i_qualified_type, [=](void * i_dest) {
+                final_type->construct(i_dest);
+            });
+        }
+    }
+
     dyn_value::dyn_value(const raw_ptr & i_source)
     {
         auto & type = i_source.qualified_type();
@@ -84,9 +104,8 @@ namespace ediacaran
     dyn_value parse_value(const qualified_type_ptr & i_qualified_type, char_reader & i_source)
     {
         dyn_value result;
-        result.manual_construct(i_qualified_type, [&](void * i_dest){
-            i_qualified_type.final_type()->parse(i_dest, i_source);
-        });
+        result.manual_construct(
+          i_qualified_type, [&](void * i_dest) { i_qualified_type.final_type()->parse(i_dest, i_source); });
         return result;
     }
 

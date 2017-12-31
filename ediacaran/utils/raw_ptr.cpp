@@ -2,7 +2,29 @@
 
 namespace ediacaran
 {
-    raw_ptr raw_ptr::full_indirection() const noexcept
+    raw_ptr raw_ptr::full_indirection() const
+    {
+        auto indirection_levels = m_qualified_type.indirection_levels();
+        auto constness_word = m_qualified_type.constness_word();
+        auto volatileness_word = m_qualified_type.volatileness_word();
+        auto object = m_object;
+
+        while (indirection_levels > 0)
+        {
+            if(object == nullptr)
+                except<null_pointer_indirection>("Indirection of null pointer");
+
+            indirection_levels--;
+            constness_word >>= 1;
+            volatileness_word >>= 1;
+            object = *static_cast<void **>(object);
+        }
+
+        return raw_ptr(object,
+            qualified_type_ptr(m_qualified_type.final_type(), 0, constness_word, volatileness_word));
+    }
+
+    raw_ptr raw_ptr::try_full_indirection() const noexcept
     {
         auto indirection_levels = m_qualified_type.indirection_levels();
         auto constness_word = m_qualified_type.constness_word();
@@ -17,13 +39,13 @@ namespace ediacaran
             object = *static_cast<void **>(object);
         }
 
-        return raw_ptr(
-          object, qualified_type_ptr(m_qualified_type.final_type(), indirection_levels, constness_word, volatileness_word));
+        return raw_ptr(object,
+          qualified_type_ptr(m_qualified_type.final_type(), indirection_levels, constness_word, volatileness_word));
     }
 
     void raw_ptr::to_string(char_writer & o_dest) const noexcept
     {
-        if(!m_qualified_type.is_empty())
+        if (!m_qualified_type.is_empty())
         {
             size_t indirection_levels = m_qualified_type.indirection_levels();
             void * object = m_object;
@@ -41,7 +63,7 @@ namespace ediacaran
             {
                 EDIACARAN_INTERNAL_ASSERT(indirection_levels == 0);
                 auto const & type = *m_qualified_type.final_type();
-                if(type.is_stringizable())
+                if (type.is_stringizable())
                 {
                     type.stringize(object, o_dest);
                 }

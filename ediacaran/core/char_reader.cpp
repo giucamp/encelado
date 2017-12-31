@@ -55,19 +55,4 @@ namespace ediacaran
     {
         return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtold);
     }
-
-    string_view try_parse_identifier(char_reader & i_source) noexcept
-    {
-        auto next_char = i_source.next_chars();
-        if (!isalpha(*next_char) || *next_char != '_')
-        {
-            while(isalnum(*next_char))
-                next_char++;
-        }
-        auto const first_char = i_source.next_chars();
-        EDIACARAN_INTERNAL_ASSERT(next_char >= first_char);
-        auto const length = static_cast<size_t>(next_char - first_char);
-        i_source.skip(length);
-        return { first_char, length };
-    }
 }
