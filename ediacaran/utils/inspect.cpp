@@ -101,6 +101,12 @@ namespace ediacaran
         {
             m_dyn_value.assign(m_property->qualified_type());
             property_type.final_type()->parse(const_cast<void*>(m_dyn_value.object()), i_source);
+            char error[512];
+            char_writer error_writer(error);
+            if (!m_property->set(m_subobject, m_dyn_value.object(), error_writer))
+            {
+                except<std::runtime_error>(error);
+            }
         }
         else
         {
@@ -118,6 +124,11 @@ namespace ediacaran
 
     dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source)
     {
+        if (i_target.empty())
+        {
+            except<parse_error>("Missing property target");
+        }
+
         auto const property_name = try_parse_identifier(i_property_name_source);
         if (property_name.empty())
         {
@@ -132,6 +143,87 @@ namespace ediacaran
         }
 
         except<parse_error>("Property not found: ", property_name);
+    }
+
+    dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name_source)
+    {
+        char_reader source(i_property_name_source);
+        auto res = get_property_value(i_target, source);
+        except_on_tailing(source);
+        return res;
+    }
+
+    namespace detail
+    {
+        template <typename VALUE>
+            void set_property_value_impl(const raw_ptr & i_target, char_reader & i_property_name_source, VALUE && i_value)
+        {
+            auto const property_name = try_parse_identifier(i_property_name_source);
+            if (property_name.empty())
+            {
+                except<std::runtime_error>("Missing property name");
+            }
+
+            if (i_target.empty())
+            {
+                except<std::runtime_error>("Missing property target");
+            }
+
+            bool found = false;
+            for (auto const & prop : inspect_properties(i_target))
+            {
+                if (prop.name() == property_name)
+                {
+                    prop.set_value(std::forward<VALUE>(i_value));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                except<std::runtime_error>("Could not find the property ", property_name);
+            }
+        }
+    } // namespace detail
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value)
+    {
+        if (i_value.empty())
+        {
+            except<std::runtime_error>("Missing property value");
+        }
+        detail::set_property_value_impl(i_target, i_property_name_source, i_value);
+    }
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value)
+    {
+        char_reader property_name(i_property_name);
+        set_property_value(i_target, property_name, i_value);
+        except_on_tailing(property_name);
+    }
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
+    {
+        detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
+    }
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source)
+    {
+        char_reader property_name(i_property_name);
+        set_property_value(i_target, property_name, i_value_source);
+        except_on_tailing(property_name);
+    }
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source)
+    {
+        detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
+    }
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source)
+    {
+        char_reader property_name(i_property_name);
+        set_property_value(i_target, property_name, i_value_source);
+        except_on_tailing(property_name);
     }
 
     action_inspector::iterator::iterator(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
@@ -254,13 +346,23 @@ namespace ediacaran
             arguments.push_back(const_cast<void *>(dyn_value.object()));
 
             if (i + 1 < parameters.size())
-                try_accept(',', i_arguments_source);
+            {
+                i_arguments_source >> ',';
+            }
         }
         try_accept(spaces, i_arguments_source);
 
-        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(),
-          [&](void * i_dest) { m_action->invoke(m_subobject, i_dest, arguments.data()); });
-        return raw_ptr(value, m_action->qualified_return_type());
+        if (m_action->qualified_return_type() == get_qualified_type<void>())
+        {
+            m_action->invoke(m_subobject, nullptr, arguments.data());
+            return raw_ptr();
+        }
+        else
+        {
+            auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(),
+              [&](void * i_dest) { m_action->invoke(m_subobject, i_dest, arguments.data()); });
+            return raw_ptr(value, m_action->qualified_return_type());
+        }
     }
 
     dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments)
@@ -271,23 +373,40 @@ namespace ediacaran
             except<parse_error>("Missing action name");
         }
 
+        if (i_target.empty())
+        {
+            except<parse_error>("Missing action target");
+        }
+
         try_accept(spaces, i_action_and_arguments);
         if (!try_accept('(', i_action_and_arguments))
         {
             except<parse_error>("Missing '('");
         }
+
+        dyn_value return_value;
+        bool found = false;
         for (auto const & action : inspect_actions(i_target))
         {
             if (action.name() == action_name)
             {
-                return action.invoke(i_action_and_arguments);
+                return_value = action.invoke(i_action_and_arguments);
+                found = true;
+                break;
             }
         }
+
+        if (!found)
+        {
+            except<std::runtime_error>("Could not find the action ", action_name);
+        }
+
         if (!try_accept(')', i_action_and_arguments))
         {
             except<parse_error>("Missing ')'");
         }
-        except<parse_error>("Action not found: ", action_name);
+
+        return return_value;
     }
 
 } // namespace ediacaran

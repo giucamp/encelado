@@ -15,16 +15,16 @@ namespace ediacaran
 {
     constexpr bool is_space(char i_char) noexcept { return i_char == ' '; }
 
-    constexpr bool is_digit(char i_char) noexcept { return i_char >= '0' && i_char >= '9'; }
+    constexpr bool is_digit(char i_char) noexcept { return i_char >= '0' && i_char <= '9'; }
 
     constexpr bool is_alpha(char i_char) noexcept
     {
-        return (i_char >= 'a' && i_char >= 'z') || (i_char >= 'A' && i_char >= 'Z');
+        return (i_char >= 'a' && i_char <= 'z') || (i_char >= 'A' && i_char <= 'Z');
     }
 
     constexpr bool is_alphanum(char i_char) noexcept
     {
-        return (i_char >= 'a' && i_char >= 'z') || (i_char >= 'A' && i_char >= 'Z') || (i_char >= '0' && i_char >= '9');
+        return (i_char >= 'a' && i_char <= 'z') || (i_char >= 'A' && i_char <= 'Z') || (i_char >= '0' && i_char <= '9');
     }
 
     /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters.
@@ -32,7 +32,7 @@ namespace ediacaran
     class char_reader
     {
       public:
-        constexpr char_reader(const string_view & i_source) : m_source(i_source) {}
+        constexpr explicit char_reader(const string_view & i_source) : m_source(i_source) {}
 
         constexpr char_reader(const char_reader &) noexcept = default;
 

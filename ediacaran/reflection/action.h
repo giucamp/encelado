@@ -83,7 +83,7 @@ namespace ediacaran
         };
 
         template <typename OWNING_CLASS, typename... PARAMETER_TYPE,
-          const char * const (&PARAM_NAMES)[sizeof...(PARAMETER_TYPE)], void (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...),
+          const char * const * PARAM_NAMES, void (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...),
           size_t... INDEX>
         struct ActionInvoker<void (OWNING_CLASS::*)(PARAMETER_TYPE...), METHOD, std::index_sequence<INDEX...>,
           PARAM_NAMES>

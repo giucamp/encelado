@@ -172,7 +172,13 @@ namespace ediacaran
 
     constexpr bool qualified_type_ptr::operator==(const qualified_type_ptr & i_source) const
     {
-        return m_final_type == i_source.m_final_type &&
+        if (m_final_type == nullptr)
+        {
+            return i_source.m_final_type == nullptr;
+        }
+
+        return i_source.m_final_type != nullptr &&
+               m_final_type->name() == i_source.m_final_type->name() &&
                m_indirection_levels == i_source.m_indirection_levels &&
                m_constness_word == i_source.m_constness_word &&
                m_volatileness_word == i_source.m_volatileness_word;

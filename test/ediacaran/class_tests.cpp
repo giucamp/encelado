@@ -102,9 +102,25 @@ namespace ediacaran_test
 
     struct TestBase_2_Base
     {
-        int8_t m_int8_2_1{};
-        int8_t m_int8_2_2{};
-        int8_t m_int8_2_3{};
+        int8_t m_int8_2_1{1};
+        int8_t m_int8_2_2{2};
+        int8_t m_int8_2_3{3};
+
+        void set_all(int8_t i_value)
+        {
+            m_int8_2_1 = i_value;
+            m_int8_2_2 = i_value + 1;
+            m_int8_2_3 = i_value + 2;
+        }
+
+        int8_t clear_all()
+        {
+            auto res = m_int8_2_1 + m_int8_2_2 + m_int8_2_3;
+            m_int8_2_1 = 0;
+            m_int8_2_2 = 0;
+            m_int8_2_3 = 0;
+            return res;
+        }
     };
 
     REFL_BEGIN_CLASS("TestBase_2_Base", TestBase_2_Base)
@@ -114,6 +130,11 @@ namespace ediacaran_test
             REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
             REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
         REFL_END_PROPERTIES
+        constexpr static const char * par_names_1[] = { "i_int_par"};
+        REFL_BEGIN_ACTIONS
+            REFL_ACTION("set_all", set_all, par_names_1)
+            //REFL_ACTION("clear_all", clear_all, nullptr)
+        REFL_END_ACTIONS
     REFL_END_CLASS;
 
     // layer 1
@@ -152,8 +173,8 @@ namespace ediacaran_test
 
     struct TestClass : TestBase_1_1, TestBase_1_2
     {
-        int m_integer = 77;
-        float m_float = 88;
+        int m_integer = 4;
+        float m_float = 5;
 
         int add(int i_int_par, const float i_flt_par, bool i_invert)
         {
@@ -231,12 +252,12 @@ namespace ediacaran_test
         }
 
         TestClass test_object;
-        for (auto const & prop : inspect_properties(&test_object))
+        for (auto const & prop : inspect_properties(raw_ptr(&test_object)))
         {
             std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;
         }
 
-        class_tests_print_props(&test_object);
+        class_tests_print_props(raw_ptr(&test_object));
 
         auto s1 = class_descriptor<TestClass>::bases::size;
 
@@ -253,11 +274,48 @@ namespace ediacaran_test
         std::cout << "------------------" << std::endl;
 
         raw_ptr obj(&test_object);
-        auto int_v = get_property_value(obj, "integer").to_string();
-        auto flt_v = get_property_value(obj, "float").to_string();
-        auto action_res = invoke_action(obj, "add(4, 5, false)").to_string();
-        auto int_v_1 = get_property_value(obj, "integer").to_string();
-        auto flt_v_2 = get_property_value(obj, "float").to_string();
+        {
+            auto int_v = get_property_value(obj, "integer").to_string();
+            auto flt_v = get_property_value(obj, "float").to_string();
+            ENCELADO_TEST_ASSERT(int_v == "4");
+            ENCELADO_TEST_ASSERT(flt_v == "5");
+            auto action_res = invoke_action(obj, "add(2, 3, false)").to_string();
+            auto int_v_1 = get_property_value(obj, "integer").to_string();
+            auto flt_v_2 = get_property_value(obj, "float").to_string();
+            ENCELADO_TEST_ASSERT(action_res == "6");
+            ENCELADO_TEST_ASSERT(int_v_1 == "6");
+            ENCELADO_TEST_ASSERT(flt_v_2 == "8");
+        }
+        {
+            auto v1 = get_property_value(obj, "m_int8_2_1").to_string();
+            auto v2 = get_property_value(obj, "m_int8_2_2").to_string();
+            auto v3 = get_property_value(obj, "m_int8_2_3").to_string();
+            ENCELADO_TEST_ASSERT(v1 == "1");
+            ENCELADO_TEST_ASSERT(v2 == "2");
+            ENCELADO_TEST_ASSERT(v3 == "3");
+            invoke_action(obj, "set_all(11)");
+            auto n1 = get_property_value(obj, "m_int8_2_1").to_string();
+            auto n2 = get_property_value(obj, "m_int8_2_2").to_string();
+            auto n3 = get_property_value(obj, "m_int8_2_3").to_string();
+            //ENCELADO_TEST_ASSERT(action_res == "1");
+            ENCELADO_TEST_ASSERT(n1 == "11");
+            ENCELADO_TEST_ASSERT(n2 == "12");
+            ENCELADO_TEST_ASSERT(n3 == "13");
+
+            int8_t val = 34;
+            char_reader prop_n("m_int8_2_1");
+            char_reader prop_v("32");
+            set_property_value(obj, prop_n, prop_v);
+            set_property_value(obj, "m_int8_2_2", "33");
+            set_property_value(obj, "m_int8_2_3", raw_ptr(&val));
+
+            auto m1 = get_property_value(obj, "m_int8_2_1").to_string();
+            auto m2 = get_property_value(obj, "m_int8_2_2").to_string();
+            auto m3 = get_property_value(obj, "m_int8_2_3").to_string();
+            ENCELADO_TEST_ASSERT(m1 == "32");
+            ENCELADO_TEST_ASSERT(m2 == "33");
+            ENCELADO_TEST_ASSERT(m3 == "34");
+        }
 
         std::cout << "------------------" << std::endl;
     }

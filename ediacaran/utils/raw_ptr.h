@@ -19,7 +19,7 @@ namespace ediacaran
         {
         }
 
-        template <typename TYPE> raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
+        template <typename TYPE> explicit raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
         {
         }
 
@@ -46,7 +46,7 @@ namespace ediacaran
             std::swap(i_first.m_qualified_type, i_second.m_qualified_type);
         }
 
-        bool empty() const noexcept { return m_object != nullptr; }
+        bool empty() const noexcept { return m_object == nullptr; }
 
         bool operator==(const raw_ptr & i_source) const noexcept { return m_object == i_source.m_object; }
 

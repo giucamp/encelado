@@ -29,11 +29,11 @@ namespace ediacaran
 
             raw_ptr get_value() const { return m_parent.get_prop_value(); }
 
-            void set_value(const raw_ptr & i_value) { m_parent.set_prop_value(i_value); }
+            void set_value(const raw_ptr & i_value) const { m_parent.set_prop_value(i_value); }
 
-            void set_value(char_reader & i_source) { m_parent.set_prop_value(i_source); }
+            void set_value(char_reader & i_source) const { m_parent.set_prop_value(i_source); }
 
-            void set_value(const string_view & i_source) { m_parent.set_prop_value(i_source); }
+            void set_value(const string_view & i_source) const { m_parent.set_prop_value(i_source); }
 
           private:
             class iterator & m_parent;
@@ -209,11 +209,19 @@ namespace ediacaran
 
     dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source);
 
-    inline dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name_source)
-    {
-        char_reader source(i_property_name_source);
-        return get_property_value(i_target, source);
-    }
+    dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name);
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value);
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value);
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
+
+    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source);
+
+    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source);
 
     // expects "action(par1, par2, ...)"
     dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments);
