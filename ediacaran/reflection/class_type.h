@@ -103,14 +103,18 @@ namespace ediacaran
     {
         template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE *&>()));
 
+        // base_array - array of base_class, constructed from an input type_list
         template <typename...> struct base_array;
-
         template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
         {
-            inline static constexpr base_class s_bases[sizeof...(BASES)] = { base_class::make<CLASS, BASES>()... };
+            constexpr static base_class s_bases[sizeof...(BASES)] = { base_class::make<CLASS, BASES>()... };
+        };
+        template <typename CLASS> struct base_array<CLASS, type_list<>>
+        {
+             constexpr static array_view<const base_class> s_bases{};
         };
 
-        // makes a list of all the direct and indirect bases of CLASS
+        // makes a list of all the direct and indirect bases of CLASS using class_descriptor<...>::bases as input
         template <typename...> struct all_bases;
         template <typename CLASS> // this expands <CLASS> to <CLASS, type_list<BASES...>>
         struct all_bases<CLASS>
@@ -123,24 +127,6 @@ namespace ediacaran
             using type = tl_push_back_t<type_list<BASES...>, typename all_bases<BASES>::type...>;
         };
 
-        template <typename CLASS>
-        constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
-            const array_view<const action> & i_actions,
-            std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
-        {
-            return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-                array_view<const base_class>(), i_properties, i_actions);
-        }
-
-        template <typename CLASS>
-        constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
-            const array_view<const action> & i_actions,
-            std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
-        {
-            return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-                base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases, i_properties, i_actions);
-        }
-
         struct Edic_Reflect_Defaults
         {
             constexpr static array_view<const property> properties{};
@@ -148,8 +134,11 @@ namespace ediacaran
         };
 
         template <typename CLASS>
-        class_type constexpr s_class{make_static_class<CLASS>(
-          class_descriptor<CLASS>::name, class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions)};
+        class_type constexpr s_class{
+            class_descriptor<CLASS>::name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
+                base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases,
+                class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions        
+        };
     }
 
     // get_type
