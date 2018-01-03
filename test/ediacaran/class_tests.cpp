@@ -2,7 +2,7 @@
 
 #include "../common.h"
 #include "ediacaran/core/string_builder.h"
-#include "ediacaran/reflection/class_type.h"
+#include "ediacaran/reflection/reflection.h"
 #include "ediacaran/utils/dyn_value.h"
 #include "ediacaran/utils/inspect.h"
 #include <iostream>
@@ -258,8 +258,6 @@ namespace ediacaran_test
         }
 
         class_tests_print_props(raw_ptr(&test_object));
-
-        auto s1 = class_descriptor<TestClass>::bases::size;
 
         const auto & t = get_type<TestClass>();
         for (auto const & act : t.actions())

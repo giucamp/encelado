@@ -15,9 +15,9 @@ namespace ediacaran
     {
       public:
         constexpr symbol_t(const char * const i_name) noexcept : m_name(i_name) {}
-        constexpr string_view name() const
-          noexcept // workaround for gcc considering the comparison of two char* non-constexpr
+        constexpr string_view name() const noexcept
         {
+            // workaround for gcc considering the comparison of two char* non-constexpr
             return string_view(m_name, string_view::traits_type::length(m_name));
         }
 

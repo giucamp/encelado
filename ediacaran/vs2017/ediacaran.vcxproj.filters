@@ -55,6 +55,15 @@
     <ClInclude Include="..\reflection\action.h">
       <Filter>reflection</Filter>
     </ClInclude>
+    <ClInclude Include="..\reflection\parameter.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\class_template_specialization.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\reflection.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

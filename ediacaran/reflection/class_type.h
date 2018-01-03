@@ -35,6 +35,7 @@ namespace ediacaran
         template <typename DERIVED, typename BASE> static void * impl_up_cast(void * i_derived) noexcept
         {
             auto const derived = static_cast<DERIVED *>(i_derived);
+            EDIACARAN_ASSERT(derived!= nullptr);
             return static_cast<BASE *>(derived);
         }
 
@@ -98,49 +99,48 @@ namespace ediacaran
         array_view<const action> const m_actions;
     };
 
-    template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE *&>()));
-
-    template <typename...> struct base_array;
-
-    template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
-    {
-        inline static constexpr base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
-    };
-
-    // makes a list of all the direct and indirect bases of CLASS
-    template <typename...> struct all_bases;
-    template <typename CLASS> // this expands <CLASS> to <CLASS, type_list<BASES...>>
-    struct all_bases<CLASS>
-    {
-        using bases = typename class_descriptor<CLASS>::bases;
-        using type = typename all_bases<CLASS, bases>::type;
-    };
-    template <typename CLASS, typename... BASES> struct all_bases<CLASS, type_list<BASES...>>
-    {
-        using type = tl_push_back_t<type_list<BASES...>, typename all_bases<BASES>::type...>;
-    };
-
-    template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
-      const array_view<const action> & i_actions,
-      std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
-    {
-        return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-          array_view<const base_class>(), i_properties, i_actions);
-    }
-
-    template <typename CLASS>
-    constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
-      const array_view<const action> & i_actions,
-      std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
-    {
-        return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
-          base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases, i_properties, i_actions);
-    }
-
-
     namespace detail
     {
+        template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE *&>()));
+
+        template <typename...> struct base_array;
+
+        template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
+        {
+            inline static constexpr base_class s_bases[sizeof...(BASES)] = { base_class::make<CLASS, BASES>()... };
+        };
+
+        // makes a list of all the direct and indirect bases of CLASS
+        template <typename...> struct all_bases;
+        template <typename CLASS> // this expands <CLASS> to <CLASS, type_list<BASES...>>
+        struct all_bases<CLASS>
+        {
+            using bases = typename class_descriptor<CLASS>::bases;
+            using type = typename all_bases<CLASS, bases>::type;
+        };
+        template <typename CLASS, typename... BASES> struct all_bases<CLASS, type_list<BASES...>>
+        {
+            using type = tl_push_back_t<type_list<BASES...>, typename all_bases<BASES>::type...>;
+        };
+
+        template <typename CLASS>
+        constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
+            const array_view<const action> & i_actions,
+            std::enable_if_t<all_bases<CLASS>::type::size == 0> * = nullptr) noexcept
+        {
+            return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
+                array_view<const base_class>(), i_properties, i_actions);
+        }
+
+        template <typename CLASS>
+        constexpr class_type make_static_class(const char * i_name, const array_view<const property> & i_properties,
+            const array_view<const action> & i_actions,
+            std::enable_if_t<all_bases<CLASS>::type::size != 0> * = nullptr) noexcept
+        {
+            return class_type(i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
+                base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases, i_properties, i_actions);
+        }
+
         struct Edic_Reflect_Defaults
         {
             constexpr static array_view<const property> properties{};
@@ -165,43 +165,3 @@ namespace ediacaran
     }
 
 } // namespace ediacaran
-
-#define REFL_BEGIN_CLASS(Name, Class)                                                                                  \
-    struct Edic_Reflect_##Class get_type_descriptor(Class *&);                                                         \
-    struct Edic_Reflect_##Class : ediacaran::detail::Edic_Reflect_Defaults                                             \
-    {                                                                                                                  \
-        constexpr static const char * name = Name;                                                                     \
-        using this_class = Class;
-#define REFL_BASES(...) using bases = ediacaran::type_list<__VA_ARGS__>;
-
-#define REFL_BEGIN_PROPERTIES constexpr static ediacaran::property properties[] = {
-
-#define REFL_DATA_PROP(Name, DataMember)                                                                               \
-    ediacaran::detail::make_data_property(                                                                             \
-      Name, ediacaran::get_qualified_type<decltype(this_class::DataMember)>(), offsetof(this_class, DataMember)),
-
-#define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                                       \
-    ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<decltype(&this_class::Getter),       \
-      decltype(&this_class::Setter), &this_class::Getter, &this_class::Setter>>(Name),
-
-#define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                                            \
-    ediacaran::detail::make_accessor_property<                                                                         \
-      ediacaran::detail::PropertyAccessor<decltype(&this_class::Getter), nullptr_t, &this_class::Getter, nullptr>>(    \
-      Name),
-
-#define REFL_END_PROPERTIES                                                                                            \
-    }                                                                                                                  \
-    ;
-
-#define REFL_BEGIN_ACTIONS constexpr static ediacaran::action actions[] = {
-
-#define REFL_ACTION(Name, Method, ParameterNames)                                                                      \
-    ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method, ParameterNames>(Name),
-
-#define REFL_END_ACTIONS                                                                                               \
-    }                                                                                                                  \
-    ;
-
-#define REFL_END_CLASS                                                                                                 \
-    }                                                                                                                  \
-    ;

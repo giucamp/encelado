@@ -28,10 +28,13 @@
     <ClInclude Include="..\core\string_builder.h" />
     <ClInclude Include="..\core\type_list.h" />
     <ClInclude Include="..\reflection\action.h" />
+    <ClInclude Include="..\reflection\class_template_specialization.h" />
+    <ClInclude Include="..\reflection\parameter.h" />
     <ClInclude Include="..\reflection\class_type.h" />
     <ClInclude Include="..\reflection\namespace.h" />
     <ClInclude Include="..\reflection\property.h" />
     <ClInclude Include="..\reflection\qualified_type_ptr.h" />
+    <ClInclude Include="..\reflection\reflection.h" />
     <ClInclude Include="..\reflection\special_functions.h" />
     <ClInclude Include="..\reflection\type.h" />
     <ClInclude Include="..\utils\dyn_value.h" />

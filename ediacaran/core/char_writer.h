@@ -137,7 +137,6 @@ namespace ediacaran
         {
             do
             {
-
                 /* note: we do not use the modulo operator %, because it has implementation-defined
 					behavior with non-positive operands. */
                 SINT_TYPE const new_value = i_source / ten;
