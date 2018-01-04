@@ -27,7 +27,8 @@ namespace ediacaran
         @param i_alignment must be > 0 and a power of 2 */
     template <typename UINT> inline bool uint_is_aligned(UINT i_uint, UINT i_alignment) noexcept
     {
-        static_assert(std::numeric_limits<UINT>::is_integer && !std::numeric_limits<UINT>::is_signed,
+        static_assert(
+          std::numeric_limits<UINT>::is_integer && !std::numeric_limits<UINT>::is_signed,
           "UINT mus be an unsigned integer");
         EDIACARAN_ASSERT(i_alignment > 0 && is_power_of_2(i_alignment));
         return (i_uint & (i_alignment - 1)) == 0;
@@ -83,7 +84,7 @@ namespace ediacaran
     {
         EDIACARAN_ASSERT(i_end_address >= i_start_address);
 
-        const uintptr_t end_uint_pointer = reinterpret_cast<uintptr_t>(i_end_address);
+        const uintptr_t end_uint_pointer   = reinterpret_cast<uintptr_t>(i_end_address);
         const uintptr_t start_uint_pointer = reinterpret_cast<uintptr_t>(i_start_address);
 
         return end_uint_pointer - start_uint_pointer;
@@ -140,8 +141,8 @@ namespace ediacaran
         @param i_alignment alignment required from the pointer. It must be an integer power of 2
         @param i_alignment_offset alignment offset
         @return the result address */
-    inline const void * address_lower_align(
-      const void * i_address, size_t i_alignment, size_t i_alignment_offset) noexcept
+    inline const void *
+      address_lower_align(const void * i_address, size_t i_alignment, size_t i_alignment_offset) noexcept
     {
         const void * address = address_add(i_address, i_alignment_offset);
 
@@ -188,7 +189,8 @@ namespace ediacaran
         @return the aligned address */
     template <typename UINT> constexpr UINT uint_upper_align(UINT i_uint, size_t i_alignment) noexcept
     {
-        static_assert(std::numeric_limits<UINT>::is_integer && !std::numeric_limits<UINT>::is_signed,
+        static_assert(
+          std::numeric_limits<UINT>::is_integer && !std::numeric_limits<UINT>::is_signed,
           "UINT must be an unsigned integer");
         return (i_uint + (i_alignment - 1)) & ~(i_alignment - 1);
     }
@@ -200,7 +202,8 @@ namespace ediacaran
         @return the aligned address */
     template <typename UINT> constexpr UINT uint_lower_align(UINT i_uint, size_t i_alignment) noexcept
     {
-        static_assert(std::numeric_limits<UINT>::is_integer && !std::numeric_limits<UINT>::is_signed,
+        static_assert(
+          std::numeric_limits<UINT>::is_integer && !std::numeric_limits<UINT>::is_signed,
           "UINT must be an unsigned integer");
         return i_uint & ~(i_alignment - 1);
     }
@@ -226,8 +229,8 @@ namespace ediacaran
         @param i_alignment alignment required from the pointer. It must be an integer power of 2
         @param i_alignment_offset alignment offset
         @return the result address */
-    inline const void * address_upper_align(
-      const void * i_address, size_t i_alignment, size_t i_alignment_offset) noexcept
+    inline const void *
+      address_upper_align(const void * i_address, size_t i_alignment, size_t i_alignment_offset) noexcept
     {
         const void * address = address_add(i_address, i_alignment_offset);
 

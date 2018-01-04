@@ -13,9 +13,9 @@ namespace ediacaran
         auto const final_type = m_target.qualified_type().final_type();
         if (final_type->is_class())
         {
-            m_class = static_cast<const class_type *>(final_type);
+            m_class     = static_cast<const class_type *>(final_type);
             m_subobject = const_cast<void *>(m_target.object());
-            m_property = m_class->properties().data();
+            m_property  = m_class->properties().data();
             if (m_class->properties().empty())
             {
                 next_base();
@@ -40,8 +40,8 @@ namespace ediacaran
             if (m_base_index < complete_class->base_classes().size())
             {
                 auto const & base = complete_class->base_classes()[m_base_index];
-                m_class = &base.get_class();
-                m_subobject = const_cast<void *>(base.up_cast(m_target.object()));
+                m_class           = &base.get_class();
+                m_subobject       = const_cast<void *>(base.up_cast(m_target.object()));
                 if (!m_class->properties().empty())
                 {
                     m_property = m_class->properties().data();
@@ -61,11 +61,11 @@ namespace ediacaran
     raw_ptr property_inspector::iterator::get_prop_value()
     {
         auto const & property_type = m_property->qualified_type();
-        auto value = const_cast<void *>(m_property->get_inplace(m_subobject));
+        auto         value         = const_cast<void *>(m_property->get_inplace(m_subobject));
         if (value == nullptr)
         {
             value = m_dyn_value.manual_construct(property_type, [&](void * i_dest) {
-                char error_msg[512];
+                char        error_msg[512];
                 char_writer error_writer(error_msg);
                 if (!m_property->get(m_subobject, i_dest, error_writer))
                 {
@@ -85,11 +85,12 @@ namespace ediacaran
 
         if (i_value.qualified_type() != m_property->qualified_type())
         {
-            except<std::runtime_error>("The property ", m_property->name(), " expects a ", m_property->qualified_type(),
-              ", a ", i_value.qualified_type(), " was provided");
+            except<std::runtime_error>(
+              "The property ", m_property->name(), " expects a ", m_property->qualified_type(), ", a ",
+              i_value.qualified_type(), " was provided");
         }
 
-        char error[512];
+        char        error[512];
         char_writer err_writer(error);
         if (!m_property->set(m_subobject, i_value.object(), err_writer))
         {
@@ -104,7 +105,7 @@ namespace ediacaran
         {
             m_dyn_value.assign(m_property->qualified_type());
             property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
-            char error[512];
+            char        error[512];
             char_writer error_writer(error);
             if (!m_property->set(m_subobject, m_dyn_value.object(), error_writer))
             {
@@ -151,7 +152,7 @@ namespace ediacaran
     dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name_source)
     {
         char_reader source(i_property_name_source);
-        auto res = get_property_value(i_target, source);
+        auto        res = get_property_value(i_target, source);
         except_on_tailing(source);
         return res;
     }
@@ -205,8 +206,8 @@ namespace ediacaran
         except_on_tailing(property_name);
     }
 
-    void set_property_value(
-      const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
+    void
+      set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
     {
         detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
     }
@@ -239,9 +240,9 @@ namespace ediacaran
         auto const final_type = m_target.qualified_type().final_type();
         if (final_type->is_class())
         {
-            m_class = static_cast<const class_type *>(final_type);
+            m_class     = static_cast<const class_type *>(final_type);
             m_subobject = const_cast<void *>(m_target.object());
-            m_action = m_class->actions().data();
+            m_action    = m_class->actions().data();
             if (m_class->actions().empty())
             {
                 next_base();
@@ -266,8 +267,8 @@ namespace ediacaran
             if (m_base_index < complete_class->base_classes().size())
             {
                 auto const & base = complete_class->base_classes()[m_base_index];
-                m_class = &base.get_class();
-                m_subobject = const_cast<void *>(base.up_cast(m_target.object()));
+                m_class           = &base.get_class();
+                m_subobject       = const_cast<void *>(base.up_cast(m_target.object()));
                 if (!m_class->actions().empty())
                 {
                     m_action = m_class->actions().data();
@@ -290,8 +291,9 @@ namespace ediacaran
 
         if (i_arguments.size() != parameters.size())
         {
-            except<mismatching_arguments>("The action ", m_action->name(), " expects ", parameters.size(),
-              " arguments, ", i_arguments.size(), " were provided");
+            except<mismatching_arguments>(
+              "The action ", m_action->name(), " expects ", parameters.size(), " arguments, ", i_arguments.size(),
+              " were provided");
         }
 
         std::vector<void *> arguments(i_arguments.size());
@@ -299,15 +301,17 @@ namespace ediacaran
         {
             if (i_arguments[i].qualified_type() != parameters[i].qualified_type())
             {
-                except<mismatching_arguments>("The argument ", i, " (", parameters[i].name(), ") of the action ",
-                  m_action->name(), " is expected to have type ", parameters[i].qualified_type(), ", a ",
-                  i_arguments[i].qualified_type(), " was provided");
+                except<mismatching_arguments>(
+                  "The argument ", i, " (", parameters[i].name(), ") of the action ", m_action->name(),
+                  " is expected to have type ", parameters[i].qualified_type(), ", a ", i_arguments[i].qualified_type(),
+                  " was provided");
             }
             arguments[i] = const_cast<void *>(i_arguments[i].object());
         }
 
-        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(),
-          [&](void * i_dest) { m_action->invoke(m_subobject, i_dest, arguments.data()); });
+        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
+            m_action->invoke(m_subobject, i_dest, arguments.data());
+        });
         return raw_ptr(value, m_action->qualified_return_type());
     }
 
@@ -317,12 +321,13 @@ namespace ediacaran
 
         if (i_arguments.size() != parameters.size())
         {
-            except<mismatching_arguments>("The action ", m_action->name(), " expects ", parameters.size(),
-              " arguments, ", i_arguments.size(), " were provided");
+            except<mismatching_arguments>(
+              "The action ", m_action->name(), " expects ", parameters.size(), " arguments, ", i_arguments.size(),
+              " were provided");
         }
 
         std::vector<dyn_value> dyn_arguments;
-        std::vector<void *> arguments;
+        std::vector<void *>    arguments;
         dyn_arguments.reserve(parameters.size());
         arguments.reserve(parameters.size());
         for (size_t i = 0; i < i_arguments.size(); i++)
@@ -331,8 +336,9 @@ namespace ediacaran
             arguments.push_back(const_cast<void *>(dyn_arguments.back().object()));
         }
 
-        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(),
-          [&](void * i_dest) { m_action->invoke(m_subobject, i_dest, arguments.data()); });
+        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
+            m_action->invoke(m_subobject, i_dest, arguments.data());
+        });
         return raw_ptr(value, m_action->qualified_return_type());
     }
 
@@ -341,7 +347,7 @@ namespace ediacaran
         auto const & parameters = m_action->parameters();
 
         std::vector<dyn_value> dyn_arguments;
-        std::vector<void *> arguments;
+        std::vector<void *>    arguments;
         dyn_arguments.reserve(parameters.size());
         arguments.reserve(parameters.size());
 
@@ -367,8 +373,9 @@ namespace ediacaran
         }
         else
         {
-            auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(),
-              [&](void * i_dest) { m_action->invoke(m_subobject, i_dest, arguments.data()); });
+            auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
+                m_action->invoke(m_subobject, i_dest, arguments.data());
+            });
             return raw_ptr(value, m_action->qualified_return_type());
         }
     }
@@ -393,13 +400,13 @@ namespace ediacaran
         }
 
         dyn_value return_value;
-        bool found = false;
+        bool      found = false;
         for (auto const & action : inspect_actions(i_target))
         {
             if (action.name() == action_name)
             {
                 return_value = action.invoke(i_action_and_arguments);
-                found = true;
+                found        = true;
                 break;
             }
         }
@@ -420,7 +427,7 @@ namespace ediacaran
     dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments)
     {
         char_reader source(i_action_and_arguments);
-        dyn_value return_value = invoke_action(i_target, source);
+        dyn_value   return_value = invoke_action(i_target, source);
         except_on_tailing(source);
         return return_value;
     }

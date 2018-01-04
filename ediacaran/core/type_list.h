@@ -32,14 +32,15 @@ namespace ediacaran
     {
         template <typename...> struct tl_difference_impl;
         template <typename... RESULT_TYPES, typename FIRST_TYPE_1, typename... OTHER_TYPES_1, typename... TYPES_2>
-        struct tl_difference_impl<type_list<RESULT_TYPES...>, type_list<FIRST_TYPE_1, OTHER_TYPES_1...>,
-          type_list<TYPES_2...>>
+        struct tl_difference_impl<
+          type_list<RESULT_TYPES...>, type_list<FIRST_TYPE_1, OTHER_TYPES_1...>, type_list<TYPES_2...>>
         {
-            using type = typename std::conditional_t<tl_contains_v<FIRST_TYPE_1, TYPES_2...>,
-              typename tl_difference_impl<type_list<RESULT_TYPES...>, type_list<OTHER_TYPES_1...>,
-                type_list<TYPES_2...>>::type,
-              typename tl_difference_impl<type_list<RESULT_TYPES..., FIRST_TYPE_1>, type_list<OTHER_TYPES_1...>,
-                type_list<TYPES_2...>>::type>;
+            using type = typename std::conditional_t<
+              tl_contains_v<FIRST_TYPE_1, TYPES_2...>,
+              typename tl_difference_impl<
+                type_list<RESULT_TYPES...>, type_list<OTHER_TYPES_1...>, type_list<TYPES_2...>>::type,
+              typename tl_difference_impl<
+                type_list<RESULT_TYPES..., FIRST_TYPE_1>, type_list<OTHER_TYPES_1...>, type_list<TYPES_2...>>::type>;
         };
         template <typename... RESULT_TYPES, typename... TYPES_2>
         struct tl_difference_impl<type_list<RESULT_TYPES...>, type_list<>, type_list<TYPES_2...>>
@@ -47,7 +48,7 @@ namespace ediacaran
             using type = type_list<RESULT_TYPES...>;
         };
     } // namespace detail
-    template <typename... ARGS> using tl_difference = detail::tl_difference_impl<type_list<>, ARGS...>;
+    template <typename... ARGS> using tl_difference   = detail::tl_difference_impl<type_list<>, ARGS...>;
     template <typename... ARGS> using tl_difference_t = typename detail::tl_difference_impl<type_list<>, ARGS...>::type;
 
     // tl_push_back, tl_push_back_t
@@ -85,7 +86,8 @@ namespace ediacaran
         template <typename... RESULTS, typename CURR_TYPE, typename... NEXT_TYPES>
         struct tl_remove_duplicates_impl<type_list<RESULTS...>, type_list<CURR_TYPE, NEXT_TYPES...>>
         {
-            using type = std::conditional_t<tl_contains_v<CURR_TYPE, RESULTS...>,
+            using type = std::conditional_t<
+              tl_contains_v<CURR_TYPE, RESULTS...>,
               typename tl_remove_duplicates_impl<type_list<RESULTS...>, type_list<NEXT_TYPES...>>::type,
               typename tl_remove_duplicates_impl<type_list<RESULTS..., CURR_TYPE>, type_list<NEXT_TYPES...>>::type>;
         };

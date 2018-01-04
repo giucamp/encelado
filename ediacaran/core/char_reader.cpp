@@ -15,7 +15,7 @@ namespace ediacaran
             auto const source = i_source.next_chars();
 
             char * end_of_number;
-            auto res = i_strtof(source, &end_of_number);
+            auto   res = i_strtof(source, &end_of_number);
 
             if (end_of_number != nullptr && end_of_number != source)
             {
@@ -31,7 +31,7 @@ namespace ediacaran
                 else
                 {
                     std::string s(source, source + i_source.remaining_chars());
-                    res = i_strtof(source, nullptr);
+                    res    = i_strtof(source, nullptr);
                     o_dest = res;
                     i_source.skip(read_chars);
                     return true;

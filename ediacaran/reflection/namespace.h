@@ -17,7 +17,7 @@ namespace ediacaran
 
 
       private:
-        std::vector<const type *> m_types;
+        std::vector<const type *>       m_types;
         std::vector<const namespace_ *> m_namespaces;
         friend class global_namespace_;
     };

@@ -91,8 +91,8 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(4));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(5));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const CV_Flags cvs[] = {
-              CV_Flags::Const, CV_Flags::None, CV_Flags::None, CV_Flags::Volatile, CV_Flags::Const, CV_Flags::None};
+            const CV_Flags cvs[] = {CV_Flags::Const,    CV_Flags::None,  CV_Flags::None,
+                                    CV_Flags::Volatile, CV_Flags::Const, CV_Flags::None};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -107,7 +107,7 @@ namespace ediacaran_test
         ENCELADO_TEST_ASSERT(qual_type == parse<qualified_type_ptr>(i_type_str));
 
         auto const stringfied = to_string(qual_type);
-        auto const parsed = parse<qualified_type_ptr>(stringfied);
+        auto const parsed     = parse<qualified_type_ptr>(stringfied);
         ENCELADO_TEST_ASSERT(parsed == qual_type);
     }
 
@@ -248,9 +248,9 @@ namespace ediacaran_test
 
         // test cv qualifiers for float volatile*const volatile*const*
         {
-            const auto q_type_ptr = get_qualified_type<float volatile * const volatile * const *>();
-            const CV_Flags cvs[] = {
-              CV_Flags::None, CV_Flags::Const, CV_Flags::Const | CV_Flags::Volatile, CV_Flags::Volatile};
+            const auto     q_type_ptr = get_qualified_type<float volatile * const volatile * const *>();
+            const CV_Flags cvs[]      = {CV_Flags::None, CV_Flags::Const, CV_Flags::Const | CV_Flags::Volatile,
+                                    CV_Flags::Volatile};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
         }
 
@@ -261,7 +261,8 @@ namespace ediacaran_test
 			to verify the correctness of this note, but if it would ever fail on some compiler, it may safely be removed
 			(together with the implementation note), as no other assumptions on the size of qualified_type_ptr are present
 			in the library. */
-        static_assert(sizeof(qualified_type_ptr) == sizeof(void *) * 2,
+        static_assert(
+          sizeof(qualified_type_ptr) == sizeof(void *) * 2,
           "qualified_type_ptr is not big as two pointers, as documented.");
 
 

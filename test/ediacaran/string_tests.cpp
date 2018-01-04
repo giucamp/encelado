@@ -19,24 +19,25 @@ namespace ediacaran_test
         using namespace ediacaran;
 
         size_t const buffer_size = 1024 * 1024;
-        auto const buff = std::make_unique<char[]>(buffer_size);
+        auto const   buff        = std::make_unique<char[]>(buffer_size);
         memset(buff.get(), 7, buffer_size);
         char_writer out(buff.get(), buffer_size);
 
-        using var = std::variant<bool, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float,
-          double, long double, char, std::basic_string<char>>;
+        using var = std::variant<
+          bool, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, long double,
+          char, std::basic_string<char>>;
 
 
-        auto const seed = std::random_device{}();
+        auto const      seed = std::random_device{}();
         std::mt19937_64 mt{seed};
-        auto rand = [&mt] { return std::uniform_int_distribution<unsigned long long>()(mt); };
+        auto            rand = [&mt] { return std::uniform_int_distribution<unsigned long long>()(mt); };
 
-        std::vector<var> objects;
+        std::vector<var>          objects;
         std::vector<const char *> delimiters;
         for (;;)
         {
             auto const next_char = out.next_dest();
-            auto const op = rand() % 14;
+            auto const op        = rand() % 14;
             switch (op)
             {
             case 0:
@@ -125,7 +126,7 @@ namespace ediacaran_test
             }
             case 12:
             {
-                auto const c = static_cast<char>('a' + rand() % 16);
+                auto const        c = static_cast<char>('a' + rand() % 16);
                 std::string const value(static_cast<size_t>(1 + rand() % 32), c);
                 objects.push_back(value);
                 out << value << ' ';
@@ -149,8 +150,8 @@ namespace ediacaran_test
             }
             ENCELADO_TEST_ASSERT(!is_space(*next_char));
             auto const start_of_buff = buff.get();
-            auto const buff_len = strlen(start_of_buff);
-            auto const end_of_buff = start_of_buff + buff_len;
+            auto const buff_len      = strlen(start_of_buff);
+            auto const end_of_buff   = start_of_buff + buff_len;
             ENCELADO_TEST_ASSERT(end_of_buff == out.next_dest());
             delimiters.push_back(out.next_dest());
         }
@@ -174,11 +175,11 @@ namespace ediacaran_test
                   if constexpr (!std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
                   {
                       char_reader random_stream(random_input);
-                      value_type val;
+                      value_type  val;
                       try_parse(val, random_stream);
 
                       random_stream = char_reader(random_input);
-                      val = value_type{};
+                      val           = value_type{};
                       try_accept(val, random_stream);
                   }
 
@@ -204,11 +205,11 @@ namespace ediacaran_test
             char_writer out(buff);
             out << number;
 
-            error_buffer[0] = 0;
-            INT_TYPE result = 0;
+            error_buffer[0]    = 0;
+            INT_TYPE    result = 0;
             char_reader in(buff);
             char_writer err(error_buffer);
-            bool const res = try_parse(result, in, err);
+            bool const  res = try_parse(result, in, err);
 
             bool const expected_res = i_negative ? (number >= max) : (number <= max);
             ENCELADO_TEST_ASSERT(res == expected_res);
@@ -241,14 +242,14 @@ namespace ediacaran_test
         using namespace ediacaran;
 
         string_builder builder;
-        size_t const test_size = 5'000;
-        size_t progress = 0;
+        size_t const   test_size = 5'000;
+        size_t         progress  = 0;
         for (size_t j = 0; j < test_size; j += 1)
         {
             for (; progress < j; progress++)
                 builder << progress << ' ' << std::to_string(progress) << ' ';
 
-            auto string = builder.to_string();
+            auto        string = builder.to_string();
             char_reader reader(string);
             for (size_t i = 0; i < j; i++)
             {
@@ -263,7 +264,7 @@ namespace ediacaran_test
         using namespace ediacaran;
 
         string_view const target("123 456 abc");
-        auto str = to_string(123, ' ', 456, " abc");
+        auto              str = to_string(123, ' ', 456, " abc");
         ENCELADO_TEST_ASSERT(target == str.c_str());
 
         char small_char_array[5];
@@ -275,7 +276,7 @@ namespace ediacaran_test
         ENCELADO_TEST_ASSERT(required == target.size() + 1);
         ENCELADO_TEST_ASSERT(target == big_char_array);
 
-        char buff[10];
+        char        buff[10];
         char_writer writer(buff);
         for (int i = 0; i < 20; i++)
             writer << 'a';

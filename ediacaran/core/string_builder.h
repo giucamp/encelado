@@ -28,7 +28,7 @@ namespace ediacaran
         std::string to_string() const
         {
             std::string result;
-            auto const string_size = size();
+            auto const  string_size = size();
             result.reserve(string_size);
 
             if (m_chunks.size() > 0)
@@ -41,7 +41,7 @@ namespace ediacaran
                 }
                 EDIACARAN_INTERNAL_ASSERT(m_writer.remaining_size() >= 0);
 
-                auto const & last_chunk = m_chunks.back();
+                auto const & last_chunk      = m_chunks.back();
                 auto const last_written_size = (last_chunk.m_size - 1) - static_cast<size_t>(m_writer.remaining_size());
                 result.append(last_chunk.m_chars.get(), last_written_size);
             }
@@ -57,9 +57,10 @@ namespace ediacaran
 
         template <typename TYPE> string_builder & operator<<(const TYPE & i_value)
         {
-            static_assert(is_stringizable_v<TYPE>, "Overloaded operator required: "
-                                                   "char_writer & operator << "
-                                                   "(const TYPE &)");
+            static_assert(
+              is_stringizable_v<TYPE>, "Overloaded operator required: "
+                                       "char_writer & operator << "
+                                       "(const TYPE &)");
             for (;;)
             {
                 auto writer = m_writer;
@@ -82,37 +83,37 @@ namespace ediacaran
             if (m_chunks.size() == 0)
             {
                 prev_chunk_size = std::extent_v<decltype(m_inplace_space)>;
-                m_inplace_size = (prev_chunk_size - 1) - static_cast<size_t>(remaining_size);
+                m_inplace_size  = (prev_chunk_size - 1) - static_cast<size_t>(remaining_size);
                 EDIACARAN_INTERNAL_ASSERT(m_size == 0);
                 m_size = m_inplace_size;
             }
             else
             {
                 auto & last_chunk = m_chunks.back();
-                prev_chunk_size = last_chunk.m_size;
+                prev_chunk_size   = last_chunk.m_size;
                 last_chunk.m_size = (prev_chunk_size - 1) - static_cast<size_t>(remaining_size);
                 m_size += last_chunk.m_size;
             }
-            auto new_chunk_size = prev_chunk_size * 2;
-            auto & new_chunk = m_chunks.emplace_back(new_chunk_size);
-            m_writer = char_writer(new_chunk.m_chars.get(), new_chunk_size);
+            auto   new_chunk_size = prev_chunk_size * 2;
+            auto & new_chunk      = m_chunks.emplace_back(new_chunk_size);
+            m_writer              = char_writer(new_chunk.m_chars.get(), new_chunk_size);
         }
 
         struct Chunk
         {
             std::unique_ptr<char[]> m_chars;
-            size_t m_size; /**< for all the chunks but the last: number of chars written in this chunk
+            size_t                  m_size; /**< for all the chunks but the last: number of chars written in this chunk
                 for the last chunk: capacity of the chunk (number of allocated bytes) */
 
             Chunk(size_t i_size) : m_chars(new char[i_size]), m_size(i_size) {}
         };
 
       private:
-        char_writer m_writer;
+        char_writer        m_writer;
         std::vector<Chunk> m_chunks;
-        char m_inplace_space[32];
-        size_t m_size = 0;
-        size_t m_inplace_size = 0;
+        char               m_inplace_space[32];
+        size_t             m_size         = 0;
+        size_t             m_inplace_size = 0;
     };
 
     template <typename... TYPE> std::string to_string(const TYPE &... i_objects)

@@ -20,7 +20,7 @@ namespace ediacaran
         dyn_value(dyn_value && i_source) noexcept
             : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
         {
-            i_source.m_object = nullptr;
+            i_source.m_object         = nullptr;
             i_source.m_qualified_type = qualified_type_ptr{};
         }
 
@@ -100,7 +100,7 @@ namespace ediacaran
         }
 
       private:
-        void * m_object{nullptr};
+        void *             m_object{nullptr};
         qualified_type_ptr m_qualified_type;
     };
 
@@ -109,7 +109,7 @@ namespace ediacaran
     inline dyn_value parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source)
     {
         char_reader source(i_source);
-        dyn_value result = parse_value(i_qualified_type, source);
+        dyn_value   result = parse_value(i_qualified_type, source);
         except_on_tailing(source);
         return result;
     }

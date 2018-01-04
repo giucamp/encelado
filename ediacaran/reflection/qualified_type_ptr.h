@@ -23,8 +23,8 @@ namespace ediacaran
     /** Scoped enum that stores a combination of cv-qualifiers. CV_Flags can be combined and subtracted with the overloaded bitwise operators | and &. */
     enum class CV_Flags
     {
-        None = 0,          /**< No flags */
-        Const = 1 << 0,    /**< Set for const types */
+        None     = 0,      /**< No flags */
+        Const    = 1 << 0, /**< Set for const types */
         Volatile = 1 << 1, /**< Set for volatile types */
     };
 
@@ -138,7 +138,8 @@ namespace ediacaran
 
         // special functions
 
-        constexpr qualified_type_ptr(const type * i_final_type, size_t i_indirection_levels, size_t i_constness_word,
+        constexpr qualified_type_ptr(
+          const type * i_final_type, size_t i_indirection_levels, size_t i_constness_word,
           size_t i_volatileness_word) noexcept;
 
         /** Constructs an empty qualified_type_ptr (is_empty() will return true). The object may be later the destination of an assignment, changing its state. */
@@ -182,9 +183,9 @@ namespace ediacaran
 
       private: // data members (currently a qualified_type_ptr is big as two pointers)
         const type * m_final_type;
-        uintptr_t m_indirection_levels : (std::numeric_limits<uintptr_t>::digits - s_max_indirection_levels * 2);
-        uintptr_t m_constness_word : s_max_indirection_levels;
-        uintptr_t m_volatileness_word : s_max_indirection_levels;
+        uintptr_t    m_indirection_levels : (std::numeric_limits<uintptr_t>::digits - s_max_indirection_levels * 2);
+        uintptr_t    m_constness_word : s_max_indirection_levels;
+        uintptr_t    m_volatileness_word : s_max_indirection_levels;
     };
 
     char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;

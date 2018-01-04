@@ -19,7 +19,7 @@ namespace ediacaran
         constexpr static std::array<char, length + 1> get_string() noexcept
         {
             std::array<char, length + 1> name = {};
-            char_writer writer(name.data(), name.size());
+            char_writer                  writer(name.data(), name.size());
             WRITER_FUNC()(writer);
             return name;
         }

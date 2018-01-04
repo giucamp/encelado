@@ -5,9 +5,9 @@ namespace ediacaran
     raw_ptr raw_ptr::full_indirection() const
     {
         auto indirection_levels = m_qualified_type.indirection_levels();
-        auto constness_word = m_qualified_type.constness_word();
-        auto volatileness_word = m_qualified_type.volatileness_word();
-        auto object = m_object;
+        auto constness_word     = m_qualified_type.constness_word();
+        auto volatileness_word  = m_qualified_type.volatileness_word();
+        auto object             = m_object;
 
         while (indirection_levels > 0)
         {
@@ -26,9 +26,9 @@ namespace ediacaran
     raw_ptr raw_ptr::try_full_indirection() const noexcept
     {
         auto indirection_levels = m_qualified_type.indirection_levels();
-        auto constness_word = m_qualified_type.constness_word();
-        auto volatileness_word = m_qualified_type.volatileness_word();
-        auto object = m_object;
+        auto constness_word     = m_qualified_type.constness_word();
+        auto volatileness_word  = m_qualified_type.volatileness_word();
+        auto object             = m_object;
 
         while (indirection_levels > 0 && object != nullptr)
         {
@@ -38,7 +38,8 @@ namespace ediacaran
             object = *static_cast<void **>(object);
         }
 
-        return raw_ptr(object,
+        return raw_ptr(
+          object,
           qualified_type_ptr(m_qualified_type.final_type(), indirection_levels, constness_word, volatileness_word));
     }
 
@@ -47,7 +48,7 @@ namespace ediacaran
         if (!m_qualified_type.is_empty())
         {
             size_t indirection_levels = m_qualified_type.indirection_levels();
-            void * object = m_object;
+            void * object             = m_object;
             while (indirection_levels > 0 && object != nullptr)
             {
                 indirection_levels--;

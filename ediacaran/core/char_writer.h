@@ -48,7 +48,7 @@ namespace ediacaran
             if (--m_remaining_size >= 0)
             {
                 *m_curr_char++ = i_char;
-                *m_curr_char = 0;
+                *m_curr_char   = 0;
             }
             return *this;
         }
@@ -80,7 +80,7 @@ namespace ediacaran
         constexpr char * next_dest() const noexcept { return m_curr_char; }
 
       private:
-        char * m_curr_char = nullptr;
+        char *    m_curr_char      = nullptr;
         ptrdiff_t m_remaining_size = 0;
     };
 
@@ -91,9 +91,9 @@ namespace ediacaran
     {
         constexpr UINT_TYPE ten = 10;
 
-        constexpr int buffer_size = std::numeric_limits<UINT_TYPE>::digits10 + 1;
-        char buffer[buffer_size] = {};
-        size_t length = 0;
+        constexpr int buffer_size         = std::numeric_limits<UINT_TYPE>::digits10 + 1;
+        char          buffer[buffer_size] = {};
+        size_t        length              = 0;
         do
         {
             buffer[length] = static_cast<char>('0' + i_source % ten);
@@ -108,9 +108,9 @@ namespace ediacaran
         for (size_t index = 0; index < length / 2; index++)
         {
             auto const other_index = (length - 1) - index;
-            auto tmp = buffer[index];
-            buffer[index] = buffer[other_index];
-            buffer[other_index] = tmp;
+            auto       tmp         = buffer[index];
+            buffer[index]          = buffer[other_index];
+            buffer[other_index]    = tmp;
         }
 
         i_dest << string_view(buffer, length);
@@ -127,9 +127,9 @@ namespace ediacaran
 
         constexpr SINT_TYPE ten = 10;
 
-        constexpr int buffer_size = std::numeric_limits<SINT_TYPE>::digits10 + 1;
-        char buffer[buffer_size] = {};
-        size_t length = 0;
+        constexpr int buffer_size         = std::numeric_limits<SINT_TYPE>::digits10 + 1;
+        char          buffer[buffer_size] = {};
+        size_t        length              = 0;
         /* note: if the number is negative, we can't just negate the sign and use the same algorithm,
 			because the unary minus operator is lossy: for example, negating -128 as int8 produces an overflow, as
 			128 can't be represented as int8 */
@@ -140,8 +140,8 @@ namespace ediacaran
                 /* note: we do not use the modulo operator %, because it has implementation-defined
 					behavior with non-positive operands. */
                 SINT_TYPE const new_value = i_source / ten;
-                buffer[length] = static_cast<char>('0' + new_value * ten - i_source);
-                i_source = new_value;
+                buffer[length]            = static_cast<char>('0' + new_value * ten - i_source);
+                i_source                  = new_value;
                 length++;
 
                 EDIACARAN_INTERNAL_ASSERT(length < buffer_size || i_source == 0); // buffer too small?
@@ -169,9 +169,9 @@ namespace ediacaran
         for (size_t index = 0; index < length / 2; index++)
         {
             auto const other_index = (length - 1) - index;
-            auto tmp = buffer[index];
-            buffer[index] = buffer[other_index];
-            buffer[other_index] = tmp;
+            auto       tmp         = buffer[index];
+            buffer[index]          = buffer[other_index];
+            buffer[other_index]    = tmp;
         }
 
         i_dest << string_view(buffer, length);
@@ -180,15 +180,15 @@ namespace ediacaran
     }
 
     template <typename BOOL>
-    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &> operator<<(
-      char_writer & i_dest, BOOL i_value) noexcept
+    constexpr std::enable_if_t<std::is_same_v<BOOL, bool>, char_writer &>
+      operator<<(char_writer & i_dest, BOOL i_value) noexcept
     {
         return i_dest << (i_value ? "true" : "false");
     }
 
     template <typename POINTER>
-    constexpr std::enable_if_t<std::is_same_v<typename std::remove_cv_t<POINTER>, void>, char_writer &> & operator<<(
-      char_writer & i_dest, POINTER * i_value) noexcept
+    constexpr std::enable_if_t<std::is_same_v<typename std::remove_cv_t<POINTER>, void>, char_writer &> &
+      operator<<(char_writer & i_dest, POINTER * i_value) noexcept
     {
         return i_dest << reinterpret_cast<uintptr_t>(i_value);
     }
@@ -206,7 +206,7 @@ namespace ediacaran
         : std::true_type
     {
     };
-    template <typename TYPE> using is_stringizable_t = typename is_stringizable<TYPE>::type;
+    template <typename TYPE> using is_stringizable_t          = typename is_stringizable<TYPE>::type;
     template <typename TYPE> constexpr bool is_stringizable_v = is_stringizable<TYPE>::value;
 
     /** Returns the number of bytes required by the char array (including the null terminator) */
@@ -226,11 +226,12 @@ namespace ediacaran
         return to_chars(dest, SIZE, i_objects...);
     }
 
-    template <typename EXCEPTION_TYPE, typename FIRST_PARAM, typename... PARAMS,
+    template <
+      typename EXCEPTION_TYPE, typename FIRST_PARAM, typename... PARAMS,
       typename = std::enable_if_t<(sizeof...(PARAMS) > 0) || !std::is_constructible_v<const char *, FIRST_PARAM>, void>>
     [[noreturn]] constexpr void except(const FIRST_PARAM & i_first_parameter, const PARAMS &... i_other_parameters)
     {
-        char message[512]{};
+        char        message[512]{};
         char_writer writer(message);
         writer << i_first_parameter;
         (writer << ... << i_other_parameters);

@@ -28,12 +28,12 @@ namespace ediacaran_test
         static_assert(get_type<double>().name() == "double");
         static_assert(get_type<long double>().name() == "long_double");
 
-        const float f = 1234.5f;
-        auto pf = &f;
-        auto const * ppf = &pf;
-        auto pppf = &ppf;
-        raw_ptr ptr(&pppf);
-        auto type_name = to_string(ptr.qualified_type());
+        const float  f    = 1234.5f;
+        auto         pf   = &f;
+        auto const * ppf  = &pf;
+        auto         pppf = &ppf;
+        raw_ptr      ptr(&pppf);
+        auto         type_name = to_string(ptr.qualified_type());
         ENCELADO_TEST_ASSERT(type_name == "float const * const * *");
 
         auto indirect = ptr.full_indirection();

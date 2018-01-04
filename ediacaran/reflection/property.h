@@ -8,20 +8,22 @@ namespace ediacaran
 {
     enum class property_flags
     {
-        none = 0,
+        none    = 0,
         inplace = 1 << 0,
     };
 
     constexpr property_flags operator|(property_flags i_first, property_flags i_second)
     {
-        return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) |
-                                           static_cast<std::underlying_type_t<property_flags>>(i_second));
+        return static_cast<property_flags>(
+          static_cast<std::underlying_type_t<property_flags>>(i_first) |
+          static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
     constexpr property_flags operator&(property_flags i_first, property_flags i_second)
     {
-        return static_cast<property_flags>(static_cast<std::underlying_type_t<property_flags>>(i_first) &
-                                           static_cast<std::underlying_type_t<property_flags>>(i_second));
+        return static_cast<property_flags>(
+          static_cast<std::underlying_type_t<property_flags>>(i_first) &
+          static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
     class property : public symbol
@@ -123,10 +125,10 @@ namespace ediacaran
         }
 
       private:
-        property_flags const m_flags;
+        property_flags const     m_flags;
         qualified_type_ptr const m_qualified_type;
         union {
-            size_t m_offset;
+            size_t   m_offset;
             accessor m_accessor;
         };
     };
@@ -136,14 +138,16 @@ namespace ediacaran
         template <typename GETTER_TYPE, typename SETTER_TYPE, GETTER_TYPE GETTER, SETTER_TYPE SETTER>
         struct PropertyAccessor;
 
-        template <typename CLASS, typename GETTER_RETURN_TYPE, typename SETTER_PARAM_TYPE,
+        template <
+          typename CLASS, typename GETTER_RETURN_TYPE, typename SETTER_PARAM_TYPE,
           GETTER_RETURN_TYPE (CLASS::*GETTER)() const, void (CLASS::*SETTER)(SETTER_PARAM_TYPE i_value)>
-        struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, void (CLASS::*)(SETTER_PARAM_TYPE i_value),
-          GETTER, SETTER>
+        struct PropertyAccessor<
+          GETTER_RETURN_TYPE (CLASS::*)() const, void (CLASS::*)(SETTER_PARAM_TYPE i_value), GETTER, SETTER>
         {
-            using owner_class = CLASS;
+            using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
-            static_assert(std::is_same_v<property_type, std::decay_t<SETTER_PARAM_TYPE>>,
+            static_assert(
+              std::is_same_v<property_type, std::decay_t<SETTER_PARAM_TYPE>>,
               "inconsistent types between getter and setter");
 
             static bool func(property::operation i_operation, void * i_object, void * i_value, char_writer & o_error)
@@ -171,11 +175,11 @@ namespace ediacaran
         template <typename CLASS, typename GETTER_RETURN_TYPE, GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
         struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, nullptr_t, GETTER, nullptr>
         {
-            using owner_class = CLASS;
+            using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
 
-            static bool func(
-              property::operation i_operation, void * i_object, void * i_value, char_writer & /*o_error*/)
+            static bool
+              func(property::operation i_operation, void * i_object, void * i_value, char_writer & /*o_error*/)
             {
                 EDIACARAN_ASSERT(i_object != nullptr);
                 EDIACARAN_ASSERT(i_value != nullptr);
@@ -194,16 +198,17 @@ namespace ediacaran
             }
         };
 
-        constexpr property make_data_property(
-          const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
+        constexpr property
+          make_data_property(const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
         {
             return property(property::offset_tag{}, i_name, i_qualified_type, i_offset);
         }
 
         template <typename PROPERTY_ACCESSOR> constexpr property make_accessor_property(const char * i_name)
         {
-            return property(property::accessor_tag{}, i_name,
-              get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(), &PROPERTY_ACCESSOR::func);
+            return property(
+              property::accessor_tag{}, i_name, get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(),
+              &PROPERTY_ACCESSOR::func);
         }
 
     } //namespace detail

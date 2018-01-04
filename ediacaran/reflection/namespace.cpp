@@ -41,7 +41,7 @@ namespace ediacaran
     const type * global_namespace_::find_type(const string_view & i_full_name) const
     {
         std::string full_type_name{i_full_name.data(), i_full_name.size()};
-        auto const it = m_types.find(full_type_name);
+        auto const  it = m_types.find(full_type_name);
         if (it == m_types.end())
             return nullptr;
         else
@@ -55,7 +55,7 @@ namespace ediacaran
             auto const first_char = i_source.next_chars();
 
             bool some_identifier_found = false;
-            auto curr_char = first_char;
+            auto curr_char             = first_char;
             for (;;)
             {
                 // accept "::"
@@ -90,7 +90,7 @@ namespace ediacaran
             }
 
             string_view const full_name{first_char, static_cast<size_t>(curr_char - first_char)};
-            auto const type_ptr = global_namespace_::get().find_type(full_name);
+            auto const        type_ptr = global_namespace_::get().find_type(full_name);
             if (type_ptr == nullptr)
             {
                 i_error << "Could not find the type " << full_name << '\n';

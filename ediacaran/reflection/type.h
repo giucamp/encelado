@@ -35,7 +35,8 @@ namespace ediacaran
     class type : public symbol
     {
       public:
-        constexpr type(type_kind i_kind, const char * const i_name, size_t i_size, size_t i_alignment,
+        constexpr type(
+          type_kind i_kind, const char * const i_name, size_t i_size, size_t i_alignment,
           const ediacaran::special_functions & i_special_functions) noexcept
             : symbol(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
               m_special_functions(i_special_functions)
@@ -173,7 +174,7 @@ namespace ediacaran
             {
                 except<unsupported_error>("the type ", name(), " does not support parsing");
             }
-            char error[512];
+            char        error[512];
             char_writer error_writer(error);
             if (!(*try_parser)(i_dest, i_source, error_writer))
             {
@@ -189,9 +190,9 @@ namespace ediacaran
         }
 
       private:
-        size_t const m_size;
-        size_t const m_alignment;
-        type_kind const m_kind;
+        size_t const                       m_size;
+        size_t const                       m_alignment;
+        type_kind const                    m_kind;
         ediacaran::special_functions const m_special_functions;
     };
 }

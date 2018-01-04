@@ -25,7 +25,7 @@ namespace ediacaran_test
     struct TestBase_3_2
     {
         virtual void g() {}
-        float m_float_3_2_1{};
+        float        m_float_3_2_1{};
 
         int m_prop = 5;
 
@@ -37,11 +37,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_3_2", TestBase_3_2)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
-    REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
-    REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop)
-    REFL_END_PROPERTIES
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
+            REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
+            REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     // layer 2
@@ -52,10 +52,10 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_1", TestBase_2_1)
-    REFL_BASES()
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
-    REFL_END_PROPERTIES
+        REFL_BASES()
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_2 : TestBase_3_1
@@ -65,11 +65,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_2", TestBase_2_2)
-    REFL_BASES(TestBase_3_1)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
-    REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_3_1)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
+            REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_3 : TestBase_3_2
@@ -79,10 +79,10 @@ namespace ediacaran_test
 
 
     REFL_BEGIN_CLASS("TestBase_2_3", TestBase_2_3)
-    REFL_BASES(TestBase_3_2)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_3_2)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_4
@@ -92,11 +92,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_4", TestBase_2_4)
-    REFL_BASES()
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
-    REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
-    REFL_END_PROPERTIES
+        REFL_BASES()
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
+            REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_Base
@@ -114,7 +114,7 @@ namespace ediacaran_test
 
         int8_t clear_all()
         {
-            auto res = m_int8_2_1 + m_int8_2_2 + m_int8_2_3;
+            auto res   = m_int8_2_1 + m_int8_2_2 + m_int8_2_3;
             m_int8_2_1 = 0;
             m_int8_2_2 = 0;
             m_int8_2_3 = 0;
@@ -123,17 +123,17 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_Base", TestBase_2_Base)
-    REFL_BASES()
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_int8_2_1", m_int8_2_1)
-    REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
-    REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
-    REFL_END_PROPERTIES
-    constexpr static const char * par_names_1[] = {"i_int_par"};
-    REFL_BEGIN_ACTIONS
-    REFL_ACTION("set_all", set_all, par_names_1)
-    //REFL_ACTION("clear_all", clear_all, nullptr)
-    REFL_END_ACTIONS
+        REFL_BASES()
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_int8_2_1", m_int8_2_1)
+            REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
+            REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
+        REFL_END_PROPERTIES
+        constexpr static const char * par_names_1[] = {"i_int_par"};
+        REFL_BEGIN_ACTIONS
+            REFL_ACTION("set_all", set_all, par_names_1)
+        //REFL_ACTION("clear_all", clear_all, nullptr)
+        REFL_END_ACTIONS
     REFL_END_CLASS;
 
     // layer 1
@@ -144,10 +144,10 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_1)
-    REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_string_1", m_string_1)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_string_1", m_string_1)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_1_2 : TestBase_2_3, TestBase_2_4, virtual TestBase_2_Base
@@ -159,12 +159,12 @@ namespace ediacaran_test
 
 
     REFL_BEGIN_CLASS("TestBase_1_2", TestBase_1_2)
-    REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("m_string_2_1", m_string_2_1)
-    REFL_DATA_PROP("m_string_2_2", m_string_2_2)
-    REFL_DATA_PROP("m_string_2_3", m_string_2_3)
-    REFL_END_PROPERTIES
+        REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("m_string_2_1", m_string_2_1)
+            REFL_DATA_PROP("m_string_2_2", m_string_2_2)
+            REFL_DATA_PROP("m_string_2_3", m_string_2_3)
+        REFL_END_PROPERTIES
     REFL_END_CLASS;
 
 
@@ -172,8 +172,8 @@ namespace ediacaran_test
 
     struct TestClass : TestBase_1_1, TestBase_1_2
     {
-        int m_integer = 4;
-        float m_float = 5;
+        int   m_integer = 4;
+        float m_float   = 5;
 
         int add(int i_int_par, const float i_flt_par, bool i_invert)
         {
@@ -193,23 +193,23 @@ namespace ediacaran_test
         int set(int i_int_par, const float i_flt_par)
         {
             m_integer = i_int_par;
-            m_float = i_flt_par;
+            m_float   = i_flt_par;
             return m_integer;
         }
     };
 
     REFL_BEGIN_CLASS("TestClass", TestClass)
-    REFL_BASES(TestBase_1_1, TestBase_1_2)
-    REFL_BEGIN_PROPERTIES
-    REFL_DATA_PROP("integer", m_integer)
-    REFL_DATA_PROP("float", m_float)
-    REFL_END_PROPERTIES
-    constexpr static const char * par_names_1[] = {"i_int_par", "i_flt_par", "i_invert"};
-    constexpr static const char * par_names_2[] = {"i_int_par", "i_flt_par"};
-    REFL_BEGIN_ACTIONS
-    REFL_ACTION("add", add, par_names_1)
-    REFL_ACTION("set", set, par_names_2)
-    REFL_END_ACTIONS
+        REFL_BASES(TestBase_1_1, TestBase_1_2)
+        REFL_BEGIN_PROPERTIES
+            REFL_DATA_PROP("integer", m_integer)
+            REFL_DATA_PROP("float", m_float)
+        REFL_END_PROPERTIES
+        constexpr static const char * par_names_1[] = {"i_int_par", "i_flt_par", "i_invert"};
+        constexpr static const char * par_names_2[] = {"i_int_par", "i_flt_par"};
+        REFL_BEGIN_ACTIONS
+            REFL_ACTION("add", add, par_names_1)
+            REFL_ACTION("set", set, par_names_2)
+        REFL_END_ACTIONS
     REFL_END_CLASS;
 
     void class_tests_print_props(ediacaran::raw_ptr i_source)
@@ -253,8 +253,8 @@ namespace ediacaran_test
         get_type<TestClass>();
         try
         {
-            property props[2] = {property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
-              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
+            property   props[2] = {property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
+                                 property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
             class_type CC(
               "abc", 1, 2, special_functions{}, array_view<const base_class>{}, props, array_view<const action>{});
 
@@ -292,8 +292,8 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(int_v == "4");
             ENCELADO_TEST_ASSERT(flt_v == "5");
             auto action_res = invoke_action(obj, "add(2, 3, false)").to_string();
-            auto int_v_1 = get_property_value(obj, "integer").to_string();
-            auto flt_v_2 = get_property_value(obj, "float").to_string();
+            auto int_v_1    = get_property_value(obj, "integer").to_string();
+            auto flt_v_2    = get_property_value(obj, "float").to_string();
             ENCELADO_TEST_ASSERT(action_res == "6");
             ENCELADO_TEST_ASSERT(int_v_1 == "6");
             ENCELADO_TEST_ASSERT(flt_v_2 == "8");
@@ -314,7 +314,7 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(n2 == "12");
             ENCELADO_TEST_ASSERT(n3 == "13");
 
-            int8_t val = 34;
+            int8_t      val = 34;
             char_reader prop_n("m_int8_2_1");
             char_reader prop_v("32");
             set_property_value(obj, prop_n, prop_v);

@@ -74,11 +74,12 @@ namespace ediacaran
     {
     };
     template <typename TYPE>
-    struct has_try_parse<TYPE, std::void_t<decltype(try_parse(std::declval<TYPE &>(), std::declval<char_reader &>(),
-                                 std::declval<char_writer &>()))>> : std::true_type
+    struct has_try_parse<
+      TYPE, std::void_t<decltype(try_parse(
+              std::declval<TYPE &>(), std::declval<char_reader &>(), std::declval<char_writer &>()))>> : std::true_type
     {
     };
-    template <typename TYPE> using has_try_parse_t = typename has_try_parse<TYPE>::type;
+    template <typename TYPE> using has_try_parse_t          = typename has_try_parse<TYPE>::type;
     template <typename TYPE> constexpr bool has_try_parse_v = has_try_parse<TYPE>::value;
 
     // trait has_try_accept
@@ -86,20 +87,22 @@ namespace ediacaran
     {
     };
     template <typename TYPE>
-    struct has_try_accept<TYPE, std::void_t<decltype(std::declval<bool &>() = try_accept(std::declval<const TYPE &>(),
-                                                       std::declval<char_reader &>(), std::declval<char_writer &>()))>>
+    struct has_try_accept<
+      TYPE, std::void_t<decltype(
+              std::declval<bool &>() = try_accept(
+                std::declval<const TYPE &>(), std::declval<char_reader &>(), std::declval<char_writer &>()))>>
         : std::true_type
     {
     };
-    template <typename TYPE> using has_try_accept_t = typename has_try_accept<TYPE>::type;
+    template <typename TYPE> using has_try_accept_t          = typename has_try_accept<TYPE>::type;
     template <typename TYPE> constexpr bool has_try_accept_v = has_try_accept<TYPE>::value;
 
     // generic try_accept based on try_parse
     template <typename TYPE>
-    std::enable_if_t<has_try_parse_v<TYPE>, bool> try_accept(
-      const TYPE & i_expected_value, char_reader & i_source, char_writer & o_error_dest) noexcept
+    std::enable_if_t<has_try_parse_v<TYPE>, bool>
+      try_accept(const TYPE & i_expected_value, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
-        TYPE actual_value;
+        TYPE       actual_value;
         auto const prev_source = i_source;
         if (!try_parse(actual_value, i_source, o_error_dest))
         {
@@ -116,8 +119,8 @@ namespace ediacaran
 
     // generic try_accept without error_dest
     template <typename TYPE>
-    constexpr std::enable_if_t<has_try_accept_v<TYPE>, bool> try_accept(
-      const TYPE & i_expected_value, char_reader & i_source) noexcept
+    constexpr std::enable_if_t<has_try_accept_v<TYPE>, bool>
+      try_accept(const TYPE & i_expected_value, char_reader & i_source) noexcept
     {
         char_writer error;
         return try_accept(i_expected_value, i_source, error);
@@ -135,9 +138,9 @@ namespace ediacaran
     template <typename TYPE> constexpr TYPE parse(char_reader & i_source)
     {
         static_assert(has_try_parse_v<TYPE>);
-        char error[512]{};
+        char        error[512]{};
         char_writer error_writer(error);
-        TYPE value{};
+        TYPE        value{};
         if (!try_parse(value, i_source, error_writer))
             except<parse_error>(error);
         return value;
@@ -147,7 +150,7 @@ namespace ediacaran
     template <typename TYPE> constexpr TYPE parse(const string_view & i_source)
     {
         char_reader reader(i_source);
-        auto result = parse<TYPE>(reader);
+        auto        result = parse<TYPE>(reader);
         except_on_tailing(reader);
         return result;
     }
@@ -166,7 +169,7 @@ namespace ediacaran
     template <typename TYPE> constexpr char_reader & operator>>(char_reader & i_source, const TYPE & i_expected_value)
     {
         static_assert(has_try_accept_v<TYPE>);
-        char error[512];
+        char        error[512];
         char_writer error_writer(error);
         if (!try_accept(i_expected_value, i_source, error_writer))
             except<parse_error>(error);
@@ -186,8 +189,8 @@ namespace ediacaran
     }
 
     // try_accept for strings - they don't have a try_parse
-    constexpr bool try_accept(
-      const string_view & i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool
+      try_accept(const string_view & i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         for (size_t index = 0; index < i_expected.size(); index++)
         {
@@ -230,12 +233,12 @@ namespace ediacaran
     }
 
     template <typename INT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && std::is_signed_v<INT_TYPE>, bool> try_parse(
-      INT_TYPE & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && std::is_signed_v<INT_TYPE>, bool>
+      try_parse(INT_TYPE & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
-        const char * curr_digit = i_source.next_chars();
+        const char *       curr_digit    = i_source.next_chars();
         const char * const end_of_buffer = curr_digit + i_source.remaining_chars();
-        INT_TYPE result = 0;
+        INT_TYPE           result        = 0;
 
         if (*curr_digit == '-')
         {
@@ -244,7 +247,7 @@ namespace ediacaran
             {
                 if (*curr_digit >= '0' && *curr_digit <= '9')
                 {
-                    INT_TYPE const digit = *curr_digit - '0';
+                    INT_TYPE const digit      = *curr_digit - '0';
                     INT_TYPE const thereshold = (std::numeric_limits<INT_TYPE>::min() + digit) / 10;
                     if (result < thereshold)
                     {
@@ -267,7 +270,7 @@ namespace ediacaran
             {
                 if (*curr_digit >= '0' && *curr_digit <= '9')
                 {
-                    INT_TYPE const digit = *curr_digit - '0';
+                    INT_TYPE const digit      = *curr_digit - '0';
                     INT_TYPE const thereshold = (std::numeric_limits<INT_TYPE>::max() - digit) / 10;
                     if (result > thereshold)
                     {
@@ -302,18 +305,18 @@ namespace ediacaran
 
 
     template <typename UINT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE>, bool> try_parse(
-      UINT_TYPE & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    constexpr std::enable_if_t<std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE>, bool>
+      try_parse(UINT_TYPE & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
-        const char * curr_digit = i_source.next_chars();
+        const char *       curr_digit    = i_source.next_chars();
         const char * const end_of_buffer = curr_digit + i_source.remaining_chars();
-        UINT_TYPE result = 0;
+        UINT_TYPE          result        = 0;
 
         while (curr_digit < end_of_buffer)
         {
             if (*curr_digit >= '0' && *curr_digit <= '9')
             {
-                UINT_TYPE const digit = *curr_digit - '0';
+                UINT_TYPE const digit      = *curr_digit - '0';
                 UINT_TYPE const thereshold = (std::numeric_limits<UINT_TYPE>::max() - digit) / 10;
                 if (result > thereshold)
                 {

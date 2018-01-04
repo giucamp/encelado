@@ -20,11 +20,11 @@ namespace ediacaran
 
     void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value);
 
-    void set_property_value(
-      const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
+    void
+      set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
 
-    void set_property_value(
-      const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
+    void
+      set_property_value(const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
 
     void set_property_value(
       const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source);
@@ -96,7 +96,7 @@ namespace ediacaran
             iterator operator++(int)
             {
                 auto result(*this);
-                operator++();
+                     operator++();
                 return result;
             }
 
@@ -110,19 +110,19 @@ namespace ediacaran
 
           private:
             friend class content;
-            void next_base() noexcept;
+            void    next_base() noexcept;
             raw_ptr get_prop_value();
-            void set_prop_value(const raw_ptr & i_value);
-            void set_prop_value(char_reader & i_source);
-            void set_prop_value(const string_view & i_source);
+            void    set_prop_value(const raw_ptr & i_value);
+            void    set_prop_value(char_reader & i_source);
+            void    set_prop_value(const string_view & i_source);
 
           private:
-            void * m_subobject = nullptr;
-            const class_type * m_class = nullptr;
-            const property * m_property = nullptr;
-            size_t m_base_index = 0;
-            raw_ptr const m_target;
-            dyn_value m_dyn_value;
+            void *             m_subobject  = nullptr;
+            const class_type * m_class      = nullptr;
+            const property *   m_property   = nullptr;
+            size_t             m_base_index = 0;
+            raw_ptr const      m_target;
+            dyn_value          m_dyn_value;
         };
 
         iterator begin() const noexcept { return iterator(m_target); }
@@ -198,7 +198,7 @@ namespace ediacaran
             iterator operator++(int)
             {
                 auto result(*this);
-                operator++();
+                     operator++();
                 return result;
             }
 
@@ -219,13 +219,13 @@ namespace ediacaran
             raw_ptr invoke(char_reader & i_arguments_source);
 
           private:
-            void * m_subobject = nullptr;
-            const class_type * m_class = nullptr;
-            const action * m_action = nullptr;
-            size_t m_base_index = 0;
-            raw_ptr const m_target;
-            dyn_value m_dyn_value;
-            std::vector<char> m_char_buffer;
+            void *             m_subobject  = nullptr;
+            const class_type * m_class      = nullptr;
+            const action *     m_action     = nullptr;
+            size_t             m_base_index = 0;
+            raw_ptr const      m_target;
+            dyn_value          m_dyn_value;
+            std::vector<char>  m_char_buffer;
         };
 
         iterator begin() const noexcept { return iterator(m_target); }

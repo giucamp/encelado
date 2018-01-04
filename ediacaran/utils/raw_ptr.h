@@ -26,7 +26,7 @@ namespace ediacaran
 
         raw_ptr(raw_ptr && i_source) noexcept : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
         {
-            i_source.m_object = nullptr;
+            i_source.m_object         = nullptr;
             i_source.m_qualified_type = qualified_type_ptr{};
         }
 
@@ -34,9 +34,9 @@ namespace ediacaran
 
         raw_ptr & operator=(raw_ptr && i_source) noexcept
         {
-            m_object = i_source.m_object;
-            m_qualified_type = i_source.m_qualified_type;
-            i_source.m_object = nullptr;
+            m_object                  = i_source.m_object;
+            m_qualified_type          = i_source.m_qualified_type;
+            i_source.m_object         = nullptr;
             i_source.m_qualified_type = qualified_type_ptr{};
             return *this;
         }
@@ -80,7 +80,7 @@ namespace ediacaran
         }
 
       private:
-        void * m_object{nullptr};
+        void *             m_object{nullptr};
         qualified_type_ptr m_qualified_type;
     };
 

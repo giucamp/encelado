@@ -47,9 +47,10 @@ namespace ediacaran
     class class_type : public type
     {
       public:
-        constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
-          const special_functions & i_special_functions, const array_view<const base_class> & i_base_classes,
-          const array_view<const property> & i_properties, const array_view<const action> & i_actions)
+        constexpr class_type(
+          const char * const i_name, size_t i_size, size_t i_alignment, const special_functions & i_special_functions,
+          const array_view<const base_class> & i_base_classes, const array_view<const property> & i_properties,
+          const array_view<const action> & i_actions)
             : type(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
               m_base_classes(i_base_classes), m_properties(i_properties), m_actions(i_actions)
         {
@@ -82,8 +83,9 @@ namespace ediacaran
                     {
                         if (m_properties[i].name() == base_props[j].name())
                         {
-                            except<std::runtime_error>("shadowing property ", m_properties[i].name(), " in class ",
-                              name(), ", already in ", m_base_classes[base_class_index].get_class().name());
+                            except<std::runtime_error>(
+                              "shadowing property ", m_properties[i].name(), " in class ", name(), ", already in ",
+                              m_base_classes[base_class_index].get_class().name());
                         }
                     }
                 }
@@ -92,8 +94,8 @@ namespace ediacaran
 
       private:
         array_view<const base_class> const m_base_classes;
-        array_view<const property> const m_properties;
-        array_view<const action> const m_actions;
+        array_view<const property> const   m_properties;
+        array_view<const action> const     m_actions;
     };
 
     // forward

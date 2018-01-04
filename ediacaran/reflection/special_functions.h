@@ -15,12 +15,13 @@ namespace ediacaran
     {
     };
     template <typename TYPE>
-    struct has_comparer<TYPE, std::void_t<decltype(std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
-                                                   std::declval<TYPE const &>() == std::declval<TYPE const &>())>>
-        : std::true_type
+    struct has_comparer<
+      TYPE, std::void_t<decltype(
+              std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
+              std::declval<TYPE const &>() == std::declval<TYPE const &>())>> : std::true_type
     {
     };
-    template <typename TYPE> using has_comparer_t = typename has_comparer<TYPE>::type;
+    template <typename TYPE> using has_comparer_t          = typename has_comparer<TYPE>::type;
     template <typename TYPE> constexpr bool has_comparer_v = has_comparer<TYPE>::value;
 
     class special_functions
@@ -30,14 +31,14 @@ namespace ediacaran
 
         using scalar_destructor_function = void (*)(void * i_dest_start, void * i_dest_end) noexcept;
 
-        using scalar_copy_constructor_function = void (*)(
-          void * i_dest_start, void * i_dest_end, void const * i_source_start);
+        using scalar_copy_constructor_function =
+          void (*)(void * i_dest_start, void * i_dest_end, void const * i_source_start);
 
-        using scalar_move_constructor_function = void (*)(
-          void * i_dest_start, void * i_dest_end, void * i_source_start);
+        using scalar_move_constructor_function =
+          void (*)(void * i_dest_start, void * i_dest_end, void * i_source_start);
 
-        using scalar_copy_assigner_function = void (*)(
-          void * i_dest_start, void * i_dest_end, void const * i_source_start);
+        using scalar_copy_assigner_function =
+          void (*)(void * i_dest_start, void * i_dest_end, void const * i_source_start);
 
         using scalar_move_assigner_function = void (*)(void * i_dest_start, void * i_dest_end, void * i_source_start);
 
@@ -49,8 +50,9 @@ namespace ediacaran
 
         constexpr special_functions() noexcept = default;
 
-        constexpr special_functions(scalar_constructor_function i_scalar_default_constructor,
-          scalar_destructor_function i_scalar_destructor, scalar_copy_constructor_function i_scalar_copy_constructor,
+        constexpr special_functions(
+          scalar_constructor_function i_scalar_default_constructor, scalar_destructor_function i_scalar_destructor,
+          scalar_copy_constructor_function i_scalar_copy_constructor,
           scalar_move_constructor_function i_scalar_move_constructor,
           scalar_copy_assigner_function i_scalar_copy_assigner, scalar_move_assigner_function i_scalar_move_assigner,
           comparer_function i_comparer, to_chars_function i_to_chars, try_parse_function i_try_parser)
@@ -64,9 +66,10 @@ namespace ediacaran
 
         template <typename TYPE> constexpr static special_functions make() noexcept
         {
-            return special_functions(make_default_constructor<TYPE>(), make_destructor<TYPE>(),
-              make_copy_constructor<TYPE>(), make_move_constructor<TYPE>(), make_copy_assigner<TYPE>(),
-              make_move_assigner<TYPE>(), make_comparer<TYPE>(), make_to_chars<TYPE>(), make_try_parse<TYPE>());
+            return special_functions(
+              make_default_constructor<TYPE>(), make_destructor<TYPE>(), make_copy_constructor<TYPE>(),
+              make_move_constructor<TYPE>(), make_copy_assigner<TYPE>(), make_move_assigner<TYPE>(),
+              make_comparer<TYPE>(), make_to_chars<TYPE>(), make_try_parse<TYPE>());
         }
 
         constexpr auto scalar_default_constructor() const noexcept { return m_scalar_default_constructor; }
@@ -107,34 +110,38 @@ namespace ediacaran
         template <typename TYPE>
         static void scalar_copy_construct_impl(void * i_dest_start, void * i_dest_end, void const * i_source_start)
         {
-            std::uninitialized_copy(static_cast<TYPE const *>(i_source_start),
-              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
+            std::uninitialized_copy(
+              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE *>(i_dest_start));
         }
 
         template <typename TYPE>
         static void scalar_move_construct_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
         {
-            std::uninitialized_move(static_cast<TYPE const *>(i_source_start),
-              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
+            std::uninitialized_move(
+              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE *>(i_dest_start));
         }
 
         template <typename TYPE>
         static void scalar_copy_assign_impl(void * i_dest_start, void * i_dest_end, void const * i_source_start)
         {
-            std::copy(static_cast<TYPE const *>(i_source_start),
-              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
+            std::copy(
+              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE *>(i_dest_start));
         }
 
         template <typename TYPE>
         static void scalar_move_assign_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
         {
-            std::move(static_cast<TYPE const *>(i_source_start),
-              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start), static_cast<TYPE *>(i_dest_start));
+            std::move(
+              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE *>(i_dest_start));
         }
 
         template <typename TYPE> static int comparer_impl(void const * i_first, void const * i_second) noexcept
         {
-            auto & first = *static_cast<TYPE const *>(i_first);
+            auto & first  = *static_cast<TYPE const *>(i_first);
             auto & second = *static_cast<TYPE const *>(i_second);
             if (first < second)
                 return -1;
@@ -227,14 +234,14 @@ namespace ediacaran
         }
 
       private:
-        scalar_constructor_function m_scalar_default_constructor = nullptr;
-        scalar_destructor_function m_scalar_destructor = nullptr;
-        scalar_copy_constructor_function m_scalar_copy_constructor = nullptr;
-        scalar_move_constructor_function m_scalar_move_constructor = nullptr;
-        scalar_copy_assigner_function m_scalar_copy_assigner = nullptr;
-        scalar_move_assigner_function m_scalar_move_assigner = nullptr;
-        comparer_function m_comparer = nullptr;
-        to_chars_function m_stringizer = nullptr;
-        try_parse_function m_try_parser = nullptr;
+        scalar_constructor_function      m_scalar_default_constructor = nullptr;
+        scalar_destructor_function       m_scalar_destructor          = nullptr;
+        scalar_copy_constructor_function m_scalar_copy_constructor    = nullptr;
+        scalar_move_constructor_function m_scalar_move_constructor    = nullptr;
+        scalar_copy_assigner_function    m_scalar_copy_assigner       = nullptr;
+        scalar_move_assigner_function    m_scalar_move_assigner       = nullptr;
+        comparer_function                m_comparer                   = nullptr;
+        to_chars_function                m_stringizer                 = nullptr;
+        try_parse_function               m_try_parser                 = nullptr;
     };
 }

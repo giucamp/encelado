@@ -53,8 +53,9 @@ namespace ediacaran
         }
 
         auto const prev_primary_type = m_qualified_type.final_type();
-        if (prev_primary_type == nullptr || final_type->size() != prev_primary_type->size() ||
-            final_type->alignment() != prev_primary_type->alignment())
+        if (
+          prev_primary_type == nullptr || final_type->size() != prev_primary_type->size() ||
+          final_type->alignment() != prev_primary_type->alignment())
         {
             auto const buffer = operator new (final_type->size(), std::align_val_t{final_type->alignment()});
             if (!empty())
@@ -73,8 +74,8 @@ namespace ediacaran
     {
         EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
         auto const final_type = m_qualified_type.final_type();
-        operator delete (m_object, final_type->size(), std::align_val_t{final_type->alignment()});
-        m_object = nullptr;
+                   operator delete (m_object, final_type->size(), std::align_val_t{final_type->alignment()});
+        m_object         = nullptr;
         m_qualified_type = qualified_type_ptr{};
     }
 
