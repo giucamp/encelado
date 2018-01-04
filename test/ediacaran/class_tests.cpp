@@ -19,7 +19,7 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_3_1", TestBase_3_1)
-        REFL_BASES()
+    REFL_BASES()
     REFL_END_CLASS;
 
     struct TestBase_3_2
@@ -37,12 +37,12 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_3_2", TestBase_3_2)
-        REFL_BASES()
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
-            REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
-            REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop)
-        REFL_END_PROPERTIES
+    REFL_BASES()
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
+    REFL_ACCESSOR_PROP("prop", get_prop, set_prop)
+    REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     // layer 2
@@ -53,10 +53,10 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_1", TestBase_2_1)
-        REFL_BASES()
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
-        REFL_END_PROPERTIES
+    REFL_BASES()
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_2 : TestBase_3_1
@@ -66,11 +66,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_2", TestBase_2_2)
-        REFL_BASES(TestBase_3_1)
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
-            REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
-        REFL_END_PROPERTIES
+    REFL_BASES(TestBase_3_1)
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_int2_2_1", m_int2_2_1)
+    REFL_DATA_PROP("m_int2_2_2", m_int2_2_2)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_3 : TestBase_3_2
@@ -80,10 +80,10 @@ namespace ediacaran_test
 
 
     REFL_BEGIN_CLASS("TestBase_2_3", TestBase_2_3)
-        REFL_BASES(TestBase_3_2)
-        REFL_BEGIN_PROPERTIES
-           REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
-        REFL_END_PROPERTIES
+    REFL_BASES(TestBase_3_2)
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_4
@@ -93,11 +93,11 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_4", TestBase_2_4)
-        REFL_BASES()
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
-            REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
-        REFL_END_PROPERTIES
+    REFL_BASES()
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1)
+    REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_2_Base
@@ -124,17 +124,17 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_2_Base", TestBase_2_Base)
-        REFL_BASES()
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_int8_2_1", m_int8_2_1)
-            REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
-            REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
-        REFL_END_PROPERTIES
-        constexpr static const char * par_names_1[] = { "i_int_par"};
-        REFL_BEGIN_ACTIONS
-            REFL_ACTION("set_all", set_all, par_names_1)
-            //REFL_ACTION("clear_all", clear_all, nullptr)
-        REFL_END_ACTIONS
+    REFL_BASES()
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_int8_2_1", m_int8_2_1)
+    REFL_DATA_PROP("m_int8_2_2", m_int8_2_2)
+    REFL_DATA_PROP("m_int8_2_3", m_int8_2_3)
+    REFL_END_PROPERTIES
+    constexpr static const char * par_names_1[] = {"i_int_par"};
+    REFL_BEGIN_ACTIONS
+    REFL_ACTION("set_all", set_all, par_names_1)
+    //REFL_ACTION("clear_all", clear_all, nullptr)
+    REFL_END_ACTIONS
     REFL_END_CLASS;
 
     // layer 1
@@ -145,10 +145,10 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_1_1", TestBase_1_1)
-        REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_string_1", m_string_1)
-        REFL_END_PROPERTIES
+    REFL_BASES(TestBase_2_1, TestBase_2_2, TestBase_2_Base)
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_string_1", m_string_1)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
     struct TestBase_1_2 : TestBase_2_3, TestBase_2_4, virtual TestBase_2_Base
@@ -160,12 +160,12 @@ namespace ediacaran_test
 
 
     REFL_BEGIN_CLASS("TestBase_1_2", TestBase_1_2)
-        REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("m_string_2_1", m_string_2_1)
-            REFL_DATA_PROP("m_string_2_2", m_string_2_2)
-            REFL_DATA_PROP("m_string_2_3", m_string_2_3)
-        REFL_END_PROPERTIES
+    REFL_BASES(TestBase_2_3, TestBase_2_4, TestBase_2_Base)
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("m_string_2_1", m_string_2_1)
+    REFL_DATA_PROP("m_string_2_2", m_string_2_2)
+    REFL_DATA_PROP("m_string_2_3", m_string_2_3)
+    REFL_END_PROPERTIES
     REFL_END_CLASS;
 
 
@@ -178,7 +178,7 @@ namespace ediacaran_test
 
         int add(int i_int_par, const float i_flt_par, bool i_invert)
         {
-            if(!i_invert)
+            if (!i_invert)
             {
                 m_integer += i_int_par;
                 m_float += i_flt_par;
@@ -200,17 +200,17 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestClass", TestClass)
-        REFL_BASES(TestBase_1_1, TestBase_1_2)
-        REFL_BEGIN_PROPERTIES
-            REFL_DATA_PROP("integer", m_integer)
-            REFL_DATA_PROP("float", m_float)
-        REFL_END_PROPERTIES
-        constexpr static const char * par_names_1[] = {"i_int_par", "i_flt_par", "i_invert"};
-        constexpr static const char * par_names_2[] = {"i_int_par", "i_flt_par"};
-        REFL_BEGIN_ACTIONS
-            REFL_ACTION("add", add, par_names_1)
-            REFL_ACTION("set", set, par_names_2)
-        REFL_END_ACTIONS
+    REFL_BASES(TestBase_1_1, TestBase_1_2)
+    REFL_BEGIN_PROPERTIES
+    REFL_DATA_PROP("integer", m_integer)
+    REFL_DATA_PROP("float", m_float)
+    REFL_END_PROPERTIES
+    constexpr static const char * par_names_1[] = {"i_int_par", "i_flt_par", "i_invert"};
+    constexpr static const char * par_names_2[] = {"i_int_par", "i_flt_par"};
+    REFL_BEGIN_ACTIONS
+    REFL_ACTION("add", add, par_names_1)
+    REFL_ACTION("set", set, par_names_2)
+    REFL_END_ACTIONS
     REFL_END_CLASS;
 
     void class_tests_print_props(ediacaran::raw_ptr i_source)
@@ -233,16 +233,31 @@ namespace ediacaran_test
         }
     }
 
+    template <typename A, typename B, typename C> struct Fir3
+    {
+    };
+
+    template <typename A, typename B> struct Fir2
+    {
+    };
+
+    template <typename B> struct Fir1
+    {
+    };
+
     void class_tests()
     {
+        static_assert(ediacaran::detail::TemplateParameters<Fir1<int>>::size == 1);
+        static_assert(ediacaran::detail::TemplateParameters<Fir2<int, double>>::size == 2);
+        static_assert(ediacaran::detail::TemplateParameters<Fir3<int, double, char>>::size == 3);
         using namespace ediacaran;
         get_type<TestClass>();
         try
         {
-            property props[2] = {
-              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
+            property props[2] = {property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
               property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
-            class_type CC("abc", 1, 2, special_functions{}, array_view<const base_class>{}, props, array_view<const action>{});
+            class_type CC(
+              "abc", 1, 2, special_functions{}, array_view<const base_class>{}, props, array_view<const action>{});
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }
@@ -259,7 +274,7 @@ namespace ediacaran_test
 
         class_tests_print_props(raw_ptr(&test_object));
 
-        const auto & t = get_type<TestClass>();
+        const auto & t = get_class<TestClass>();
         for (auto const & act : t.actions())
         {
             std::cout << act.name().data() << std::endl;

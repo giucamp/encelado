@@ -92,7 +92,7 @@ namespace ediacaran
         {
             using action_invoker = detail::ActionInvoker<METHOD_TYPE, METHOD,
               std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>, PARAM_NAMES>;
-            return action(i_name, get_qualified_type<action_invoker::return_type>(), action_invoker::parameters,
+            return action(i_name, get_qualified_type<typename action_invoker::return_type>(), action_invoker::parameters,
               &action_invoker::func);
         }
     }

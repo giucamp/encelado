@@ -96,80 +96,13 @@ namespace ediacaran
         array_view<const action> const m_actions;
     };
 
-    namespace detail
-    {
-        template <typename TYPE> using class_descriptor = decltype(get_type_descriptor(std::declval<TYPE *&>()));
-
-        // base_array - array of base_class, constructed from an input type_list
-        template <typename...> struct base_array;
-        template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
-        {
-            constexpr static base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
-        };
-        template <typename CLASS> struct base_array<CLASS, type_list<>>
-        {
-            constexpr static array_view<const base_class> s_bases{};
-        };
-
-        // makes a list of all the direct and indirect bases of CLASS using class_descriptor<...>::bases as input
-        template <typename...> struct all_bases;
-        template <typename CLASS> // this expands <CLASS> to <CLASS, type_list<BASES...>>
-        struct all_bases<CLASS>
-        {
-            using bases = typename class_descriptor<CLASS>::bases;
-            using type = typename all_bases<CLASS, bases>::type;
-        };
-        template <typename CLASS, typename... BASES> struct all_bases<CLASS, type_list<BASES...>>
-        {
-            using type = tl_push_back_t<type_list<BASES...>, typename all_bases<BASES>::type...>;
-        };
-
-        template <typename CLASS> struct TemplateParameters
-        {
-            constexpr static size_t size = 0;
-        };
-
-        template <typename FIRST_TYPE, typename... OTHER_TYPES, template <class...> class CLASS>
-        struct TemplateParameters<CLASS<FIRST_TYPE, OTHER_TYPES...>>
-        {
-            constexpr static size_t size = 1 + sizeof...(OTHER_TYPES);
-        };
-
-        template <typename FIRST_TYPE, template <class> class CLASS> struct TemplateParameters<CLASS<FIRST_TYPE>>
-        {
-            constexpr static size_t size = 1;
-        };
-
-
-        struct Edic_Reflect_Defaults
-        {
-            constexpr static array_view<const property> properties{};
-            constexpr static array_view<const action> actions{};
-        };
-
-        template <typename CLASS>
-            struct TypeInstance<CLASS, std::enable_if_t<std::is_class_v<CLASS>, CLASS>>
-        {
-            constexpr static class_type instance{ class_descriptor<CLASS>::name, sizeof(CLASS), alignof(CLASS),
-                special_functions::make<CLASS>(),
-                base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases,
-                class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions };
-        };
-
-        /*template <typename CLASS>
-        */
-    }
-
-    // get_type
-    /*template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
-    constexpr class_type const & get_type() noexcept
-    {
-        return detail::s_class<TYPE>;
-    }*/
+    // forward
+    template <typename TYPE>
+        constexpr const class_type & get_class() noexcept;
 
     template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
     {
-        return base_class(get_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
+        return base_class(ediacaran::get_class<BASE>(), &impl_up_cast<DERIVED, BASE>);
     }
 
 } // namespace ediacaran

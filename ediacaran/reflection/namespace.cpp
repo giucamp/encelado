@@ -1,6 +1,6 @@
 
 #include "ediacaran/reflection/namespace.h"
-#include "ediacaran/reflection/type.h"
+#include "ediacaran/reflection/reflection.h"
 #include <string>
 
 namespace ediacaran

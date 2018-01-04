@@ -2,7 +2,7 @@
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
 
 #include "TypeRegistry.h"
-#include "ediacaran/reflection/type.h"
+#include "ediacaran/reflection/reflection.h"
 
 namespace cambrian
 {

@@ -184,9 +184,13 @@ namespace ediacaran
                m_volatileness_word == i_source.m_volatileness_word;
     }
 
+    // forward
+    template <typename TYPE>
+    constexpr const type_t & get_type() noexcept;
+
 	constexpr const type_t * qualified_type_ptr::primary_type() const noexcept
 	{
-		if (m_indirection_levels == 0)
+        if (m_indirection_levels == 0)
 		{
 			// the pointer is empty or it is not a pointer
 			return m_final_type;
@@ -209,18 +213,5 @@ namespace ediacaran
 	{
 		EDIACARAN_ASSERT(i_indirection_level <= indirection_levels());
 		return (m_volatileness_word & (static_cast<uintptr_t>(1) << i_indirection_level)) != 0;
-	}
-
-	template <typename TYPE>
-		constexpr qualified_type_ptr get_qualified_type()
-	{
-		static_assert(detail::StaticQualification<TYPE>::s_indirection_levels <= qualified_type_ptr::s_max_indirection_levels,
-			"Maximum indirection level exceeded");
-
-        return qualified_type_ptr(
-            &get_type<typename detail::StaticQualification<TYPE>::UnderlyingType>(),
-			detail::StaticQualification<TYPE>::s_indirection_levels,
-			detail::StaticQualification<TYPE>::s_constness_word,
-			detail::StaticQualification<TYPE>::s_volatileness_word);
 	}
 }
