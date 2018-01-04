@@ -15,6 +15,7 @@ namespace ediacaran
 
 namespace ediacaran_test
 {
+    void remove_noexcept_tests();
     void type_list_tests();
     void qualified_type_ptr_tests();
     void string_tests();

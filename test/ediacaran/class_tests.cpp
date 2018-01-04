@@ -19,7 +19,7 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_3_1", TestBase_3_1)
-    
+
     REFL_END_CLASS;
 
     struct TestBase_3_2

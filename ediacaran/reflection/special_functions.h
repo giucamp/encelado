@@ -28,8 +28,7 @@ namespace ediacaran
       public:
         using scalar_constructor_function = void (*)(void * i_dest_start, void * i_dest_end);
 
-        using scalar_destructor_function = void (*)(
-          void * i_dest_start, void * i_dest_end) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
+        using scalar_destructor_function = void (*)(void * i_dest_start, void * i_dest_end) noexcept;
 
         using scalar_copy_constructor_function = void (*)(
           void * i_dest_start, void * i_dest_end, void const * i_source_start);
@@ -42,13 +41,11 @@ namespace ediacaran
 
         using scalar_move_assigner_function = void (*)(void * i_dest_start, void * i_dest_end, void * i_source_start);
 
-        using comparer_function = int (*)(void const * i_first, void const * i_second) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
+        using comparer_function = int (*)(void const * i_first, void const * i_second) noexcept;
 
-        using to_chars_function = void (*)(
-          void const * i_source, char_writer & i_dest) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
+        using to_chars_function = void (*)(void const * i_source, char_writer & i_dest) noexcept;
 
-        using try_parse_function = bool (*)(
-          void * i_dest, char_reader & i_source, char_writer & i_error_dest) EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
+        using try_parse_function = bool (*)(void * i_dest, char_reader & i_source, char_writer & i_error_dest) noexcept;
 
         constexpr special_functions() noexcept = default;
 

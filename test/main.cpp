@@ -46,6 +46,7 @@ int main()
     signal(SIGSEGV, seg_fault_handler);
 #endif
 
+    ediacaran_test::remove_noexcept_tests();
     ediacaran_test::type_list_tests();
     ediacaran_test::class_tests();
     ediacaran_test::type_tests();

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ediacaran/core/char_writer.h"
-#include "ediacaran/core/remove_noexcept.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
 
@@ -46,8 +45,7 @@ namespace ediacaran
 
         constexpr property(
           accessor_tag, const char * i_name, const qualified_type_ptr & i_qualified_type, accessor i_accessor)
-            : symbol(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type),
-              m_accessor(i_accessor)
+            : symbol(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type), m_accessor(i_accessor)
         {
         }
 
@@ -135,7 +133,8 @@ namespace ediacaran
 
     namespace detail
     {
-        template <typename GETTER_TYPE, typename SETTER_TYPE, GETTER_TYPE GETTER, SETTER_TYPE SETTER> struct PropertyAccessor;
+        template <typename GETTER_TYPE, typename SETTER_TYPE, GETTER_TYPE GETTER, SETTER_TYPE SETTER>
+        struct PropertyAccessor;
 
         template <typename CLASS, typename GETTER_RETURN_TYPE, typename SETTER_PARAM_TYPE,
           GETTER_RETURN_TYPE (CLASS::*GETTER)() const, void (CLASS::*SETTER)(SETTER_PARAM_TYPE i_value)>
@@ -175,7 +174,8 @@ namespace ediacaran
             using owner_class = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
 
-            static bool func(property::operation i_operation, void * i_object, void * i_value, char_writer & o_error)
+            static bool func(
+              property::operation i_operation, void * i_object, void * i_value, char_writer & /*o_error*/)
             {
                 EDIACARAN_ASSERT(i_object != nullptr);
                 EDIACARAN_ASSERT(i_value != nullptr);

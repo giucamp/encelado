@@ -27,7 +27,7 @@ namespace ediacaran
         constexpr class_type const & get_class() const noexcept { return m_class; }
 
       private:
-        constexpr base_class(class_type const & i_class, void * (*i_up_caster)(void *)EDIACARAN_NOEXCEPT_FUNCTION_TYPE)
+        constexpr base_class(class_type const & i_class, void * (*i_up_caster)(void *)noexcept)
             : m_class(i_class), m_up_caster(i_up_caster)
         {
         }
@@ -41,7 +41,7 @@ namespace ediacaran
 
       private:
         class_type const & m_class;
-        void * (*const m_up_caster)(void *)EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
+        void * (*const m_up_caster)(void *)noexcept;
     };
 
     class class_type : public type
@@ -83,7 +83,7 @@ namespace ediacaran
                         if (m_properties[i].name() == base_props[j].name())
                         {
                             except<std::runtime_error>("shadowing property ", m_properties[i].name(), " in class ",
-                                name(), ", already in ", m_base_classes[base_class_index].get_class().name());
+                              name(), ", already in ", m_base_classes[base_class_index].get_class().name());
                         }
                     }
                 }
@@ -97,8 +97,7 @@ namespace ediacaran
     };
 
     // forward
-    template <typename TYPE>
-        constexpr const class_type & get_class() noexcept;
+    template <typename TYPE> constexpr const class_type & get_class() noexcept;
 
     template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
     {

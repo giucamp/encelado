@@ -81,12 +81,6 @@
 #define EDIACARAN_NO_INLINE
 #endif
 
-#if __cpp_noexcept_function_type
-#define EDIACARAN_NOEXCEPT_FUNCTION_TYPE noexcept
-#else
-#define EDIACARAN_NOEXCEPT_FUNCTION_TYPE
-#endif
-
 namespace ediacaran
 {
     class parse_error : public std::runtime_error

@@ -3,8 +3,8 @@
 #include "../common.h"
 #include "ediacaran/core/string_builder.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
-#include "ediacaran/reflection/type.h"
 #include "ediacaran/reflection/reflection.h"
+#include "ediacaran/reflection/type.h"
 #include "ediacaran/utils/raw_ptr.h"
 
 namespace ediacaran_test

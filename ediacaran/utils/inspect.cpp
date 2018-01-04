@@ -1,7 +1,7 @@
 
 #include <ediacaran/core/string_builder.h>
-#include <ediacaran/utils/inspect.h>
 #include <ediacaran/reflection/reflection.h>
+#include <ediacaran/utils/inspect.h>
 #include <vector>
 
 namespace ediacaran
