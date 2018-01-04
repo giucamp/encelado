@@ -226,12 +226,14 @@ namespace ediacaran
         return to_chars(dest, SIZE, i_objects...);
     }
 
-    template <typename EXCEPTION_TYPE, typename... PARAMS>
-    [[noreturn]] constexpr void except(const PARAMS &... i_arguments)
+    template <typename EXCEPTION_TYPE, typename FIRST_PARAM, typename... PARAMS,
+        typename = std::enable_if_t<(sizeof...(PARAMS) > 0), void>>
+    [[noreturn]] constexpr void except(const FIRST_PARAM & i_first_parameter, const PARAMS &... i_other_parameters)
     {
         char message[512]{};
         char_writer writer(message);
-        (writer << ... << i_arguments);
+        writer << i_first_parameter;
+        (writer << ... << i_other_parameters);
         except<EXCEPTION_TYPE>(message);
     }
 }
