@@ -10,7 +10,7 @@ namespace ediacaran
 {
     class parameter : public symbol_t
     {
-    public:
+      public:
         constexpr parameter(const char * i_name, qualified_type_ptr const i_qualified_type)
             : symbol_t(i_name), m_qualified_type(i_qualified_type)
         {
@@ -18,7 +18,7 @@ namespace ediacaran
 
         constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
 
-    private:
+      private:
         qualified_type_ptr const m_qualified_type;
     };
 

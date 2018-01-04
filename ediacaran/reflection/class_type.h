@@ -35,7 +35,7 @@ namespace ediacaran
         template <typename DERIVED, typename BASE> static void * impl_up_cast(void * i_derived) noexcept
         {
             auto const derived = static_cast<DERIVED *>(i_derived);
-            EDIACARAN_ASSERT(derived!= nullptr);
+            EDIACARAN_ASSERT(derived != nullptr);
             return static_cast<BASE *>(derived);
         }
 
@@ -65,32 +65,29 @@ namespace ediacaran
       private:
         constexpr void check_duplicates() const
         {
-            if (m_properties.size() > 0)
-                for (auto prop_it = m_properties.begin(); prop_it != m_properties.end(); prop_it++)
+            for (size_t i = 0; i < m_properties.size(); i++)
+            {
+                for (size_t j = i + 1; j < m_properties.size(); j++)
                 {
-                    for (auto other_prop_it = prop_it + 1; other_prop_it != m_properties.end(); other_prop_it++)
+                    if (m_properties[i].name() == m_properties[j].name())
                     {
-                        if (prop_it->name() == other_prop_it->name())
+                        except<std::runtime_error>("duplicate property ", m_properties[i].name(), " in class ", name());
+                    }
+                }
+
+                for (size_t base_class_index = 0; base_class_index < m_base_classes.size(); base_class_index++)
+                {
+                    auto & base_props = m_base_classes[base_class_index].get_class().m_properties;
+                    for (size_t j = 0; j < base_props.size(); j++)
+                    {
+                        if (m_properties[i].name() == base_props[j].name())
                         {
-                            except<std::runtime_error>("duplicate property ", prop_it->name(), " in class ", name());
+                            except<std::runtime_error>("shadowing property ", m_properties[i].name(), " in class ",
+                                name(), ", already in ", m_base_classes[base_class_index].get_class().name());
                         }
                     }
-
-                    if (m_base_classes.size() > 0)
-                        for (auto & base : m_base_classes)
-                        {
-                            auto & base_props = base.get_class().m_properties;
-                            if (base_props.size() > 0)
-                                for (auto & base_prop : base_props)
-                                {
-                                    if (prop_it->name() == base_prop.name())
-                                    {
-                                        except<std::runtime_error>("shadowing property ", prop_it->name(), " in class ",
-                                          name(), ", already in ", base.get_class().name());
-                                    }
-                                }
-                        }
                 }
+            }
         }
 
       private:
@@ -107,11 +104,11 @@ namespace ediacaran
         template <typename...> struct base_array;
         template <typename CLASS, typename... BASES> struct base_array<CLASS, type_list<BASES...>>
         {
-            constexpr static base_class s_bases[sizeof...(BASES)] = { base_class::make<CLASS, BASES>()... };
+            constexpr static base_class s_bases[sizeof...(BASES)] = {base_class::make<CLASS, BASES>()...};
         };
         template <typename CLASS> struct base_array<CLASS, type_list<>>
         {
-             constexpr static array_view<const base_class> s_bases{};
+            constexpr static array_view<const base_class> s_bases{};
         };
 
         // makes a list of all the direct and indirect bases of CLASS using class_descriptor<...>::bases as input
@@ -127,6 +124,23 @@ namespace ediacaran
             using type = tl_push_back_t<type_list<BASES...>, typename all_bases<BASES>::type...>;
         };
 
+        template <typename CLASS> struct TemplateParameters
+        {
+            constexpr static size_t size = 0;
+        };
+
+        template <typename FIRST_TYPE, typename... OTHER_TYPES, template <class...> class CLASS>
+        struct TemplateParameters<CLASS<FIRST_TYPE, OTHER_TYPES...>>
+        {
+            constexpr static size_t size = 1 + sizeof...(OTHER_TYPES);
+        };
+
+        template <typename FIRST_TYPE, template <class> class CLASS> struct TemplateParameters<CLASS<FIRST_TYPE>>
+        {
+            constexpr static size_t size = 1;
+        };
+
+
         struct Edic_Reflect_Defaults
         {
             constexpr static array_view<const property> properties{};
@@ -134,19 +148,24 @@ namespace ediacaran
         };
 
         template <typename CLASS>
-        class_type constexpr s_class{
-            class_descriptor<CLASS>::name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
+            struct TypeInstance<CLASS, std::enable_if_t<std::is_class_v<CLASS>, CLASS>>
+        {
+            constexpr static class_type instance{ class_descriptor<CLASS>::name, sizeof(CLASS), alignof(CLASS),
+                special_functions::make<CLASS>(),
                 base_array<CLASS, tl_remove_duplicates_t<typename all_bases<CLASS>::type>>::s_bases,
-                class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions        
+                class_descriptor<CLASS>::properties, class_descriptor<CLASS>::actions };
         };
+
+        /*template <typename CLASS>
+        */
     }
 
     // get_type
-    template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
+    /*template <typename TYPE, typename = std::enable_if_t<std::is_class_v<TYPE>>>
     constexpr class_type const & get_type() noexcept
     {
         return detail::s_class<TYPE>;
-    }
+    }*/
 
     template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
     {

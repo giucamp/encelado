@@ -209,50 +209,68 @@ namespace ediacaran
                     o_dest << "int" << (std::numeric_limits<INT_TYPE>::digits + 1);
             }
         };
+
+        template <typename, typename> struct TypeInstance;
+
+        template <typename TYPE> constexpr type_t MakeFundamentalType(const char * i_name) noexcept
+        {
+            return type_t{
+              type_kind::is_fundamental, i_name, sizeof(TYPE), alignof(TYPE), special_functions::template make<TYPE>()};
+        }
+
+        template <> struct TypeInstance<bool, bool>
+        {
+            constexpr static type_t instance{MakeFundamentalType<bool>("bool")};
+        };
+
+        template <> struct TypeInstance<char, char>
+        {
+            constexpr static type_t instance{MakeFundamentalType<char>("char")};
+        };
+
+        template <> struct TypeInstance<float, float>
+        {
+            constexpr static type_t instance{ MakeFundamentalType<float>("float") };
+        };
+
+        template <> struct TypeInstance<double, double>
+        {
+            constexpr static type_t instance{ MakeFundamentalType<double>("double") };
+        };
+
+        template <> struct TypeInstance<long double, long double>
+        {
+            constexpr static type_t instance{ MakeFundamentalType<long double>("long_double") };
+        };
+
+        template <> struct TypeInstance<void*, void*>
+        {
+            constexpr static type_t instance{ MakeFundamentalType<void*>("pointer") };
+        };
+
+        template <> struct TypeInstance<void, void>
+        {
+            constexpr static type_t instance{type_kind::is_fundamental, "void", 1, 1, special_functions{}};
+        };
+
+        template <typename INT_TYPE> 
+            struct TypeInstance< INT_TYPE, std::enable_if_t<
+                std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>,
+                    INT_TYPE>>
+        {
+            constexpr static type_t instance{ MakeFundamentalType<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data()) };
+        };
     }
 
-    template <typename> struct tag
+    template <typename TYPE>
+        constexpr const auto & get_type() noexcept
     {
-    };
-
-    template <typename TYPE> constexpr type_t make_fundamental_type(const char * i_name) noexcept
-    {
-        return type_t{
-          type_kind::is_fundamental, i_name, sizeof(TYPE), alignof(TYPE), special_functions::template make<TYPE>()};
+        return detail::TypeInstance<TYPE, TYPE>::instance;
     }
 
-    constexpr type_t create_type(tag<bool>) noexcept { return make_fundamental_type<bool>("bool"); }
-
-    constexpr type_t create_type(tag<char>) noexcept { return make_fundamental_type<bool>("char"); }
-
-    constexpr type_t create_type(tag<float>) noexcept { return make_fundamental_type<float>("float"); }
-
-    constexpr type_t create_type(tag<double>) noexcept { return make_fundamental_type<double>("double"); }
-
-    constexpr type_t create_type(tag<long double>) noexcept { return make_fundamental_type<double>("long_double"); }
-
-    template <typename INT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>, type_t> create_type(
-      tag<INT_TYPE>) noexcept
-    {
-        return make_fundamental_type<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data());
-    }
-
-    constexpr type_t create_type(tag<void *>) noexcept { return make_fundamental_type<void *>("pointer"); }
-
-    constexpr type_t create_type(tag<void>) noexcept
-    {
-        return type_t{type_kind::is_fundamental, "void", 1, 1, special_functions{}};
-    }
-
-    namespace detail
-    {
-        template <typename TYPE> constexpr type_t s_type{create_type(tag<TYPE>{})};
-    }
-
-    template <typename TYPE, typename = std::enable_if_t<!(std::is_class_v<TYPE> || std::is_enum_v<TYPE>)>>
+    /*template <typename TYPE, typename = std::enable_if_t<!(std::is_class_v<TYPE> || std::is_enum_v<TYPE>)>>
     constexpr const type_t & get_type() noexcept
     {
         return detail::s_type<TYPE>;
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ediacaran/reflection/class_type.h"
 #include "ediacaran/reflection/class_template_specialization.h"
+#include "ediacaran/reflection/class_type.h"
 
 #define REFL_BEGIN_CLASS(Name, Class)                                                                                  \
     struct Edic_Reflect_##Class get_type_descriptor(Class *&);                                                         \
