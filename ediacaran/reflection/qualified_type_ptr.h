@@ -41,7 +41,7 @@ namespace ediacaran
     }
 
 
-    /** Lightweight value-class holding a pointer to a type_t, a number of indirection levels, and the cv-qualification
+    /** Lightweight value-class holding a pointer to a type, a number of indirection levels, and the cv-qualification
         (is it \c const? is it \c volatile?) for each indirection level. A qualified_type_ptr can tell:
             - The **number of indirection levels**, that is is the number of '*' or '&' or '&&' appearing in the C++ declaration of
                the type. A non-pointer types has zero indirection levels, while a pointer to a pointer has 2 indirection levels.
@@ -89,11 +89,11 @@ namespace ediacaran
 
         /** Retrieves the primary type, that is the type at the 0-th indirection level.
             If the type is empty (= default constructed) the primary type is nullptr. Otherwise is != \c nullptr. */
-        constexpr const type_t * primary_type() const noexcept;
+        constexpr const type * primary_type() const noexcept;
 
         /** Retrieves the final type, that is the type at the last indirection level.
             If the type is empty (= default constructed) the final type is nullptr. Otherwise is != \c nullptr. */
-        constexpr const type_t * final_type() const noexcept { return m_final_type; }
+        constexpr const type * final_type() const noexcept { return m_final_type; }
 
         /** Retrieves whether a given indirection level has a const qualifier.
             @param i_indirection_level indirection level (must be <= \c indirection_levels()) for which the consteness is
@@ -138,7 +138,7 @@ namespace ediacaran
 
         // special functions
 
-        constexpr qualified_type_ptr(const type_t * i_final_type, size_t i_indirection_levels, size_t i_constness_word,
+        constexpr qualified_type_ptr(const type * i_final_type, size_t i_indirection_levels, size_t i_constness_word,
           size_t i_volatileness_word) noexcept;
 
         /** Constructs an empty qualified_type_ptr (is_empty() will return true). The object may be later the destination of an assignment, changing its state. */
@@ -153,9 +153,9 @@ namespace ediacaran
             @param i_cv_flags cv-qualification for each indirection level. The n-th element of this array specifies a combination of cv flags for the n-th indirection
                 level. The number of indirection levels of the type is the size of this array, minus 1. So, to construct a pointer to a pointer, specify an array
                 of 3 elements. If the array is empty, the number of indirection levels is zero. */
-        constexpr qualified_type_ptr(const type_t & i_final_type, const CV_Flags * i_cv_flags, size_t i_cv_flags_size);
+        constexpr qualified_type_ptr(const type & i_final_type, const CV_Flags * i_cv_flags, size_t i_cv_flags_size);
 
-        constexpr qualified_type_ptr(const type_t & i_final_type, const std::initializer_list<CV_Flags> & i_cv_flags)
+        constexpr qualified_type_ptr(const type & i_final_type, const std::initializer_list<CV_Flags> & i_cv_flags)
             : qualified_type_ptr(i_final_type, i_cv_flags.begin(), i_cv_flags.end() - i_cv_flags.begin())
         {
         }
@@ -181,7 +181,7 @@ namespace ediacaran
         friend char_reader & operator>>(char_reader & i_source, qualified_type_ptr & o_dest_qualified_type);
 
       private: // data members (currently a qualified_type_ptr is big as two pointers)
-        const type_t * m_final_type;
+        const type * m_final_type;
         uintptr_t m_indirection_levels : (std::numeric_limits<uintptr_t>::digits - s_max_indirection_levels * 2);
         uintptr_t m_constness_word : s_max_indirection_levels;
         uintptr_t m_volatileness_word : s_max_indirection_levels;

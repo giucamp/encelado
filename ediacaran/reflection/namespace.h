@@ -7,17 +7,17 @@
 
 namespace ediacaran
 {
-    class namespace_ : public symbol_t
+    class namespace_ : public symbol
     {
       public:
-        using symbol_t::symbol_t;
+        using symbol::symbol;
 
         namespace_(const namespace_ &) = delete;
         namespace_ & operator=(const namespace_ &) = delete;
 
 
       private:
-        std::vector<const type_t *> m_types;
+        std::vector<const type *> m_types;
         std::vector<const namespace_ *> m_namespaces;
         friend class global_namespace_;
     };
@@ -33,18 +33,18 @@ namespace ediacaran
             return s_instance;
         }
 
-        void register_type(const char * i_full_name, const type_t * i_type);
+        void register_type(const char * i_full_name, const type * i_type);
 
-        void unregister_type(const char * i_full_name, const type_t * i_type) noexcept;
+        void unregister_type(const char * i_full_name, const type * i_type) noexcept;
 
-        const type_t * find_type(const string_view & i_full_name) const;
+        const type * find_type(const string_view & i_full_name) const;
 
       private:
         global_namespace_();
 
       private:
-        std::unordered_map<std::string, const type_t *> m_types;
+        std::unordered_map<std::string, const type *> m_types;
     };
 
-    bool try_parse(const type_t ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept;
+    bool try_parse(const type ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept;
 }

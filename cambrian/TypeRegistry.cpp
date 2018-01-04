@@ -18,7 +18,7 @@ namespace cambrian
         add_type(&get_type<uint64_t>());
     }
 
-    TypeId TypeRegistry::add_type(const type_t * i_type)
+    TypeId TypeRegistry::add_type(const type * i_type)
     {
         auto Id = m_types.size();
         m_types.push_back(i_type);

@@ -9,7 +9,7 @@
 
 namespace ediacaran
 {
-    class action : public symbol_t
+    class action : public symbol
     {
       public:
         using invoke_function = void (*)(
@@ -17,7 +17,7 @@ namespace ediacaran
 
         constexpr action(const char * i_name, qualified_type_ptr const & i_return_qualified_type,
           array_view<const parameter> const i_parameters, invoke_function i_invoke_function)
-            : symbol_t(i_name), m_invoke_function(i_invoke_function), m_return_qualified_type(i_return_qualified_type),
+            : symbol(i_name), m_invoke_function(i_invoke_function), m_return_qualified_type(i_return_qualified_type),
               m_parameters(i_parameters)
         {
         }

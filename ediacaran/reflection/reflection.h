@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ediacaran/reflection/class_template_specialization.h"
+#include "ediacaran/reflection/type.h"
 #include "ediacaran/reflection/class_type.h"
+#include "ediacaran/reflection/qualified_type_ptr.h"
 
 #define REFL_BEGIN_CLASS(Name, Class)                                                                                  \
     struct Edic_Reflect_##Class get_type_descriptor(Class *&);                                                         \
@@ -60,9 +62,9 @@ namespace ediacaran
             }
         };
 
-        template <typename TYPE> constexpr type_t MakeFundamentalType(const char * i_name) noexcept
+        template <typename TYPE> constexpr type MakeFundamentalType(const char * i_name) noexcept
         {
-            return type_t{
+            return type{
                 type_kind::is_fundamental, i_name, sizeof(TYPE), alignof(TYPE), special_functions::template make<TYPE>() };
         }
 
@@ -70,37 +72,37 @@ namespace ediacaran
 
         template <> struct TypeInstance<bool, bool>
         {
-            constexpr static type_t instance{ MakeFundamentalType<bool>("bool") };
+            constexpr static type instance{ MakeFundamentalType<bool>("bool") };
         };
 
         template <> struct TypeInstance<char, char>
         {
-            constexpr static type_t instance{ MakeFundamentalType<char>("char") };
+            constexpr static type instance{ MakeFundamentalType<char>("char") };
         };
 
         template <> struct TypeInstance<float, float>
         {
-            constexpr static type_t instance{ MakeFundamentalType<float>("float") };
+            constexpr static type instance{ MakeFundamentalType<float>("float") };
         };
 
         template <> struct TypeInstance<double, double>
         {
-            constexpr static type_t instance{ MakeFundamentalType<double>("double") };
+            constexpr static type instance{ MakeFundamentalType<double>("double") };
         };
 
         template <> struct TypeInstance<long double, long double>
         {
-            constexpr static type_t instance{ MakeFundamentalType<long double>("long_double") };
+            constexpr static type instance{ MakeFundamentalType<long double>("long_double") };
         };
 
         template <> struct TypeInstance<void*, void*>
         {
-            constexpr static type_t instance{ MakeFundamentalType<void*>("pointer") };
+            constexpr static type instance{ MakeFundamentalType<void*>("pointer") };
         };
 
         template <> struct TypeInstance<void, void>
         {
-            constexpr static type_t instance{ type_kind::is_fundamental, "void", 1, 1, special_functions{} };
+            constexpr static type instance{ type_kind::is_fundamental, "void", 1, 1, special_functions{} };
         };
 
         template <typename INT_TYPE>
@@ -108,7 +110,7 @@ namespace ediacaran
             std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>,
             INT_TYPE>>
         {
-            constexpr static type_t instance{ MakeFundamentalType<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data()) };
+            constexpr static type instance{ MakeFundamentalType<INT_TYPE>(constexpr_string<detail::WriteIntTypeName<INT_TYPE>>::string.data()) };
         };
 
         // --------------------------------------------------
@@ -148,11 +150,13 @@ namespace ediacaran
         struct TemplateParameters<CLASS<FIRST_TYPE, OTHER_TYPES...>>
         {
             constexpr static size_t size = 1 + sizeof...(OTHER_TYPES);
-            constexpr static qualified_type_ptr value = get_qualified_type<FIRST_TYPE>();
+            using argument_type = qualified_type_ptr;
+            constexpr static qualified_type_ptr argument_value = get_qualified_type<FIRST_TYPE>();
         };
 
         struct Edic_Reflect_Defaults
         {
+            using bases = type_list<>;
             constexpr static array_view<const property> properties{};
             constexpr static array_view<const action> actions{};
         };
@@ -169,7 +173,7 @@ namespace ediacaran
     } // namespace detail
 
     template <typename TYPE>
-    constexpr const type_t & get_type() noexcept
+    constexpr const type & get_type() noexcept
     {
         return detail::TypeInstance<TYPE, TYPE>::instance;
     }
@@ -195,4 +199,33 @@ namespace ediacaran
             detail::StaticQualification<TYPE>::s_constness_word,
             detail::StaticQualification<TYPE>::s_volatileness_word);
     }
+
+    /*REFL_BEGIN_CLASS("ediacaran::string_view", string_view)
+        REFL_BEGIN_PROPERTIES
+            REFL_ACCESSOR_RO_PROP("size", size)
+        REFL_END_PROPERTIES
+    REFL_END_CLASS;
+
+    REFL_BEGIN_CLASS("ediacaran::symbol", symbol)
+        REFL_BEGIN_PROPERTIES
+            REFL_ACCESSOR_RO_PROP("name", name)
+        REFL_END_PROPERTIES
+    REFL_END_CLASS;
+    
+    REFL_BEGIN_CLASS("ediacaran::type", type)
+        REFL_BASES(symbol)
+        REFL_BEGIN_PROPERTIES
+            REFL_ACCESSOR_RO_PROP("size", size)
+            REFL_ACCESSOR_RO_PROP("alignment", alignment)
+            REFL_ACCESSOR_RO_PROP("is_constructible", is_constructible)
+            REFL_ACCESSOR_RO_PROP("is_destructible", is_destructible)
+            REFL_ACCESSOR_RO_PROP("is_copy_constructible", is_copy_constructible)
+            REFL_ACCESSOR_RO_PROP("is_move_constructible", is_move_constructible)
+            REFL_ACCESSOR_RO_PROP("is_copy_assignable", is_copy_assignable)
+            REFL_ACCESSOR_RO_PROP("is_move_assignable", is_move_assignable)
+            REFL_ACCESSOR_RO_PROP("is_comparable", is_comparable)
+            REFL_ACCESSOR_RO_PROP("is_stringizable", is_stringizable)
+            REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable)
+        REFL_END_PROPERTIES
+    REFL_END_CLASS;*/
 }

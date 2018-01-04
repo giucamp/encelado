@@ -64,6 +64,9 @@
     <ClInclude Include="..\reflection\reflection.h">
       <Filter>reflection</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\remove_noexcept.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

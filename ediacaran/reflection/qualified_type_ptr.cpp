@@ -41,7 +41,7 @@ namespace ediacaran
     bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
         size_t constness_word = 0, volatileness_word = 0;
-        const type_t * final_type = nullptr;
+        const type * final_type = nullptr;
         size_t indirection_levels =
           0; // this variable is not the index of the current IL, but the number of IL's so far
         auto source = i_source;

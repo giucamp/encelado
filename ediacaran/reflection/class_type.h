@@ -44,13 +44,13 @@ namespace ediacaran
         void * (*const m_up_caster)(void *)EDIACARAN_NOEXCEPT_FUNCTION_TYPE;
     };
 
-    class class_type : public type_t
+    class class_type : public type
     {
       public:
         constexpr class_type(const char * const i_name, size_t i_size, size_t i_alignment,
           const special_functions & i_special_functions, const array_view<const base_class> & i_base_classes,
           const array_view<const property> & i_properties, const array_view<const action> & i_actions)
-            : type_t(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
+            : type(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
               m_base_classes(i_base_classes), m_properties(i_properties), m_actions(i_actions)
         {
             check_duplicates();

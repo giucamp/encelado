@@ -122,7 +122,7 @@ namespace ediacaran
 
 	}
 
-    constexpr qualified_type_ptr::qualified_type_ptr(const type_t * i_final_type,
+    constexpr qualified_type_ptr::qualified_type_ptr(const type * i_final_type,
       size_t i_indirection_levels, size_t i_constness_word,
       size_t i_volatileness_word) noexcept
         : m_final_type(i_final_type),
@@ -138,7 +138,7 @@ namespace ediacaran
           (i_volatileness_word & ~((2 << i_indirection_levels) - 1)) == 0);
     }
 
-    constexpr qualified_type_ptr::qualified_type_ptr(const type_t & i_final_type,
+    constexpr qualified_type_ptr::qualified_type_ptr(const type & i_final_type,
       const CV_Flags * i_cv_flags, size_t i_cv_flags_size)
         : m_final_type(&i_final_type), m_indirection_levels(0), m_constness_word(0), m_volatileness_word(0)
     {
@@ -186,9 +186,9 @@ namespace ediacaran
 
     // forward
     template <typename TYPE>
-    constexpr const type_t & get_type() noexcept;
+    constexpr const type & get_type() noexcept;
 
-	constexpr const type_t * qualified_type_ptr::primary_type() const noexcept
+	constexpr const type * qualified_type_ptr::primary_type() const noexcept
 	{
         if (m_indirection_levels == 0)
 		{

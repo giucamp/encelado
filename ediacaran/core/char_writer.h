@@ -227,7 +227,7 @@ namespace ediacaran
     }
 
     template <typename EXCEPTION_TYPE, typename FIRST_PARAM, typename... PARAMS,
-        typename = std::enable_if_t<(sizeof...(PARAMS) > 0), void>>
+        typename = std::enable_if_t<(sizeof...(PARAMS) > 0) || !std::is_constructible_v<const char *, FIRST_PARAM>, void>>
     [[noreturn]] constexpr void except(const FIRST_PARAM & i_first_parameter, const PARAMS &... i_other_parameters)
     {
         char message[512]{};

@@ -19,9 +19,9 @@ namespace cambrian
       public:
         TypeRegistry();
 
-        TypeId add_type(const type_t * i_type);
+        TypeId add_type(const type * i_type);
 
       private:
-        std::vector<const type_t *> m_types;
+        std::vector<const type *> m_types;
     };
 }

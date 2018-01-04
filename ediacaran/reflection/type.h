@@ -11,10 +11,10 @@
 
 namespace ediacaran
 {
-    class symbol_t
+    class symbol
     {
       public:
-        constexpr symbol_t(const char * const i_name) noexcept : m_name(i_name) {}
+        constexpr symbol(const char * const i_name) noexcept : m_name(i_name) {}
         constexpr string_view name() const noexcept
         {
             // workaround for gcc considering the comparison of two char* non-constexpr
@@ -32,12 +32,12 @@ namespace ediacaran
         is_enum
     };
 
-    class type_t : public symbol_t
+    class type : public symbol
     {
       public:
-        constexpr type_t(type_kind i_kind, const char * const i_name, size_t i_size, size_t i_alignment,
+        constexpr type(type_kind i_kind, const char * const i_name, size_t i_size, size_t i_alignment,
           const ediacaran::special_functions & i_special_functions) noexcept
-            : symbol_t(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
+            : symbol(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
               m_special_functions(i_special_functions)
         {
         }

@@ -19,7 +19,7 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_3_1", TestBase_3_1)
-    REFL_BASES()
+    
     REFL_END_CLASS;
 
     struct TestBase_3_2
@@ -37,7 +37,6 @@ namespace ediacaran_test
     };
 
     REFL_BEGIN_CLASS("TestBase_3_2", TestBase_3_2)
-    REFL_BASES()
     REFL_BEGIN_PROPERTIES
     REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1)
     REFL_ACCESSOR_PROP("prop", get_prop, set_prop)

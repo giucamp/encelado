@@ -24,13 +24,13 @@ namespace ediacaran
         register_type("long double", &get_type<long double>());
     }
 
-    void global_namespace_::register_type(const char * i_full_name, const type_t * i_type)
+    void global_namespace_::register_type(const char * i_full_name, const type * i_type)
     {
         std::string full_type_name{i_full_name};
         m_types.insert(std::make_pair(full_type_name, i_type));
     }
 
-    void global_namespace_::unregister_type(const char * i_full_name, const type_t * /*i_type*/) noexcept
+    void global_namespace_::unregister_type(const char * i_full_name, const type * /*i_type*/) noexcept
     {
         std::string full_type_name{i_full_name};
 
@@ -38,7 +38,7 @@ namespace ediacaran
         EDIACARAN_ASSERT(removed == 1);
     }
 
-    const type_t * global_namespace_::find_type(const string_view & i_full_name) const
+    const type * global_namespace_::find_type(const string_view & i_full_name) const
     {
         std::string full_type_name{i_full_name.data(), i_full_name.size()};
         auto const it = m_types.find(full_type_name);
@@ -48,7 +48,7 @@ namespace ediacaran
             return it->second;
     }
 
-    bool try_parse(const type_t ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept
+    bool try_parse(const type ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept
     {
         try
         {

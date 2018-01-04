@@ -8,11 +8,11 @@
 
 namespace ediacaran
 {
-    class parameter : public symbol_t
+    class parameter : public symbol
     {
       public:
         constexpr parameter(const char * i_name, qualified_type_ptr const i_qualified_type)
-            : symbol_t(i_name), m_qualified_type(i_qualified_type)
+            : symbol(i_name), m_qualified_type(i_qualified_type)
         {
         }
 
