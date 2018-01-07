@@ -17,7 +17,7 @@ namespace ediacaran
 
         constexpr action(
           const char * i_name, qualified_type_ptr const & i_return_qualified_type,
-          array_view<const parameter> const i_parameters, invoke_function i_invoke_function)
+          array_view<const parameter> const & i_parameters, invoke_function i_invoke_function)
             : symbol(i_name), m_invoke_function(i_invoke_function), m_return_qualified_type(i_return_qualified_type),
               m_parameters(i_parameters)
         {
@@ -48,19 +48,19 @@ namespace ediacaran
             constexpr static size_t parameter_count = sizeof...(PARAMETER_TYPE);
         };
 
-        template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE, const char * const * PARAM_NAMES>
+        template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE>
         struct ActionInvoker;
 
         template <
-          typename OWNING_CLASS, typename RETURN_TYPE, typename... PARAMETER_TYPE, const char * const * PARAM_NAMES,
+          typename OWNING_CLASS, typename RETURN_TYPE, typename... PARAMETER_TYPE,
           RETURN_TYPE (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...), size_t... INDEX>
         struct ActionInvoker<
-          RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...), METHOD, std::index_sequence<INDEX...>, PARAM_NAMES>
+          RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...), METHOD, std::index_sequence<INDEX...>>
         {
             using return_type = RETURN_TYPE;
 
             constexpr static parameter parameters[sizeof...(PARAMETER_TYPE)] = {
-              parameter{PARAM_NAMES[INDEX], get_qualified_type<PARAMETER_TYPE>()}...};
+              {"", get_qualified_type<PARAMETER_TYPE>()}...};
 
             static void func(void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
             {
@@ -72,15 +72,15 @@ namespace ediacaran
         };
 
         template <
-          typename OWNING_CLASS, typename... PARAMETER_TYPE, const char * const * PARAM_NAMES,
+          typename OWNING_CLASS, typename... PARAMETER_TYPE,
           void (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...), size_t... INDEX>
         struct ActionInvoker<
-          void (OWNING_CLASS::*)(PARAMETER_TYPE...), METHOD, std::index_sequence<INDEX...>, PARAM_NAMES>
+          void (OWNING_CLASS::*)(PARAMETER_TYPE...), METHOD, std::index_sequence<INDEX...>>
         {
             using return_type = void;
 
             constexpr static parameter parameters[sizeof...(PARAMETER_TYPE)] = {
-              parameter{PARAM_NAMES[INDEX], get_qualified_type<PARAMETER_TYPE>()}...};
+              {"", get_qualified_type<PARAMETER_TYPE>()}...};
 
             static void func(void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
             {
@@ -90,13 +90,11 @@ namespace ediacaran
         };
 
         template <
-          typename METHOD_TYPE, METHOD_TYPE METHOD,
-          const char * const (&PARAM_NAMES)[MethodTraits<METHOD_TYPE>::parameter_count]>
-        constexpr action make_action(const char * i_name)
+          typename METHOD_TYPE, METHOD_TYPE METHOD>
+        constexpr action make_action(const char * i_name, const char * i_parameter_names)
         {
             using action_invoker = detail::ActionInvoker<
-              METHOD_TYPE, METHOD, std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>,
-              PARAM_NAMES>;
+              METHOD_TYPE, METHOD, std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
             return action(
               i_name, get_qualified_type<typename action_invoker::return_type>(), action_invoker::parameters,
               &action_invoker::func);

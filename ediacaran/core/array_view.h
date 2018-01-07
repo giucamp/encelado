@@ -2,9 +2,18 @@
 #include <cstddef>
 #include <ediacaran/core/ediacaran_common.h>
 #include <initializer_list>
+#include <array>
+#include <utility>
+#include <type_traits>
 
 namespace ediacaran
 {
+    template <typename... ARG_TYPES>
+        constexpr auto make_array(ARG_TYPES &&... i_elements)
+    {
+        return std::array<std::common_type_t<ARG_TYPES...>, sizeof...(ARG_TYPES)>{{ std::forward<ARG_TYPES>(i_elements)... }};
+    }
+
     template <typename TYPE> class array_view
     {
       public:
@@ -14,6 +23,11 @@ namespace ediacaran
 
         template <size_t SIZE>
         constexpr array_view(TYPE (&i_objects)[SIZE]) noexcept : m_objects(i_objects), m_size(SIZE)
+        {
+        }
+
+        template <typename SOURCE_TYPE, size_t SIZE>
+        constexpr array_view(const std::array<SOURCE_TYPE, SIZE> & i_objects) noexcept : m_objects(i_objects.data()), m_size(SIZE)
         {
         }
 
