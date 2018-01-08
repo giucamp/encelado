@@ -28,8 +28,8 @@ namespace ediacaran
     #ifdef _MSC_VER
         // workaround for std::array<T, 0> containing an instance of T
         constexpr std::array<property, 0> empty_properties{{property{property::offset_tag{}, "", qualified_type_ptr{}, 0}}};
-        constexpr std::array<parameter, 0> empty_parameters{parameter{"", qualified_type_ptr{}}};
-        constexpr std::array<action, 0> empty_actions{action{"", qualified_type_ptr{}, empty_parameters, nullptr} };
+        constexpr std::array<parameter, 0> empty_parameters{parameter{qualified_type_ptr{}}};
+        constexpr std::array<action, 0> empty_actions{action{"", qualified_type_ptr{}, empty_parameters, "", nullptr} };
     #else
         constexpr std::array<property, 0> empty_properties;
         constexpr std::array<parameter, 0> empty_parameters;

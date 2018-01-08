@@ -3,6 +3,7 @@
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/core/string_builder.h"
+#include "ediacaran/core/comma_separated_names.h"
 #include <cstring>
 #include <memory>
 #include <random>
@@ -11,6 +12,7 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
+#include <algorithm>
 
 namespace ediacaran_test
 {
@@ -288,12 +290,69 @@ namespace ediacaran_test
         ENCELADO_TEST_ASSERT(strlen(buff) == 9);
     }
 
+    template <typename IT_1, typename IT2>
+        constexpr size_t het_it_dist(IT_1 i_begin, IT2 i_end)
+    {
+        size_t count = 0;
+        while (i_begin != i_end)
+        {
+            ++count;
+            ++i_begin;
+        }
+        return count;
+    }
+
+    void string_comma_separated_names_tests()
+    {
+        using namespace ediacaran;
+
+        {
+            constexpr comma_separated_names names("");
+            static_assert(het_it_dist(names.begin(), names.end()) == 0);
+        }
+
+        {
+            constexpr comma_separated_names names("   ");
+            static_assert(het_it_dist(names.begin(), names.end()) == 0);
+        }
+
+        {
+            constexpr comma_separated_names names("a");
+            static_assert(*std::next(names.begin(), 0) == "a");
+            static_assert(het_it_dist(names.begin(), names.end()) == 1);
+        }
+
+        {
+            constexpr comma_separated_names names("    uno    ,  due   ");
+            static_assert(*std::next(names.begin(), 0) == "uno");
+            static_assert(*std::next(names.begin(), 1) == "due");
+            static_assert(het_it_dist(names.begin(), names.end()) == 2);
+        }
+
+        {
+            constexpr comma_separated_names names("a, b, c");
+            static_assert(*std::next(names.begin(), 0) == "a");
+            static_assert(*std::next(names.begin(), 1) == "b");
+            static_assert(*std::next(names.begin(), 2) == "c");
+            static_assert(het_it_dist(names.begin(), names.end()) == 3);
+        }
+
+        {
+            constexpr comma_separated_names names("aaaa,ba, ceee");
+            static_assert(*std::next(names.begin(), 0) == "aaaa");
+            static_assert(*std::next(names.begin(), 1) == "ba");
+            static_assert(*std::next(names.begin(), 2) == "ceee");
+            static_assert(het_it_dist(names.begin(), names.end()) == 3);
+        }
+    }
+
     void string_tests()
     {
         string_basic_tests();
         string_builder_tests();
         string_conversion_tests();
         string_overflow_tests();
+        string_comma_separated_names_tests();
 
         using namespace ediacaran;
 

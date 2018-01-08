@@ -67,6 +67,9 @@
     <ClInclude Include="..\core\remove_noexcept.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\comma_separated_names.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

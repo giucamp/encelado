@@ -156,6 +156,8 @@ namespace ediacaran
       public:
         using basic_string_view<char, constexpr_char_traits>::basic_string_view;
 
+        constexpr string_view(){}
+
         string_view(const std::string & i_source) noexcept : string_view(i_source.c_str(), i_source.size()) {}
 
         operator std::string() { return std::string(data(), size()); }

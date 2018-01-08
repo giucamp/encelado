@@ -9,6 +9,7 @@
 #include <new>
 #include <string>
 #include <array>
+#include <algorithm>
 
 namespace ediacaran_test
 {
@@ -325,9 +326,10 @@ namespace ediacaran_test
         {
             std::cout << act.name().data() << std::endl;
 
-            for (auto const & par : act.parameters())
+            for (auto const & par : act.parameter_names())
             {
-                std::cout << "\t" << par.name().data() << std::endl;
+                std::string name(par.data(), par.size());
+                std::cout << "\t" << name << std::endl;
             }
         }
         std::cout << "------------------" << std::endl;

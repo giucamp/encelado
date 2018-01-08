@@ -4,6 +4,7 @@
 #include "ediacaran/reflection/parameter.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
+#include "ediacaran/core/comma_separated_names.h"
 #include <array>
 #include <utility>
 
@@ -17,9 +18,9 @@ namespace ediacaran
 
         constexpr action(
           const char * i_name, qualified_type_ptr const & i_return_qualified_type,
-          array_view<const parameter> const & i_parameters, invoke_function i_invoke_function)
+          array_view<const parameter> const & i_parameters, const char * i_parameter_names, invoke_function i_invoke_function)
             : symbol(i_name), m_invoke_function(i_invoke_function), m_return_qualified_type(i_return_qualified_type),
-              m_parameters(i_parameters)
+              m_parameters(i_parameters), m_parameter_names(i_parameter_names)
         {
         }
 
@@ -32,10 +33,16 @@ namespace ediacaran
             (*m_invoke_function)(i_dest_object, o_return_value_dest, i_parameters);
         }
 
+        constexpr comma_separated_names const & parameter_names() const noexcept
+        {
+            return m_parameter_names;
+        }
+
       private:
         invoke_function const             m_invoke_function;
         qualified_type_ptr const          m_return_qualified_type;
         array_view<const parameter> const m_parameters;
+        comma_separated_names const m_parameter_names;
     };
 
     namespace detail
@@ -60,7 +67,7 @@ namespace ediacaran
             using return_type = RETURN_TYPE;
 
             constexpr static parameter parameters[sizeof...(PARAMETER_TYPE)] = {
-              {"", get_qualified_type<PARAMETER_TYPE>()}...};
+              {get_qualified_type<PARAMETER_TYPE>()}...};
 
             static void func(void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
             {
@@ -80,7 +87,7 @@ namespace ediacaran
             using return_type = void;
 
             constexpr static parameter parameters[sizeof...(PARAMETER_TYPE)] = {
-              {"", get_qualified_type<PARAMETER_TYPE>()}...};
+              {get_qualified_type<PARAMETER_TYPE>()}...};
 
             static void func(void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
             {
@@ -96,7 +103,7 @@ namespace ediacaran
             using action_invoker = detail::ActionInvoker<
               METHOD_TYPE, METHOD, std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
             return action(
-              i_name, get_qualified_type<typename action_invoker::return_type>(), action_invoker::parameters,
+              i_name, get_qualified_type<typename action_invoker::return_type>(), action_invoker::parameters, i_parameter_names,
               &action_invoker::func);
         }
     }

@@ -3,6 +3,7 @@
 #include <ediacaran/reflection/reflection.h>
 #include <ediacaran/utils/inspect.h>
 #include <vector>
+#include <algorithm>
 
 namespace ediacaran
 {
@@ -301,8 +302,9 @@ namespace ediacaran
         {
             if (i_arguments[i].qualified_type() != parameters[i].qualified_type())
             {
+                auto const parameter_name = *std::next(m_action->parameter_names().begin(), i);
                 except<mismatching_arguments>(
-                  "The argument ", i, " (", parameters[i].name(), ") of the action ", m_action->name(),
+                  "The argument ", i, " (", parameter_name, ") of the action ", m_action->name(),
                   " is expected to have type ", parameters[i].qualified_type(), ", a ", i_arguments[i].qualified_type(),
                   " was provided");
             }
