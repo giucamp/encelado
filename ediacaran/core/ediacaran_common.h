@@ -3,11 +3,6 @@
 
 #pragma once
 
-#ifdef _MSC_VER
-// silent errors for unchecked iterators
-#define _SCL_SECURE_NO_WARNINGS
-#endif
-
 #include <assert.h>
 #include <cstdint>
 #include <stdexcept>
@@ -113,7 +108,7 @@ namespace ediacaran
         using std::runtime_error::runtime_error;
     };
 
-    template <typename EXCEPTION_TYPE>[[noreturn]] void except(const char * i_message)
+    template <typename EXCEPTION_TYPE>[[noreturn]] constexpr void except(const char * i_message)
     {
         throw EXCEPTION_TYPE(i_message);
     }
@@ -156,7 +151,7 @@ namespace ediacaran
       public:
         using basic_string_view<char, constexpr_char_traits>::basic_string_view;
 
-        constexpr string_view(){}
+        constexpr string_view() {}
 
         string_view(const std::string & i_source) noexcept : string_view(i_source.c_str(), i_source.size()) {}
 

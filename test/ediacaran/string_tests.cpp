@@ -2,8 +2,9 @@
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
-#include "ediacaran/core/string_builder.h"
 #include "ediacaran/core/comma_separated_names.h"
+#include "ediacaran/core/string_builder.h"
+#include <algorithm>
 #include <cstring>
 #include <memory>
 #include <random>
@@ -12,7 +13,6 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
-#include <algorithm>
 
 namespace ediacaran_test
 {
@@ -290,8 +290,7 @@ namespace ediacaran_test
         ENCELADO_TEST_ASSERT(strlen(buff) == 9);
     }
 
-    template <typename IT_1, typename IT2>
-        constexpr size_t het_it_dist(IT_1 i_begin, IT2 i_end)
+    template <typename IT_1, typename IT2> constexpr size_t het_it_dist(IT_1 i_begin, IT2 i_end)
     {
         size_t count = 0;
         while (i_begin != i_end)
@@ -317,8 +316,8 @@ namespace ediacaran_test
         }
 
         {
-            constexpr comma_separated_names names("a");
-            static_assert(*std::next(names.begin(), 0) == "a");
+            constexpr comma_separated_names names("a11");
+            static_assert(*std::next(names.begin(), 0) == "a11");
             static_assert(het_it_dist(names.begin(), names.end()) == 1);
         }
 
@@ -330,10 +329,10 @@ namespace ediacaran_test
         }
 
         {
-            constexpr comma_separated_names names("a, b, c");
+            constexpr comma_separated_names names("a, _b, c542_s_a");
             static_assert(*std::next(names.begin(), 0) == "a");
-            static_assert(*std::next(names.begin(), 1) == "b");
-            static_assert(*std::next(names.begin(), 2) == "c");
+            static_assert(*std::next(names.begin(), 1) == "_b");
+            static_assert(*std::next(names.begin(), 2) == "c542_s_a");
             static_assert(het_it_dist(names.begin(), names.end()) == 3);
         }
 

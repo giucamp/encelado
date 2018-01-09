@@ -25,16 +25,16 @@
 
 namespace ediacaran
 {
-    #ifdef _MSC_VER
-        // workaround for std::array<T, 0> containing an instance of T
-        constexpr std::array<property, 0> empty_properties{{property{property::offset_tag{}, "", qualified_type_ptr{}, 0}}};
-        constexpr std::array<parameter, 0> empty_parameters{parameter{qualified_type_ptr{}}};
-        constexpr std::array<action, 0> empty_actions{action{"", qualified_type_ptr{}, empty_parameters, "", nullptr} };
-    #else
-        constexpr std::array<property, 0> empty_properties;
-        constexpr std::array<parameter, 0> empty_parameters;
-        constexpr std::array<action, 0> empty_actions;
-    #endif
+#ifdef _MSC_VER
+    // workaround for std::array<T, 0> containing an instance of T
+    constexpr std::array<property, 0> empty_properties{{property{property::offset_tag{}, "", qualified_type_ptr{}, 0}}};
+    constexpr std::array<parameter, 0> empty_parameters{parameter{qualified_type_ptr{}}};
+    constexpr std::array<action, 0>    empty_actions{action{"", qualified_type_ptr{}, empty_parameters, "", nullptr}};
+#else
+    constexpr std::array<property, 0>  empty_properties;
+    constexpr std::array<parameter, 0> empty_parameters;
+    constexpr std::array<action, 0>    empty_actions;
+#endif
 
     namespace detail
     {
@@ -152,68 +152,60 @@ namespace ediacaran
 
         template <typename CLASS> struct TypeInstance<CLASS, std::enable_if_t<std::is_class_v<CLASS>, CLASS>>
         {
-            constexpr static auto static_class{reflect(static_cast<CLASS * *>(nullptr))};
+            constexpr static auto               static_class{reflect(static_cast<CLASS **>(nullptr))};
             constexpr static const class_type & instance = static_class.get_class();
         };
 
     } // namespace detail
 
-    template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES>
-        struct StaticClass
+    template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES> struct StaticClass
     {
-    public:
-
+      public:
         using bases = type_list<BASE_CLASSES...>;
-        
-        constexpr StaticClass(const char * i_name, std::array<property, PROPERTY_COUNT> const & i_properties, std::array<action, ACTION_COUNT> const & i_actions)
-            : m_properties(i_properties), m_actions(i_actions), m_class(i_name,
-                sizeof(CLASS),
-                alignof(CLASS),
-                special_functions::make<CLASS>(),
+
+        constexpr StaticClass(
+          const char * i_name, std::array<property, PROPERTY_COUNT> const & i_properties,
+          std::array<action, ACTION_COUNT> const & i_actions)
+            : m_properties(i_properties), m_actions(i_actions),
+              m_class(
+                i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
                 detail::base_array<CLASS, tl_remove_duplicates_t<typename detail::all_bases<CLASS>::type>>::s_bases,
-                m_properties, m_actions
-            )
+                m_properties, m_actions)
         {
         }
 
-        constexpr const class_type & get_class() const noexcept
-        {
-            return m_class;
-        }
+        constexpr const class_type & get_class() const noexcept { return m_class; }
 
-    private:
+      private:
         std::array<property, PROPERTY_COUNT> const m_properties;
-        std::array<action, ACTION_COUNT> const m_actions;
-        class_type const m_class;
+        std::array<action, ACTION_COUNT> const     m_actions;
+        class_type const                           m_class;
     };
 
 
     template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES>
-        constexpr auto make_static_cast(const char * i_name,
-            type_list<BASE_CLASSES...> /*i_base_classes*/,
-            std::array<property, PROPERTY_COUNT> const & i_properties,
-            std::array<action, ACTION_COUNT> const & i_actions)
+    constexpr auto make_static_cast(
+      const char *                                 i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
+      std::array<property, PROPERTY_COUNT> const & i_properties, std::array<action, ACTION_COUNT> const & i_actions)
     {
         return StaticClass<CLASS, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(i_name, i_properties, i_actions);
     }
 
     template <typename CLASS, size_t PROPERTY_COUNT, typename... BASE_CLASSES>
-        constexpr auto make_static_cast(const char * i_name,
-            type_list<BASE_CLASSES...> /*i_base_classes*/,
-            std::array<property, PROPERTY_COUNT> const & i_properties)
+    constexpr auto make_static_cast(
+      const char *                                 i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
+      std::array<property, PROPERTY_COUNT> const & i_properties)
     {
         return StaticClass<CLASS, PROPERTY_COUNT, 0, BASE_CLASSES...>(i_name, i_properties, empty_actions);
     }
 
     template <typename CLASS, typename... BASE_CLASSES>
-        constexpr auto make_static_cast(const char * i_name,
-            type_list<BASE_CLASSES...> /*i_base_classes*/)
+    constexpr auto make_static_cast(const char * i_name, type_list<BASE_CLASSES...> /*i_base_classes*/)
     {
         return StaticClass<CLASS, 0, 0, BASE_CLASSES...>(i_name, empty_properties, empty_actions);
     }
 
-    template <typename CLASS>
-        constexpr auto make_static_cast(const char * i_name)
+    template <typename CLASS> constexpr auto make_static_cast(const char * i_name)
     {
         return StaticClass<CLASS, 0, 0>(i_name, empty_properties, empty_actions);
     }
@@ -243,56 +235,52 @@ namespace ediacaran
           detail::StaticQualification<TYPE>::s_volatileness_word);
     }
 
-    constexpr auto reflect(string_view** i_ptr)
+    constexpr auto reflect(string_view ** i_ptr)
     {
         auto const class_name = "ediacaran::string_view";
-        using bases = type_list<>;
+        using bases           = type_list<>;
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = make_array(
-            REFL_ACCESSOR_RO_PROP("size", size)
-        );
+        auto const properties = make_array(REFL_ACCESSOR_RO_PROP("size", size));
 
         return make_static_cast<this_class>(class_name, bases{}, properties);
     }
 
-    constexpr auto reflect(symbol** i_ptr)
+    constexpr auto reflect(symbol ** i_ptr)
     {
         auto const class_name = "ediacaran::symbol";
-        using bases = type_list<>;
+        using bases           = type_list<>;
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = make_array(
-            REFL_ACCESSOR_RO_PROP("name", name)
-        );
+        auto const properties = make_array(REFL_ACCESSOR_RO_PROP("name", name));
 
         return make_static_cast<this_class>(class_name, bases{}, properties);
     }
 
-    constexpr auto reflect(type** i_ptr)
+    constexpr auto reflect(type ** i_ptr)
     {
         auto const class_name = "ediacaran::type";
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
-        using bases = type_list<symbol>;
+        using bases      = type_list<symbol>;
 
         auto const properties = make_array(
-            REFL_ACCESSOR_RO_PROP("size", size),
-            REFL_ACCESSOR_RO_PROP("alignment", alignment),
-            REFL_ACCESSOR_RO_PROP("is_constructible", is_constructible),
-            REFL_ACCESSOR_RO_PROP("is_destructible", is_destructible),
-            REFL_ACCESSOR_RO_PROP("is_copy_constructible", is_copy_constructible),
-            REFL_ACCESSOR_RO_PROP("is_move_constructible", is_move_constructible),
-            REFL_ACCESSOR_RO_PROP("is_copy_assignable", is_copy_assignable),
-            REFL_ACCESSOR_RO_PROP("is_move_assignable", is_move_assignable),
-            REFL_ACCESSOR_RO_PROP("is_comparable", is_comparable),
-            REFL_ACCESSOR_RO_PROP("is_stringizable", is_stringizable),
-            REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable)
+          REFL_ACCESSOR_RO_PROP("size", size),
+          REFL_ACCESSOR_RO_PROP("alignment", alignment),
+          REFL_ACCESSOR_RO_PROP("is_constructible", is_constructible),
+          REFL_ACCESSOR_RO_PROP("is_destructible", is_destructible),
+          REFL_ACCESSOR_RO_PROP("is_copy_constructible", is_copy_constructible),
+          REFL_ACCESSOR_RO_PROP("is_move_constructible", is_move_constructible),
+          REFL_ACCESSOR_RO_PROP("is_copy_assignable", is_copy_assignable),
+          REFL_ACCESSOR_RO_PROP("is_move_assignable", is_move_assignable),
+          REFL_ACCESSOR_RO_PROP("is_comparable", is_comparable),
+          REFL_ACCESSOR_RO_PROP("is_stringizable", is_stringizable),
+          REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable)
         );
 
         return make_static_cast<this_class>(class_name, bases{}, properties);

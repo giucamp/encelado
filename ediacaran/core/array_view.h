@@ -1,17 +1,17 @@
 #pragma once
+#include <array>
 #include <cstddef>
 #include <ediacaran/core/ediacaran_common.h>
 #include <initializer_list>
-#include <array>
-#include <utility>
 #include <type_traits>
+#include <utility>
 
 namespace ediacaran
 {
-    template <typename... ARG_TYPES>
-        constexpr auto make_array(ARG_TYPES &&... i_elements)
+    template <typename... ARG_TYPES> constexpr auto make_array(ARG_TYPES &&... i_elements)
     {
-        return std::array<std::common_type_t<ARG_TYPES...>, sizeof...(ARG_TYPES)>{{ std::forward<ARG_TYPES>(i_elements)... }};
+        return std::array<std::common_type_t<ARG_TYPES...>, sizeof...(ARG_TYPES)>{
+          {std::forward<ARG_TYPES>(i_elements)...}};
     }
 
     template <typename TYPE> class array_view
@@ -27,7 +27,8 @@ namespace ediacaran
         }
 
         template <typename SOURCE_TYPE, size_t SIZE>
-        constexpr array_view(const std::array<SOURCE_TYPE, SIZE> & i_objects) noexcept : m_objects(i_objects.data()), m_size(SIZE)
+        constexpr array_view(const std::array<SOURCE_TYPE, SIZE> & i_objects) noexcept
+            : m_objects(i_objects.data()), m_size(SIZE)
         {
         }
 

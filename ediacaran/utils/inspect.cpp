@@ -1,9 +1,10 @@
 
+#include <algorithm>
+#include <ediacaran/core/ediacaran_common.h>
 #include <ediacaran/core/string_builder.h>
 #include <ediacaran/reflection/reflection.h>
 #include <ediacaran/utils/inspect.h>
 #include <vector>
-#include <algorithm>
 
 namespace ediacaran
 {
