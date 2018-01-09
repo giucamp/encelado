@@ -5,7 +5,7 @@
 #include "ediacaran/reflection/parameter.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
-#include <array>
+#include <ediacaran/core/array.h>
 #include <utility>
 
 namespace ediacaran
@@ -24,12 +24,18 @@ namespace ediacaran
               m_parameters(i_parameters), m_parameter_names(i_parameter_names)
         {
             size_t parameter_names_count = 0;
-            for(auto it = m_parameter_names.cbegin(); it != m_parameter_names.end(); it++)
+            for (auto it = m_parameter_names.cbegin(); it != m_parameter_names.end(); it++)
                 parameter_names_count++;
             if (m_parameters.size() != parameter_names_count)
             {
-                except<std::runtime_error>("The action ", i_name, " has ", m_parameters.size(), " parameters, ",
-                    parameter_names_count, " parameter names provided" );
+                except<std::runtime_error>(
+                  "The action ",
+                  i_name,
+                  " has ",
+                  m_parameters.size(),
+                  " parameters, ",
+                  parameter_names_count,
+                  " parameter names provided");
             }
         }
 
@@ -70,8 +76,8 @@ namespace ediacaran
         {
             using return_type = RETURN_TYPE;
 
-            constexpr static parameter parameters[sizeof...(PARAMETER_TYPE)] = {
-              {get_qualified_type<PARAMETER_TYPE>()}...};
+            constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
+              parameter{get_qualified_type<PARAMETER_TYPE>()}...};
 
             static void func(void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
             {
@@ -89,8 +95,8 @@ namespace ediacaran
         {
             using return_type = void;
 
-            constexpr static parameter parameters[sizeof...(PARAMETER_TYPE)] = {
-              {get_qualified_type<PARAMETER_TYPE>()}...};
+            constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
+              parameter{get_qualified_type<PARAMETER_TYPE>()}...};
 
             static void func(void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
             {
@@ -103,10 +109,15 @@ namespace ediacaran
         constexpr action make_action(const char * i_name, const char * i_parameter_names)
         {
             using action_invoker = detail::ActionInvoker<
-              METHOD_TYPE, METHOD, std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
+              METHOD_TYPE,
+              METHOD,
+              std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
             return action(
-              i_name, get_qualified_type<typename action_invoker::return_type>(), action_invoker::parameters,
-              i_parameter_names, &action_invoker::func);
+              i_name,
+              get_qualified_type<typename action_invoker::return_type>(),
+              action_invoker::parameters,
+              i_parameter_names,
+              &action_invoker::func);
         }
     }
 

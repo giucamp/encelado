@@ -6,7 +6,7 @@
 #include "ediacaran/utils/dyn_value.h"
 #include "ediacaran/utils/inspect.h"
 #include <algorithm>
-#include <array>
+#include <ediacaran/core/array.h>
 #include <iostream>
 #include <new>
 #include <string>
@@ -51,7 +51,8 @@ namespace ediacaran_test
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = ediacaran::make_array(
-          REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1), REFL_ACCESSOR_PROP("prop", get_prop, set_prop),
+          REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1),
+          REFL_ACCESSOR_PROP("prop", get_prop, set_prop),
           REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
     }
@@ -152,11 +153,11 @@ namespace ediacaran_test
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = ediacaran::make_array(
-          REFL_DATA_PROP("m_int8_2_1", m_int8_2_1), REFL_DATA_PROP("m_int8_2_2", m_int8_2_2),
+          REFL_DATA_PROP("m_int8_2_1", m_int8_2_1),
+          REFL_DATA_PROP("m_int8_2_2", m_int8_2_2),
           REFL_DATA_PROP("m_int8_2_3", m_int8_2_3));
-        auto const actions = ediacaran::make_array(REFL_ACTION("set_all", set_all, "i_value")
-                                                   //REFL_ACTION("clear_all", clear_all, "")
-        );
+        auto const actions =
+          ediacaran::make_array(REFL_ACTION("set_all", set_all, "i_value"), REFL_ACTION("clear_all", clear_all, ""));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties, actions);
     }
 
@@ -191,7 +192,8 @@ namespace ediacaran_test
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = ediacaran::make_array(
-          REFL_DATA_PROP("m_string_2_1", m_string_2_1), REFL_DATA_PROP("m_string_2_2", m_string_2_2),
+          REFL_DATA_PROP("m_string_2_1", m_string_2_1),
+          REFL_DATA_PROP("m_string_2_2", m_string_2_2),
           REFL_DATA_PROP("m_string_2_3", m_string_2_3));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
     }
@@ -232,15 +234,11 @@ namespace ediacaran_test
         using bases           = ediacaran::type_list<TestBase_1_1, TestBase_1_2>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(
-          REFL_DATA_PROP("integer", m_integer),
-          REFL_DATA_PROP("float", m_float)
-        );
+        auto const properties =
+          ediacaran::make_array(REFL_DATA_PROP("integer", m_integer), REFL_DATA_PROP("float", m_float));
 
         auto const actions = ediacaran::make_array(
-          REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"),
-          REFL_ACTION("set", set, "i_int_par, i_flt_par")
-        );
+          REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"), REFL_ACTION("set", set, "i_int_par, i_flt_par"));
 
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties, actions);
     }

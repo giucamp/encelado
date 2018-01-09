@@ -207,7 +207,9 @@ namespace ediacaran
         template <typename PROPERTY_ACCESSOR> constexpr property make_accessor_property(const char * i_name)
         {
             return property(
-              property::accessor_tag{}, i_name, get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(),
+              property::accessor_tag{},
+              i_name,
+              get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(),
               &PROPERTY_ACCESSOR::func);
         }
 

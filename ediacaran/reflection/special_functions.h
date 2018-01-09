@@ -67,9 +67,15 @@ namespace ediacaran
         template <typename TYPE> constexpr static special_functions make() noexcept
         {
             return special_functions(
-              make_default_constructor<TYPE>(), make_destructor<TYPE>(), make_copy_constructor<TYPE>(),
-              make_move_constructor<TYPE>(), make_copy_assigner<TYPE>(), make_move_assigner<TYPE>(),
-              make_comparer<TYPE>(), make_to_chars<TYPE>(), make_try_parse<TYPE>());
+              make_default_constructor<TYPE>(),
+              make_destructor<TYPE>(),
+              make_copy_constructor<TYPE>(),
+              make_move_constructor<TYPE>(),
+              make_copy_assigner<TYPE>(),
+              make_move_assigner<TYPE>(),
+              make_comparer<TYPE>(),
+              make_to_chars<TYPE>(),
+              make_try_parse<TYPE>());
         }
 
         constexpr auto scalar_default_constructor() const noexcept { return m_scalar_default_constructor; }
@@ -111,7 +117,8 @@ namespace ediacaran
         static void scalar_copy_construct_impl(void * i_dest_start, void * i_dest_end, void const * i_source_start)
         {
             std::uninitialized_copy(
-              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE const *>(i_source_start),
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
               static_cast<TYPE *>(i_dest_start));
         }
 
@@ -119,7 +126,8 @@ namespace ediacaran
         static void scalar_move_construct_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
         {
             std::uninitialized_move(
-              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE const *>(i_source_start),
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
               static_cast<TYPE *>(i_dest_start));
         }
 
@@ -127,7 +135,8 @@ namespace ediacaran
         static void scalar_copy_assign_impl(void * i_dest_start, void * i_dest_end, void const * i_source_start)
         {
             std::copy(
-              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE const *>(i_source_start),
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
               static_cast<TYPE *>(i_dest_start));
         }
 
@@ -135,7 +144,8 @@ namespace ediacaran
         static void scalar_move_assign_impl(void * i_dest_start, void * i_dest_end, void * i_source_start)
         {
             std::move(
-              static_cast<TYPE const *>(i_source_start), get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
+              static_cast<TYPE const *>(i_source_start),
+              get_source_end<TYPE>(i_dest_start, i_dest_end, i_source_start),
               static_cast<TYPE *>(i_dest_start));
         }
 

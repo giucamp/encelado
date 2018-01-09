@@ -84,7 +84,11 @@ namespace ediacaran
                         if (m_properties[i].name() == base_props[j].name())
                         {
                             except<std::runtime_error>(
-                              "shadowing property ", m_properties[i].name(), " in class ", name(), ", already in ",
+                              "shadowing property ",
+                              m_properties[i].name(),
+                              " in class ",
+                              name(),
+                              ", already in ",
                               m_base_classes[base_class_index].get_class().name());
                         }
                     }

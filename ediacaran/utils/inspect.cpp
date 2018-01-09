@@ -88,8 +88,13 @@ namespace ediacaran
         if (i_value.qualified_type() != m_property->qualified_type())
         {
             except<std::runtime_error>(
-              "The property ", m_property->name(), " expects a ", m_property->qualified_type(), ", a ",
-              i_value.qualified_type(), " was provided");
+              "The property ",
+              m_property->name(),
+              " expects a ",
+              m_property->qualified_type(),
+              ", a ",
+              i_value.qualified_type(),
+              " was provided");
         }
 
         char        error[512];
@@ -294,7 +299,12 @@ namespace ediacaran
         if (i_arguments.size() != parameters.size())
         {
             except<mismatching_arguments>(
-              "The action ", m_action->name(), " expects ", parameters.size(), " arguments, ", i_arguments.size(),
+              "The action ",
+              m_action->name(),
+              " expects ",
+              parameters.size(),
+              " arguments, ",
+              i_arguments.size(),
               " were provided");
         }
 
@@ -305,8 +315,16 @@ namespace ediacaran
             {
                 auto const parameter_name = *std::next(m_action->parameter_names().begin(), i);
                 except<mismatching_arguments>(
-                  "The argument ", i, " (", parameter_name, ") of the action ", m_action->name(),
-                  " is expected to have type ", parameters[i].qualified_type(), ", a ", i_arguments[i].qualified_type(),
+                  "The argument ",
+                  i,
+                  " (",
+                  parameter_name,
+                  ") of the action ",
+                  m_action->name(),
+                  " is expected to have type ",
+                  parameters[i].qualified_type(),
+                  ", a ",
+                  i_arguments[i].qualified_type(),
                   " was provided");
             }
             arguments[i] = const_cast<void *>(i_arguments[i].object());
@@ -325,7 +343,12 @@ namespace ediacaran
         if (i_arguments.size() != parameters.size())
         {
             except<mismatching_arguments>(
-              "The action ", m_action->name(), " expects ", parameters.size(), " arguments, ", i_arguments.size(),
+              "The action ",
+              m_action->name(),
+              " expects ",
+              parameters.size(),
+              " arguments, ",
+              i_arguments.size(),
               " were provided");
         }
 

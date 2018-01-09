@@ -26,8 +26,20 @@ namespace ediacaran_test
         char_writer out(buff.get(), buffer_size);
 
         using var = std::variant<
-          bool, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, long double,
-          char, std::basic_string<char>>;
+          bool,
+          int8_t,
+          int16_t,
+          int32_t,
+          int64_t,
+          uint8_t,
+          uint16_t,
+          uint32_t,
+          uint64_t,
+          float,
+          double,
+          long double,
+          char,
+          std::basic_string<char>>;
 
 
         auto const      seed = std::random_device{}();

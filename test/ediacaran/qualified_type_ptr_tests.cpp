@@ -91,8 +91,8 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(4));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(5));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const CV_Flags cvs[] = {CV_Flags::Const,    CV_Flags::None,  CV_Flags::None,
-                                    CV_Flags::Volatile, CV_Flags::Const, CV_Flags::None};
+            const CV_Flags cvs[] = {
+              CV_Flags::Const, CV_Flags::None, CV_Flags::None, CV_Flags::Volatile, CV_Flags::Const, CV_Flags::None};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -249,8 +249,8 @@ namespace ediacaran_test
         // test cv qualifiers for float volatile*const volatile*const*
         {
             const auto     q_type_ptr = get_qualified_type<float volatile * const volatile * const *>();
-            const CV_Flags cvs[]      = {CV_Flags::None, CV_Flags::Const, CV_Flags::Const | CV_Flags::Volatile,
-                                    CV_Flags::Volatile};
+            const CV_Flags cvs[]      = {
+              CV_Flags::None, CV_Flags::Const, CV_Flags::Const | CV_Flags::Volatile, CV_Flags::Volatile};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
         }
 

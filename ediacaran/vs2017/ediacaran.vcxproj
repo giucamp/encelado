@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\core\address.h" />
+    <ClInclude Include="..\core\array.h" />
     <ClInclude Include="..\core\array_view.h" />
     <ClInclude Include="..\core\comma_separated_names.h" />
     <ClInclude Include="..\core\constexpr_string.h" />

@@ -60,12 +60,11 @@ namespace ediacaran
             constexpr const_iterator operator++(int)
             {
                 auto const copy{*this};
-                operator++();
+                           operator++();
                 return copy;
             }
 
           private:
-
             constexpr void check_for_end() const
             {
                 if (m_current.empty() && m_reader.remaining_chars() != 0)

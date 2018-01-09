@@ -5,7 +5,7 @@
 #include "ediacaran/reflection/class_type.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
-#include <array>
+#include <ediacaran/core/array.h>
 
 #define REFL_DATA_PROP(Name, DataMember)                                                                               \
     ediacaran::detail::make_data_property(                                                                             \
@@ -14,27 +14,25 @@
 #define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                                       \
     ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<                                     \
       ediacaran::remove_noexcept_t<decltype(&this_class::Getter)>,                                                     \
-      ediacaran::remove_noexcept_t<decltype(&this_class::Setter)>, &this_class::Getter, &this_class::Setter>>(Name)
+      ediacaran::remove_noexcept_t<decltype(&this_class::Setter)>,                                                     \
+      &this_class::Getter,                                                                                             \
+      &this_class::Setter>>(Name)
 
 #define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                                            \
     ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<                                     \
-      ediacaran::remove_noexcept_t<decltype(&this_class::Getter)>, nullptr_t, &this_class::Getter, nullptr>>(Name)
+      ediacaran::remove_noexcept_t<decltype(&this_class::Getter)>,                                                     \
+      nullptr_t,                                                                                                       \
+      &this_class::Getter,                                                                                             \
+      nullptr>>(Name)
 
 #define REFL_ACTION(Name, Method, ParameterNames)                                                                      \
     ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(Name, ParameterNames)
 
 namespace ediacaran
 {
-#ifdef _MSC_VER
-    // workaround for std::array<T, 0> containing an instance of T
-    constexpr std::array<property, 0> empty_properties{{property{property::offset_tag{}, "", qualified_type_ptr{}, 0}}};
-    constexpr std::array<parameter, 0> empty_parameters{parameter{qualified_type_ptr{}}};
-    constexpr std::array<action, 0>    empty_actions{action{"", qualified_type_ptr{}, empty_parameters, "", nullptr}};
-#else
-    constexpr std::array<property, 0>  empty_properties;
-    constexpr std::array<parameter, 0> empty_parameters;
-    constexpr std::array<action, 0>    empty_actions;
-#endif
+    constexpr array<property, 0>  empty_properties;
+    constexpr array<parameter, 0> empty_parameters;
+    constexpr array<action, 0>    empty_actions;
 
     namespace detail
     {
@@ -53,8 +51,8 @@ namespace ediacaran
 
         template <typename TYPE> constexpr type MakeFundamentalType(const char * i_name) noexcept
         {
-            return type{type_kind::is_fundamental, i_name, sizeof(TYPE), alignof(TYPE),
-                        special_functions::template make<TYPE>()};
+            return type{
+              type_kind::is_fundamental, i_name, sizeof(TYPE), alignof(TYPE), special_functions::template make<TYPE>()};
         }
 
         template <typename, typename> struct TypeInstance;
@@ -164,8 +162,8 @@ namespace ediacaran
         using bases = type_list<BASE_CLASSES...>;
 
         constexpr StaticClass(
-          const char * i_name, std::array<property, PROPERTY_COUNT> const & i_properties,
-          std::array<action, ACTION_COUNT> const & i_actions)
+          const char * i_name, array<property, PROPERTY_COUNT> const & i_properties,
+          array<action, ACTION_COUNT> const & i_actions)
             : m_properties(i_properties), m_actions(i_actions),
               m_class(
                 i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
@@ -177,24 +175,24 @@ namespace ediacaran
         constexpr const class_type & get_class() const noexcept { return m_class; }
 
       private:
-        std::array<property, PROPERTY_COUNT> const m_properties;
-        std::array<action, ACTION_COUNT> const     m_actions;
-        class_type const                           m_class;
+        array<property, PROPERTY_COUNT> const m_properties;
+        array<action, ACTION_COUNT> const     m_actions;
+        class_type const                      m_class;
     };
 
 
     template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES>
     constexpr auto make_static_cast(
-      const char *                                 i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
-      std::array<property, PROPERTY_COUNT> const & i_properties, std::array<action, ACTION_COUNT> const & i_actions)
+      const char *                            i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
+      array<property, PROPERTY_COUNT> const & i_properties, array<action, ACTION_COUNT> const & i_actions)
     {
         return StaticClass<CLASS, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(i_name, i_properties, i_actions);
     }
 
     template <typename CLASS, size_t PROPERTY_COUNT, typename... BASE_CLASSES>
     constexpr auto make_static_cast(
-      const char *                                 i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
-      std::array<property, PROPERTY_COUNT> const & i_properties)
+      const char *                            i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
+      array<property, PROPERTY_COUNT> const & i_properties)
     {
         return StaticClass<CLASS, PROPERTY_COUNT, 0, BASE_CLASSES...>(i_name, i_properties, empty_actions);
     }
@@ -231,7 +229,8 @@ namespace ediacaran
 
         return qualified_type_ptr(
           &get_type<typename detail::StaticQualification<TYPE>::UnderlyingType>(),
-          detail::StaticQualification<TYPE>::s_indirection_levels, detail::StaticQualification<TYPE>::s_constness_word,
+          detail::StaticQualification<TYPE>::s_indirection_levels,
+          detail::StaticQualification<TYPE>::s_constness_word,
           detail::StaticQualification<TYPE>::s_volatileness_word);
     }
 
@@ -280,8 +279,7 @@ namespace ediacaran
           REFL_ACCESSOR_RO_PROP("is_move_assignable", is_move_assignable),
           REFL_ACCESSOR_RO_PROP("is_comparable", is_comparable),
           REFL_ACCESSOR_RO_PROP("is_stringizable", is_stringizable),
-          REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable)
-        );
+          REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable));
 
         return make_static_cast<this_class>(class_name, bases{}, properties);
     }

@@ -3,7 +3,7 @@
 #include "ediacaran/core/array_view.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
-#include <array>
+#include <ediacaran/core/array.h>
 #include <utility>
 
 namespace ediacaran

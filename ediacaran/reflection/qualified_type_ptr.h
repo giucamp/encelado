@@ -4,7 +4,7 @@
 #pragma once
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/reflection/type.h"
-#include <array>
+#include <ediacaran/core/array.h>
 #include <limits>
 #include <stdexcept>
 #include <type_traits>
