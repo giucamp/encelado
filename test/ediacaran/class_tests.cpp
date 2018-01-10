@@ -275,11 +275,23 @@ namespace ediacaran_test
     {
     };
 
+    template <typename B>
+    constexpr auto reflect(Fir1<B> ** i_ptr)
+    {
+        auto const class_name = "TestClass";
+        using bases = ediacaran::type_list<>;
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+
+        return ediacaran::make_static_cast<this_class>(class_name, bases{});
+    }
+
     void class_tests()
     {
-        static_assert(ediacaran::detail::TemplateParameters<Fir1<int>>::size == 1);
-        static_assert(ediacaran::detail::TemplateParameters<Fir2<int, double>>::size == 2);
-        static_assert(ediacaran::detail::TemplateParameters<Fir3<int, double, char>>::size == 3);
+        //auto temp = reflect((Fir1<int>**)nullptr);
+
+        static_assert(ediacaran::detail::TemplateArguments<Fir1<int>>::size == 1);
+        static_assert(ediacaran::detail::TemplateArguments<Fir2<int, double>>::size == 2);
+        static_assert(ediacaran::detail::TemplateArguments<Fir3<int, double, char>>::size == 3);
         using namespace ediacaran;
         get_type<TestClass>();
         try
