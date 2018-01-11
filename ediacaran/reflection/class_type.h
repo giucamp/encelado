@@ -103,11 +103,11 @@ namespace ediacaran
     };
 
     // forward
-    template <typename TYPE> constexpr const class_type & get_class() noexcept;
+    template <typename TYPE> constexpr const class_type & get_class_type() noexcept;
 
     template <typename DERIVED, typename BASE> constexpr base_class base_class::make() noexcept
     {
-        return base_class(ediacaran::get_class<BASE>(), &impl_up_cast<DERIVED, BASE>);
+        return base_class(ediacaran::get_class_type<BASE>(), &impl_up_cast<DERIVED, BASE>);
     }
 
 } // namespace ediacaran

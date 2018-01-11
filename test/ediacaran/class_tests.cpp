@@ -275,19 +275,52 @@ namespace ediacaran_test
     {
     };
 
-    template <typename B>
-    constexpr auto reflect(Fir1<B> ** i_ptr)
+    template <typename T_1>
+    constexpr auto reflect(Fir1<T_1> ** i_ptr)
     {
-        auto const class_name = "TestClass";
+        auto const class_name = "Fir1";
         using bases = ediacaran::type_list<>;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
-        return ediacaran::make_static_cast<this_class>(class_name, bases{});
+        auto const template_arguments = make_template_arguments("T_1", ediacaran::get_qualified_type<T_1>());
+
+        return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
+    }
+
+    template <typename T_1, typename T_2>
+    constexpr auto reflect(Fir2<T_1, T_2> ** i_ptr)
+    {
+        auto const class_name = "Fir2";
+        using bases = ediacaran::type_list<>;
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+
+        auto const template_arguments = make_template_arguments("T_1, T_2", 
+            ediacaran::get_qualified_type<T_1>(),
+            ediacaran::get_qualified_type<T_2>());
+
+        return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
+    }
+
+    template <typename T_1, typename T_2, typename T_3>
+    constexpr auto reflect(Fir3<T_1, T_2, T_3> ** i_ptr)
+    {
+        auto const class_name = "Fir3";
+        using bases = ediacaran::type_list<>;
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+
+        auto const template_arguments = make_template_arguments("T_1, T_2, T_3",
+            ediacaran::get_qualified_type<T_1>(),
+            ediacaran::get_qualified_type<T_2>(),
+            ediacaran::get_qualified_type<T_3>());
+
+        return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
     }
 
     void class_tests()
     {
-        //auto temp = reflect((Fir1<int>**)nullptr);
+        const auto & temp_1 = ediacaran::get_type<Fir1<int>>();
+        const auto & temp_2 = ediacaran::get_type<Fir2<int, double>>();
+        const auto & temp_3 = ediacaran::get_type<Fir3<float, int, char>>();
 
         static_assert(ediacaran::detail::TemplateArguments<Fir1<int>>::size == 1);
         static_assert(ediacaran::detail::TemplateArguments<Fir2<int, double>>::size == 2);
@@ -316,7 +349,7 @@ namespace ediacaran_test
 
         class_tests_print_props(raw_ptr(&test_object));
 
-        const auto & t = get_class<TestClass>();
+        const auto & t = get_type<TestClass>();
         for (auto const & act : t.actions())
         {
             std::cout << act.name().data() << std::endl;

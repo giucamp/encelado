@@ -185,8 +185,7 @@ namespace ediacaran
     }
 
     // forward
-    template <typename TYPE>
-    constexpr const type & get_type() noexcept;
+    constexpr const type & get_ptr_type() noexcept;
 
 	constexpr const type * qualified_type_ptr::primary_type() const noexcept
 	{
@@ -199,7 +198,7 @@ namespace ediacaran
 		{
 			// the type is a pointer
 			EDIACARAN_INTERNAL_ASSERT(m_final_type != nullptr);
-			return &get_type<void*>();
+			return &get_ptr_type();
 		}
 	}
 

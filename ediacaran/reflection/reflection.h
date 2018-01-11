@@ -155,37 +155,47 @@ namespace ediacaran
         template <typename CLASS> struct TypeInstance<CLASS, std::enable_if_t<std::is_class_v<CLASS>, CLASS>>
         {
             constexpr static auto               static_class{reflect(static_cast<CLASS **>(nullptr))};
-            constexpr static const class_type & instance = static_class.get_class();
+            constexpr static const auto & instance = static_class.get_class();
         };
 
-        template <typename CLASS, size_t TEMPLATE_PARAM_COUNT, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES>
-            struct StaticClass
+        template <typename CLASS, typename TEMPLATE_PARAMETER_LIST, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES>
+            struct StaticClass;
+
+        template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... TEMPLATE_PARAMETERS, typename... BASE_CLASSES>
+            struct StaticClass<CLASS, template_arguments<TEMPLATE_PARAMETERS...>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>
         {
+            template <size_t... INDEX>
+                constexpr auto make_template_parameters_array(const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments, std::index_sequence<INDEX...>)
+            {
+                return array<const parameter, sizeof...(TEMPLATE_PARAMETERS)>{{
+                    parameter{ get_qualified_type< std::remove_reference_t<decltype(i_template_arguments.get<INDEX>())> >() }...
+                }};
+            }
+
+            template <size_t... INDEX>
+                constexpr auto make_template_arguments_array(const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments, std::index_sequence<INDEX...>)
+            {
+                return array<const void * const, sizeof...(TEMPLATE_PARAMETERS)>{{
+                    &i_template_arguments.get<INDEX>()...
+                }};
+            }
+
         public:
             using bases = type_list<BASE_CLASSES...>;
 
-            template <size_t... INDEX>
-                constexpr static array<parameter, TEMPLATE_PARAM_COUNT> init_template_parameters(std::index_sequence<INDEX...>) noexcept
-            {
-                return array<parameter, TEMPLATE_PARAM_COUNT>{{TemplateArguments<CLASS>::get_parameter(INDEX)...}};
-            }  
-            
-            template <size_t... INDEX>
-                constexpr static array<void*, TEMPLATE_PARAM_COUNT> init_template_arguments(std::index_sequence<INDEX...>) noexcept
-            {
-                return array<void*, TEMPLATE_PARAM_COUNT>{{TemplateArguments<CLASS>::get_argument(INDEX)...}};
-            }  
-
             constexpr StaticClass(
-                const char * i_name, array<property, PROPERTY_COUNT> const & i_properties,
+                const char * i_name, 
+                const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
+                array<property, PROPERTY_COUNT> const & i_properties,
                 array<action, ACTION_COUNT> const & i_actions)
                 : m_properties(i_properties), m_actions(i_actions),
-                  m_template_parameters(init_template_parameters(std::make_index_sequence<TEMPLATE_PARAM_COUNT>{})),
-                  m_template_arguments(init_template_arguments(std::make_index_sequence<TEMPLATE_PARAM_COUNT>{})),
+                  m_template_arguments(i_template_arguments),
+                  m_template_parameters_array(make_template_parameters_array(m_template_arguments, std::make_index_sequence<sizeof...(TEMPLATE_PARAMETERS)>{})),
+                  m_template_arguments_array(make_template_arguments_array(m_template_arguments, std::make_index_sequence<sizeof...(TEMPLATE_PARAMETERS)>{})),
                   m_class(
-                    i_name, sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
+                    i_name, m_template_arguments.parameter_names(), sizeof(CLASS), alignof(CLASS), special_functions::make<CLASS>(),
                     BasesArray<CLASS, tl_remove_duplicates_t<typename BasesTypeList<CLASS>::type>>::s_bases,
-                    m_properties, m_actions, m_template_parameters, m_template_arguments)
+                    m_properties, m_actions, m_template_parameters_array, m_template_arguments_array)
             {
             }
 
@@ -194,19 +204,20 @@ namespace ediacaran
         private:
             array<property, PROPERTY_COUNT> const m_properties;
             array<action, ACTION_COUNT> const     m_actions;
-            array<parameter, TEMPLATE_PARAM_COUNT> const    m_template_parameters;
-            array<void*, TEMPLATE_PARAM_COUNT> const m_template_arguments;
+            template_arguments<TEMPLATE_PARAMETERS...> const m_template_arguments;
+            array<const parameter, sizeof...(TEMPLATE_PARAMETERS)> const m_template_parameters_array;
+            array<const void * const, sizeof...(TEMPLATE_PARAMETERS)> const m_template_arguments_array;
             class_template_specialization const   m_class;
         };
 
         template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES>
-            struct StaticClass<CLASS, 0, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>
+            struct StaticClass<CLASS, template_arguments<>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>
         {
           public:
             using bases = type_list<BASE_CLASSES...>;
 
             constexpr StaticClass(
-              const char * i_name, array<property, PROPERTY_COUNT> const & i_properties,
+              const char * i_name, template_arguments<>, array<property, PROPERTY_COUNT> const & i_properties,
               array<action, ACTION_COUNT> const & i_actions)
                 : m_properties(i_properties), m_actions(i_actions),
                   m_class(
@@ -231,34 +242,70 @@ namespace ediacaran
       const char *                            i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
       array<property, PROPERTY_COUNT> const & i_properties, array<action, ACTION_COUNT> const & i_actions)
     {
-        return detail::StaticClass<CLASS, detail::TemplateArguments<CLASS>::size, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(i_name, i_properties, i_actions);
+        return detail::StaticClass<CLASS, template_arguments<>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(i_name, make_template_arguments(), i_properties, i_actions);
     }
-
     template <typename CLASS, size_t PROPERTY_COUNT, typename... BASE_CLASSES>
     constexpr auto make_static_cast(
       const char *                            i_name, type_list<BASE_CLASSES...> /*i_base_classes*/,
       array<property, PROPERTY_COUNT> const & i_properties)
     {
-        return detail::StaticClass<CLASS, detail::TemplateArguments<CLASS>::size, PROPERTY_COUNT, 0, BASE_CLASSES...>(i_name, i_properties, empty_actions);
+        return detail::StaticClass<CLASS, template_arguments<>, PROPERTY_COUNT, 0, BASE_CLASSES...>(i_name, make_template_arguments(), i_properties, empty_actions);
     }
-
     template <typename CLASS, typename... BASE_CLASSES>
     constexpr auto make_static_cast(const char * i_name, type_list<BASE_CLASSES...> /*i_base_classes*/)
     {
-        return detail::StaticClass<CLASS, detail::TemplateArguments<CLASS>::size, 0, 0, BASE_CLASSES...>(i_name, empty_properties, empty_actions);
+        return detail::StaticClass<CLASS, template_arguments<>, 0, 0, BASE_CLASSES...>(i_name, make_template_arguments(), empty_properties, empty_actions);
     }
-
     template <typename CLASS> constexpr auto make_static_cast(const char * i_name)
     {
-        return detail::StaticClass<CLASS, detail::TemplateArguments<CLASS>::size, 0, 0>(i_name, empty_properties, empty_actions);
+        return detail::StaticClass<CLASS, template_arguments<>, 0, 0>(i_name, make_template_arguments(), empty_properties, empty_actions);
     }
 
-    template <typename TYPE> constexpr const type & get_type() noexcept
+    template <typename CLASS, size_t PROPERTY_COUNT, size_t ACTION_COUNT, typename... BASE_CLASSES, typename... TEMPLATE_PARAMETERS>
+    constexpr auto make_static_cast(
+        const char *                            i_name, const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
+        type_list<BASE_CLASSES...> /*i_base_classes*/,
+        array<property, PROPERTY_COUNT> const & i_properties, array<action, ACTION_COUNT> const & i_actions)
+    {
+        return detail::StaticClass<CLASS, template_arguments<TEMPLATE_PARAMETERS...>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
+            i_name, i_template_arguments, i_properties, i_actions);
+    }
+    template <typename CLASS, size_t PROPERTY_COUNT, typename... BASE_CLASSES, typename... TEMPLATE_PARAMETERS>
+    constexpr auto make_static_cast(
+        const char *                            i_name, const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
+        type_list<BASE_CLASSES...> /*i_base_classes*/,
+        array<property, PROPERTY_COUNT> const & i_properties)
+    {
+        return detail::StaticClass<CLASS, template_arguments<TEMPLATE_PARAMETERS...>, PROPERTY_COUNT, 0, BASE_CLASSES...>(
+            i_name, i_template_arguments, i_properties, empty_actions);
+    }
+    template <typename CLASS, typename... BASE_CLASSES, typename... TEMPLATE_PARAMETERS>
+    constexpr auto make_static_cast(
+        const char *                            i_name, const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
+        type_list<BASE_CLASSES...> /*i_base_classes*/)
+    {
+        return detail::StaticClass<CLASS, template_arguments<TEMPLATE_PARAMETERS...>, 0, 0, BASE_CLASSES...>(
+            i_name, i_template_arguments, empty_properties, empty_actions);
+    }
+    template <typename CLASS, typename... TEMPLATE_PARAMETERS>
+    constexpr auto make_static_cast(
+        const char *                            i_name, const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments)
+    {
+        return detail::StaticClass<CLASS, template_arguments<TEMPLATE_PARAMETERS...>, 0, 0>(
+            i_name, i_template_arguments, empty_properties, empty_actions);
+    }
+
+    template <typename TYPE> constexpr const auto & get_type() noexcept
     {
         return detail::TypeInstance<TYPE, TYPE>::instance;
     }
 
-    template <typename TYPE> constexpr const class_type & get_class() noexcept
+    constexpr const type & get_ptr_type() noexcept
+    {
+        return detail::TypeInstance<void*, void*>::instance;
+    }
+
+    template <typename TYPE> constexpr const class_type & get_class_type() noexcept
     {
         return detail::TypeInstance<TYPE, TYPE>::instance;
     }
@@ -327,5 +374,16 @@ namespace ediacaran
           REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable));
 
         return make_static_cast<this_class>(class_name, bases{}, properties);
+    }
+
+    constexpr auto reflect(qualified_type_ptr ** i_ptr)
+    {
+        auto const class_name = "ediacaran::qualified_type_ptr";
+        using bases = type_list<>;
+
+        using namespace ediacaran;
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+
+        return make_static_cast<this_class>(class_name);
     }
 }
