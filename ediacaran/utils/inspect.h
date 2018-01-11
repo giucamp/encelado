@@ -16,21 +16,27 @@ namespace ediacaran
 
     dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name);
 
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value);
-
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value);
-
-    void
-      set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
-
-    void
-      set_property_value(const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value);
 
     void set_property_value(
-      const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source);
+      const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value);
 
     void set_property_value(
-      const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source);
+      const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source);
+
+    void set_property_value(
+      const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source);
+
+    void set_property_value(
+      const raw_ptr &     i_target,
+      char_reader &       i_property_name_source,
+      const string_view & i_value_source);
+
+    void set_property_value(
+      const raw_ptr &     i_target,
+      const string_view & i_property_name,
+      const string_view & i_value_source);
 
     // expects "action(par1, par2, ...)"
     dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments);
@@ -41,7 +47,10 @@ namespace ediacaran
     class property_inspector
     {
       public:
-        property_inspector(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection()) {}
+        property_inspector(const raw_ptr & i_target) noexcept
+            : m_target(i_target.full_indirection())
+        {
+        }
 
         class iterator;
 
@@ -52,7 +61,10 @@ namespace ediacaran
 
             string_view name() const noexcept { return m_parent.m_property->name(); }
 
-            const qualified_type_ptr & qualified_type() const noexcept { return m_parent.m_property->qualified_type(); }
+            const qualified_type_ptr & qualified_type() const noexcept
+            {
+                return m_parent.m_property->qualified_type();
+            }
 
             bool is_settable() const { return m_parent.m_property->is_settable(); }
 
@@ -66,7 +78,10 @@ namespace ediacaran
 
             void set_value(char_reader & i_source) const { m_parent.set_prop_value(i_source); }
 
-            void set_value(const string_view & i_source) const { m_parent.set_prop_value(i_source); }
+            void set_value(const string_view & i_source) const
+            {
+                m_parent.set_prop_value(i_source);
+            }
 
           private:
             class iterator & m_parent;
@@ -104,9 +119,15 @@ namespace ediacaran
 
             bool operator!=(const end_marker &) const noexcept { return m_property != nullptr; }
 
-            bool operator==(const iterator & i_source) const noexcept { return m_property == i_source.m_property; }
+            bool operator==(const iterator & i_source) const noexcept
+            {
+                return m_property == i_source.m_property;
+            }
 
-            bool operator!=(const iterator & i_source) const noexcept { return m_property != i_source.m_property; }
+            bool operator!=(const iterator & i_source) const noexcept
+            {
+                return m_property != i_source.m_property;
+            }
 
           private:
             friend class content;
@@ -136,7 +157,9 @@ namespace ediacaran
     class action_inspector
     {
       public:
-        action_inspector(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection()) {}
+        action_inspector(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
+        {
+        }
 
         class iterator;
 
@@ -152,15 +175,24 @@ namespace ediacaran
                 return m_parent.m_action->qualified_return_type();
             }
 
-            array_view<const parameter> const & parameters() const noexcept { return m_parent.m_action->parameters(); }
+            array_view<const parameter> const & parameters() const noexcept
+            {
+                return m_parent.m_action->parameters();
+            }
 
             class_type const & owning_class() const noexcept { return *m_parent.m_class; }
 
             class action const & action() const noexcept { return *m_parent.m_action; }
 
-            raw_ptr invoke(const array_view<const raw_ptr> & i_arguments) const { return m_parent.invoke(i_arguments); }
+            raw_ptr invoke(const array_view<const raw_ptr> & i_arguments) const
+            {
+                return m_parent.invoke(i_arguments);
+            }
 
-            raw_ptr invoke(const array_view<string_view> & i_arguments) const { return m_parent.invoke(i_arguments); }
+            raw_ptr invoke(const array_view<string_view> & i_arguments) const
+            {
+                return m_parent.invoke(i_arguments);
+            }
 
             raw_ptr invoke(char_reader & i_arguments) const { return m_parent.invoke(i_arguments); }
 
@@ -206,9 +238,15 @@ namespace ediacaran
 
             bool operator!=(const end_marker &) const noexcept { return m_action != nullptr; }
 
-            bool operator==(const iterator & i_source) const noexcept { return m_action == i_source.m_action; }
+            bool operator==(const iterator & i_source) const noexcept
+            {
+                return m_action == i_source.m_action;
+            }
 
-            bool operator!=(const iterator & i_source) const noexcept { return m_action != i_source.m_action; }
+            bool operator!=(const iterator & i_source) const noexcept
+            {
+                return m_action != i_source.m_action;
+            }
 
           private:
             friend class content;

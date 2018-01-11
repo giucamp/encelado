@@ -82,9 +82,15 @@ namespace ediacaran
 
         void * edit_object() noexcept { return m_object; }
 
-        void to_string(char_writer & o_dest) const noexcept { raw_ptr(m_object, m_qualified_type).to_string(o_dest); }
+        void to_string(char_writer & o_dest) const noexcept
+        {
+            raw_ptr(m_object, m_qualified_type).to_string(o_dest);
+        }
 
-        void to_string(std::string & o_dest) const { raw_ptr(m_object, m_qualified_type).to_string(o_dest); }
+        void to_string(std::string & o_dest) const
+        {
+            raw_ptr(m_object, m_qualified_type).to_string(o_dest);
+        }
 
         std::string to_string() const { return raw_ptr(m_object, m_qualified_type).to_string(); }
 
@@ -106,7 +112,8 @@ namespace ediacaran
 
     dyn_value parse_value(const qualified_type_ptr & i_qualified_type, char_reader & i_source);
 
-    inline dyn_value parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source)
+    inline dyn_value
+      parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source)
     {
         char_reader source(i_source);
         dyn_value   result = parse_value(i_qualified_type, source);

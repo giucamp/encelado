@@ -32,7 +32,8 @@ namespace ediacaran
             *m_curr_char = 0;
         }
 
-        template <size_t SIZE> constexpr char_writer(char (&i_dest)[SIZE]) noexcept : char_writer(i_dest, SIZE)
+        template <size_t SIZE>
+        constexpr char_writer(char (&i_dest)[SIZE]) noexcept : char_writer(i_dest, SIZE)
         {
             static_assert(SIZE > 0);
         }
@@ -57,7 +58,8 @@ namespace ediacaran
 
         constexpr char_writer & operator<<(const string_view & i_string) noexcept
         {
-            auto const length_to_write = std::min(m_remaining_size, static_cast<ptrdiff_t>(i_string.length()));
+            auto const length_to_write =
+              std::min(m_remaining_size, static_cast<ptrdiff_t>(i_string.length()));
 
             m_remaining_size -= static_cast<ptrdiff_t>(i_string.length());
 
@@ -86,7 +88,9 @@ namespace ediacaran
 
     template <typename UINT_TYPE>
     constexpr std::enable_if_t<
-      std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE> && !std::is_same_v<UINT_TYPE, bool>, char_writer> &
+      std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE> &&
+        !std::is_same_v<UINT_TYPE, bool>,
+      char_writer> &
       operator<<(char_writer & i_dest, UINT_TYPE i_source) noexcept
     {
         constexpr UINT_TYPE ten = 10;
@@ -120,7 +124,9 @@ namespace ediacaran
 
     template <typename SINT_TYPE>
     constexpr std::enable_if_t<
-      std::is_integral_v<SINT_TYPE> && std::is_signed_v<SINT_TYPE> && !std::is_same_v<SINT_TYPE, bool>, char_writer> &
+      std::is_integral_v<SINT_TYPE> && std::is_signed_v<SINT_TYPE> &&
+        !std::is_same_v<SINT_TYPE, bool>,
+      char_writer> &
       operator<<(char_writer & i_dest, SINT_TYPE i_source) noexcept
     {
         const bool is_negative = i_source < 0;
@@ -144,7 +150,8 @@ namespace ediacaran
                 i_source                  = new_value;
                 length++;
 
-                EDIACARAN_INTERNAL_ASSERT(length < buffer_size || i_source == 0); // buffer too small?
+                EDIACARAN_INTERNAL_ASSERT(
+                  length < buffer_size || i_source == 0); // buffer too small?
             } while (i_source != 0);
         }
         else
@@ -156,7 +163,8 @@ namespace ediacaran
                 length++;
                 i_source /= ten;
 
-                EDIACARAN_INTERNAL_ASSERT(length < buffer_size || i_source == 0); // buffer too small?
+                EDIACARAN_INTERNAL_ASSERT(
+                  length < buffer_size || i_source == 0); // buffer too small?
             } while (i_source != 0);
         }
 
@@ -187,7 +195,8 @@ namespace ediacaran
     }
 
     template <typename POINTER>
-    constexpr std::enable_if_t<std::is_same_v<typename std::remove_cv_t<POINTER>, void>, char_writer &> &
+    constexpr std::
+      enable_if_t<std::is_same_v<typename std::remove_cv_t<POINTER>, void>, char_writer &> &
       operator<<(char_writer & i_dest, POINTER * i_value) noexcept
     {
         return i_dest << reinterpret_cast<uintptr_t>(i_value);
@@ -202,11 +211,13 @@ namespace ediacaran
     {
     };
     template <typename TYPE>
-    struct is_stringizable<TYPE, std::void_t<decltype(std::declval<char_writer &>() << std::declval<const TYPE &>())>>
+    struct is_stringizable<
+      TYPE,
+      std::void_t<decltype(std::declval<char_writer &>() << std::declval<const TYPE &>())>>
         : std::true_type
     {
     };
-    template <typename TYPE> using is_stringizable_t          = typename is_stringizable<TYPE>::type;
+    template <typename TYPE> using is_stringizable_t = typename is_stringizable<TYPE>::type;
     template <typename TYPE> constexpr bool is_stringizable_v = is_stringizable<TYPE>::value;
 
     /** Returns the number of bytes required by the char array (including the null terminator) */
@@ -227,9 +238,14 @@ namespace ediacaran
     }
 
     template <
-      typename EXCEPTION_TYPE, typename FIRST_PARAM, typename... PARAMS,
-      typename = std::enable_if_t<(sizeof...(PARAMS) > 0) || !std::is_constructible_v<const char *, FIRST_PARAM>, void>>
-    [[noreturn]] constexpr void except(const FIRST_PARAM & i_first_parameter, const PARAMS &... i_other_parameters)
+      typename EXCEPTION_TYPE,
+      typename FIRST_PARAM,
+      typename... PARAMS,
+      typename = std::enable_if_t<
+        (sizeof...(PARAMS) > 0) || !std::is_constructible_v<const char *, FIRST_PARAM>,
+        void>>
+    [[noreturn]] constexpr void
+      except(const FIRST_PARAM & i_first_parameter, const PARAMS &... i_other_parameters)
     {
         char        message[512]{};
         char_writer writer(message);

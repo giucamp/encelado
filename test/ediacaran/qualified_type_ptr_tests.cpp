@@ -91,8 +91,12 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(4));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(5));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const CV_Flags cvs[] = {
-              CV_Flags::Const, CV_Flags::None, CV_Flags::None, CV_Flags::Volatile, CV_Flags::Const, CV_Flags::None};
+            const CV_Flags cvs[] = {CV_Flags::Const,
+                                    CV_Flags::None,
+                                    CV_Flags::None,
+                                    CV_Flags::Volatile,
+                                    CV_Flags::Const,
+                                    CV_Flags::None};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -134,7 +138,8 @@ namespace ediacaran_test
 
         {
             qualified_type_ptr q_type_ptr(
-              get_type<float>(), {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
+              get_type<float>(),
+              {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
             ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<float>());
             ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
@@ -150,16 +155,19 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(q_type_ptr.cv_flags(2) == CV_Flags::Volatile);
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
-            ENCELADO_TEST_ASSERT(q_type_ptr == get_qualified_type<float volatile ** volatile const>());
+            ENCELADO_TEST_ASSERT(
+              q_type_ptr == get_qualified_type<float volatile ** volatile const>());
         }
         {
             ENCELADO_TEST_ASSERT(
-              qualified_type_ptr(get_type<void>(), {}) == qualified_type_ptr(get_type<void>(), {CV_Flags::None}));
+              qualified_type_ptr(get_type<void>(), {}) ==
+              qualified_type_ptr(get_type<void>(), {CV_Flags::None}));
         }
 
         {
             qualified_type_ptr q_type_ptr(
-              get_type<void>(), {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
+              get_type<void>(),
+              {CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile});
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
             ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
             ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
@@ -175,7 +183,8 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(q_type_ptr.cv_flags(2) == CV_Flags::Volatile);
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
-            ENCELADO_TEST_ASSERT(q_type_ptr == get_qualified_type<void volatile ** volatile const>());
+            ENCELADO_TEST_ASSERT(
+              q_type_ptr == get_qualified_type<void volatile ** volatile const>());
         }
 
         // test <void *const*volatile**>
@@ -248,14 +257,17 @@ namespace ediacaran_test
 
         // test cv qualifiers for float volatile*const volatile*const*
         {
-            const auto     q_type_ptr = get_qualified_type<float volatile * const volatile * const *>();
-            const CV_Flags cvs[]      = {
-              CV_Flags::None, CV_Flags::Const, CV_Flags::Const | CV_Flags::Volatile, CV_Flags::Volatile};
+            const auto q_type_ptr = get_qualified_type<float volatile * const volatile * const *>();
+            const CV_Flags cvs[]  = {CV_Flags::None,
+                                    CV_Flags::Const,
+                                    CV_Flags::Const | CV_Flags::Volatile,
+                                    CV_Flags::Volatile};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
         }
 
         // test <const int *> and <const * int> (they are the same type)
-        ENCELADO_TEST_ASSERT(get_qualified_type<const int *>() == get_qualified_type<int const *>());
+        ENCELADO_TEST_ASSERT(
+          get_qualified_type<const int *>() == get_qualified_type<int const *>());
 
         /* qualified_type_ptr is documented (as implementation note) to be big as two pointers. This static_assert is here
 			to verify the correctness of this note, but if it would ever fail on some compiler, it may safely be removed

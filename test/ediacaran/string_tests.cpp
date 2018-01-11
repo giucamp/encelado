@@ -44,7 +44,7 @@ namespace ediacaran_test
 
         auto const      seed = std::random_device{}();
         std::mt19937_64 mt{seed};
-        auto            rand = [&mt] { return std::uniform_int_distribution<unsigned long long>()(mt); };
+        auto rand = [&mt] { return std::uniform_int_distribution<unsigned long long>()(mt); };
 
         std::vector<var>          objects;
         std::vector<const char *> delimiters;
@@ -176,8 +176,9 @@ namespace ediacaran_test
             auto const & obj = objects[index];
 
             char random_input[256];
-            std::generate(
-              std::begin(random_input), std::end(random_input), [&rand] { return static_cast<char>(rand()); });
+            std::generate(std::begin(random_input), std::end(random_input), [&rand] {
+                return static_cast<char>(rand());
+            });
             random_input[255] = 0;
 
             std::visit(
@@ -186,7 +187,8 @@ namespace ediacaran_test
                   using value_type = std::decay_t<decltype(i_value)>;
 
                   // try with the random input
-                  if constexpr (!std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
+                  if constexpr (
+                    !std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
                   {
                       char_reader random_stream(random_input);
                       value_type  val;
@@ -206,7 +208,8 @@ namespace ediacaran_test
         }
     }
 
-    template <typename INT_TYPE, typename BIG_INT_TYPE> void typed_string_overflow_tests(bool i_negative = false)
+    template <typename INT_TYPE, typename BIG_INT_TYPE>
+    void typed_string_overflow_tests(bool i_negative = false)
     {
         using namespace ediacaran;
 

@@ -20,7 +20,9 @@ namespace ediacaran
             object = *static_cast<void **>(object);
         }
 
-        return raw_ptr(object, qualified_type_ptr(m_qualified_type.final_type(), 0, constness_word, volatileness_word));
+        return raw_ptr(
+          object,
+          qualified_type_ptr(m_qualified_type.final_type(), 0, constness_word, volatileness_word));
     }
 
     raw_ptr raw_ptr::try_full_indirection() const noexcept
@@ -40,7 +42,8 @@ namespace ediacaran
 
         return raw_ptr(
           object,
-          qualified_type_ptr(m_qualified_type.final_type(), indirection_levels, constness_word, volatileness_word));
+          qualified_type_ptr(
+            m_qualified_type.final_type(), indirection_levels, constness_word, volatileness_word));
     }
 
     void raw_ptr::to_string(char_writer & o_dest) const noexcept

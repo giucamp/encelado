@@ -13,7 +13,7 @@ namespace ediacaran_test
         {
         };
 
-#define REMOVE_NOEXCEPT_TESTS(Signature)                                                                               \
+#define REMOVE_NOEXCEPT_TESTS(Signature)                                                           \
     static_assert(std::is_same_v<Signature, remove_noexcept_t<Signature noexcept>>);
 
         REMOVE_NOEXCEPT_TESTS(void());

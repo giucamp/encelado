@@ -11,9 +11,15 @@ namespace ediacaran
     class parameter
     {
       public:
-        constexpr parameter(qualified_type_ptr const i_qualified_type) : m_qualified_type(i_qualified_type) {}
+        constexpr parameter(qualified_type_ptr const i_qualified_type)
+            : m_qualified_type(i_qualified_type)
+        {
+        }
 
-        constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
+        constexpr qualified_type_ptr const & qualified_type() const noexcept
+        {
+            return m_qualified_type;
+        }
 
       private:
         qualified_type_ptr const m_qualified_type;

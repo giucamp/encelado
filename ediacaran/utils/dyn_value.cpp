@@ -16,7 +16,8 @@ namespace ediacaran
             {
                 except<unsupported_error>("The type ", final_type->name(), " is not constructible");
             }
-            manual_construct(i_qualified_type, [=](void * i_dest) { final_type->construct(i_dest); });
+            manual_construct(
+              i_qualified_type, [=](void * i_dest) { final_type->construct(i_dest); });
         }
     }
 
@@ -28,12 +29,14 @@ namespace ediacaran
             auto const final_type = type.final_type();
             if (!final_type->is_copy_constructible())
             {
-                except<unsupported_error>("The type ", final_type->name(), " is not copy-constructible");
+                except<unsupported_error>(
+                  "The type ", final_type->name(), " is not copy-constructible");
             }
 
             EDIACARAN_INTERNAL_ASSERT(final_type->is_destructible());
 
-            manual_construct(type, [&](void * i_dest) { final_type->copy_construct(i_dest, i_source.object()); });
+            manual_construct(
+              type, [&](void * i_dest) { final_type->copy_construct(i_dest, i_source.object()); });
         }
     }
 
@@ -43,7 +46,8 @@ namespace ediacaran
 
         if (i_qualified_type.is_pointer())
         {
-            except<unsupported_error>("dyn_value does not support pointer types (", i_qualified_type, ")");
+            except<unsupported_error>(
+              "dyn_value does not support pointer types (", i_qualified_type, ")");
         }
 
         auto const final_type = i_qualified_type.final_type();
@@ -57,7 +61,8 @@ namespace ediacaran
           prev_primary_type == nullptr || final_type->size() != prev_primary_type->size() ||
           final_type->alignment() != prev_primary_type->alignment())
         {
-            auto const buffer = operator new (final_type->size(), std::align_val_t{final_type->alignment()});
+            auto const buffer = operator new (
+              final_type->size(), std::align_val_t{final_type->alignment()});
             if (!empty())
                 destroy();
             m_object = buffer;
@@ -100,8 +105,9 @@ namespace ediacaran
     dyn_value parse_value(const qualified_type_ptr & i_qualified_type, char_reader & i_source)
     {
         dyn_value result;
-        result.manual_construct(
-          i_qualified_type, [&](void * i_dest) { i_qualified_type.final_type()->parse(i_dest, i_source); });
+        result.manual_construct(i_qualified_type, [&](void * i_dest) {
+            i_qualified_type.final_type()->parse(i_dest, i_source);
+        });
         return result;
     }
 

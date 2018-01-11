@@ -10,7 +10,8 @@ namespace ediacaran
     namespace detail
     {
         template <typename FLOAT_TYPE, typename STRTOF>
-        bool try_parse_float(FLOAT_TYPE & o_dest, char_reader & i_source, char_writer &, STRTOF i_strtof) noexcept
+        bool try_parse_float(
+          FLOAT_TYPE & o_dest, char_reader & i_source, char_writer &, STRTOF i_strtof) noexcept
         {
             auto const source = i_source.next_chars();
 
@@ -51,7 +52,8 @@ namespace ediacaran
         return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtod);
     }
 
-    bool try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    bool
+      try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
         return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtold);
     }

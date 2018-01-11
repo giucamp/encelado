@@ -43,21 +43,33 @@ namespace ediacaran
         {
         };
 
-        using accessor = bool (*)(operation i_operation, void * i_object, void * i_value, char_writer & o_error);
+        using accessor =
+          bool (*)(operation i_operation, void * i_object, void * i_value, char_writer & o_error);
 
         constexpr property(
-          accessor_tag, const char * i_name, const qualified_type_ptr & i_qualified_type, accessor i_accessor)
-            : symbol(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type), m_accessor(i_accessor)
+          accessor_tag,
+          const char *               i_name,
+          const qualified_type_ptr & i_qualified_type,
+          accessor                   i_accessor)
+            : symbol(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type),
+              m_accessor(i_accessor)
         {
         }
 
         constexpr property(
-          offset_tag, const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset) noexcept
-            : symbol(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type), m_offset(i_offset)
+          offset_tag,
+          const char *               i_name,
+          const qualified_type_ptr & i_qualified_type,
+          size_t                     i_offset) noexcept
+            : symbol(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type),
+              m_offset(i_offset)
         {
         }
 
-        constexpr qualified_type_ptr const & qualified_type() const noexcept { return m_qualified_type; }
+        constexpr qualified_type_ptr const & qualified_type() const noexcept
+        {
+            return m_qualified_type;
+        }
 
         constexpr bool is_gettable() const noexcept { return true; }
 
@@ -96,7 +108,8 @@ namespace ediacaran
         {
             if (!is_inplace())
             {
-                return (*m_accessor)(operation::get, const_cast<void *>(i_source_object), o_dest_value, o_error);
+                return (*m_accessor)(
+                  operation::get, const_cast<void *>(i_source_object), o_dest_value, o_error);
             }
             else
             {
@@ -114,7 +127,8 @@ namespace ediacaran
             }
             if (!is_inplace())
             {
-                return (*m_accessor)(operation::set, i_dest_object, const_cast<void *>(i_source_value), o_error);
+                return (*m_accessor)(
+                  operation::set, i_dest_object, const_cast<void *>(i_source_value), o_error);
             }
             else
             {
@@ -135,14 +149,24 @@ namespace ediacaran
 
     namespace detail
     {
-        template <typename GETTER_TYPE, typename SETTER_TYPE, GETTER_TYPE GETTER, SETTER_TYPE SETTER>
+        template <
+          typename GETTER_TYPE,
+          typename SETTER_TYPE,
+          GETTER_TYPE GETTER,
+          SETTER_TYPE SETTER>
         struct PropertyAccessor;
 
         template <
-          typename CLASS, typename GETTER_RETURN_TYPE, typename SETTER_PARAM_TYPE,
-          GETTER_RETURN_TYPE (CLASS::*GETTER)() const, void (CLASS::*SETTER)(SETTER_PARAM_TYPE i_value)>
+          typename CLASS,
+          typename GETTER_RETURN_TYPE,
+          typename SETTER_PARAM_TYPE,
+          GETTER_RETURN_TYPE (CLASS::*GETTER)() const,
+          void (CLASS::*SETTER)(SETTER_PARAM_TYPE i_value)>
         struct PropertyAccessor<
-          GETTER_RETURN_TYPE (CLASS::*)() const, void (CLASS::*)(SETTER_PARAM_TYPE i_value), GETTER, SETTER>
+          GETTER_RETURN_TYPE (CLASS::*)() const,
+          void (CLASS::*)(SETTER_PARAM_TYPE i_value),
+          GETTER,
+          SETTER>
         {
             using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
@@ -150,7 +174,11 @@ namespace ediacaran
               std::is_same_v<property_type, std::decay_t<SETTER_PARAM_TYPE>>,
               "inconsistent types between getter and setter");
 
-            static bool func(property::operation i_operation, void * i_object, void * i_value, char_writer & o_error)
+            static bool func(
+              property::operation i_operation,
+              void *              i_object,
+              void *              i_value,
+              char_writer &       o_error)
             {
                 EDIACARAN_ASSERT(i_object != nullptr);
                 EDIACARAN_ASSERT(i_value != nullptr);
@@ -172,14 +200,20 @@ namespace ediacaran
             }
         };
 
-        template <typename CLASS, typename GETTER_RETURN_TYPE, GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
+        template <
+          typename CLASS,
+          typename GETTER_RETURN_TYPE,
+          GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
         struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, nullptr_t, GETTER, nullptr>
         {
             using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
 
-            static bool
-              func(property::operation i_operation, void * i_object, void * i_value, char_writer & /*o_error*/)
+            static bool func(
+              property::operation i_operation,
+              void *              i_object,
+              void *              i_value,
+              char_writer & /*o_error*/)
             {
                 EDIACARAN_ASSERT(i_object != nullptr);
                 EDIACARAN_ASSERT(i_value != nullptr);
@@ -198,13 +232,14 @@ namespace ediacaran
             }
         };
 
-        constexpr property
-          make_data_property(const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
+        constexpr property make_data_property(
+          const char * i_name, const qualified_type_ptr & i_qualified_type, size_t i_offset)
         {
             return property(property::offset_tag{}, i_name, i_qualified_type, i_offset);
         }
 
-        template <typename PROPERTY_ACCESSOR> constexpr property make_accessor_property(const char * i_name)
+        template <typename PROPERTY_ACCESSOR>
+        constexpr property make_accessor_property(const char * i_name)
         {
             return property(
               property::accessor_tag{},

@@ -7,7 +7,8 @@ namespace ediacaran
     {
     };
 
-    template <typename RETURN_VALUE, typename... PARAMETERS> struct remove_noexcept<RETURN_VALUE(PARAMETERS...)>
+    template <typename RETURN_VALUE, typename... PARAMETERS>
+    struct remove_noexcept<RETURN_VALUE(PARAMETERS...)>
     {
         using type = RETURN_VALUE(PARAMETERS...);
     };
@@ -18,7 +19,8 @@ namespace ediacaran
         using type = RETURN_VALUE(PARAMETERS...);
     };
 
-    template <typename RETURN_VALUE, typename... PARAMETERS> struct remove_noexcept<RETURN_VALUE (*)(PARAMETERS...)>
+    template <typename RETURN_VALUE, typename... PARAMETERS>
+    struct remove_noexcept<RETURN_VALUE (*)(PARAMETERS...)>
     {
         using type = RETURN_VALUE (*)(PARAMETERS...);
     };
@@ -29,16 +31,16 @@ namespace ediacaran
         using type = RETURN_VALUE (*)(PARAMETERS...);
     };
 
-#define IMPLEMENT_REMOVE_NOEXCEPT_MEM(Qualifiers)                                                                      \
-    template <typename CLASS, typename RETURN_VALUE, typename... PARAMETERS>                                           \
-    struct remove_noexcept<RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers>                                          \
-    {                                                                                                                  \
-        using type = RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers;                                                \
-    };                                                                                                                 \
-    template <typename CLASS, typename RETURN_VALUE, typename... PARAMETERS>                                           \
-    struct remove_noexcept<RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers noexcept>                                 \
-    {                                                                                                                  \
-        using type = RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers;                                                \
+#define IMPLEMENT_REMOVE_NOEXCEPT_MEM(Qualifiers)                                                  \
+    template <typename CLASS, typename RETURN_VALUE, typename... PARAMETERS>                       \
+    struct remove_noexcept<RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers>                      \
+    {                                                                                              \
+        using type = RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers;                            \
+    };                                                                                             \
+    template <typename CLASS, typename RETURN_VALUE, typename... PARAMETERS>                       \
+    struct remove_noexcept<RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers noexcept>             \
+    {                                                                                              \
+        using type = RETURN_VALUE (CLASS::*)(PARAMETERS...) Qualifiers;                            \
     }
 
 #define IMPLEMENT_REMOVE_NOEXCEPT_MEM_NOTHING

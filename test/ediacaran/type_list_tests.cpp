@@ -63,7 +63,8 @@ namespace ediacaran_test
         using D3 = tl_difference<L1, type_list<int, const void, char, float>>::type;
         static_assert(std::is_same_v<D3, type_list<double, std::string>>);
 
-        using D4 = tl_difference<L1, type_list<int, const void, double, std::string, char, float>>::type;
+        using D4 =
+          tl_difference<L1, type_list<int, const void, double, std::string, char, float>>::type;
         static_assert(std::is_same_v<D4, type_list<>>);
 
         using D5 = tl_difference<L1, L1>::type;

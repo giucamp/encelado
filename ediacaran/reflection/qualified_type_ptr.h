@@ -31,13 +31,15 @@ namespace ediacaran
     constexpr inline CV_Flags operator|(CV_Flags i_first, CV_Flags i_seconds) noexcept
     {
         using underlying_type = std::underlying_type<CV_Flags>::type;
-        return static_cast<CV_Flags>(static_cast<underlying_type>(i_first) | static_cast<underlying_type>(i_seconds));
+        return static_cast<CV_Flags>(
+          static_cast<underlying_type>(i_first) | static_cast<underlying_type>(i_seconds));
     }
 
     constexpr inline CV_Flags operator&(CV_Flags i_first, CV_Flags i_seconds) noexcept
     {
         using underlying_type = std::underlying_type<CV_Flags>::type;
-        return static_cast<CV_Flags>(static_cast<underlying_type>(i_first) & static_cast<underlying_type>(i_seconds));
+        return static_cast<CV_Flags>(
+          static_cast<underlying_type>(i_first) & static_cast<underlying_type>(i_seconds));
     }
 
 
@@ -75,10 +77,12 @@ namespace ediacaran
 
         /** Maximum indirection levels that this class can handle. This is 14 if \c uintptr_t is 32-bit wide or smaller, 28 otherwise.
             The global function \c get_qualified_type<TYPE>() checks this imit at compile-time (with a \c static_assert). */
-        static constexpr size_t s_max_indirection_levels = std::numeric_limits<uintptr_t>::digits <= 32 ? 14 : 28;
+        static constexpr size_t s_max_indirection_levels =
+          std::numeric_limits<uintptr_t>::digits <= 32 ? 14 : 28;
 
         // uintptr_t must be binary
-        static_assert(std::numeric_limits<uintptr_t>::radix == 2, "uintptr_t is expected to be binary");
+        static_assert(
+          std::numeric_limits<uintptr_t>::radix == 2, "uintptr_t is expected to be binary");
 
 
         // getters
@@ -139,8 +143,10 @@ namespace ediacaran
         // special functions
 
         constexpr qualified_type_ptr(
-          const type * i_final_type, size_t i_indirection_levels, size_t i_constness_word,
-          size_t i_volatileness_word) noexcept;
+          const type * i_final_type,
+          size_t       i_indirection_levels,
+          size_t       i_constness_word,
+          size_t       i_volatileness_word) noexcept;
 
         /** Constructs an empty qualified_type_ptr (is_empty() will return true). The object may be later the destination of an assignment, changing its state. */
         constexpr qualified_type_ptr() noexcept;
@@ -154,10 +160,13 @@ namespace ediacaran
             @param i_cv_flags cv-qualification for each indirection level. The n-th element of this array specifies a combination of cv flags for the n-th indirection
                 level. The number of indirection levels of the type is the size of this array, minus 1. So, to construct a pointer to a pointer, specify an array
                 of 3 elements. If the array is empty, the number of indirection levels is zero. */
-        constexpr qualified_type_ptr(const type & i_final_type, const CV_Flags * i_cv_flags, size_t i_cv_flags_size);
+        constexpr qualified_type_ptr(
+          const type & i_final_type, const CV_Flags * i_cv_flags, size_t i_cv_flags_size);
 
-        constexpr qualified_type_ptr(const type & i_final_type, const std::initializer_list<CV_Flags> & i_cv_flags)
-            : qualified_type_ptr(i_final_type, i_cv_flags.begin(), i_cv_flags.end() - i_cv_flags.begin())
+        constexpr qualified_type_ptr(
+          const type & i_final_type, const std::initializer_list<CV_Flags> & i_cv_flags)
+            : qualified_type_ptr(
+                i_final_type, i_cv_flags.begin(), i_cv_flags.end() - i_cv_flags.begin())
         {
         }
 
@@ -165,7 +174,8 @@ namespace ediacaran
         constexpr qualified_type_ptr(const qualified_type_ptr & i_source) noexcept = default;
 
         /** Assigns from the source qualified_type_ptr */
-        constexpr qualified_type_ptr & operator=(const qualified_type_ptr & i_source) noexcept = default;
+        constexpr qualified_type_ptr &
+          operator=(const qualified_type_ptr & i_source) noexcept = default;
 
 
         // comparison
@@ -174,23 +184,29 @@ namespace ediacaran
         constexpr bool operator==(const qualified_type_ptr & i_source) const;
 
         /** Returns false whether two QualifiedTypePtrs are indistinguishable */
-        constexpr bool operator!=(const qualified_type_ptr & i_source) const { return !operator==(i_source); }
+        constexpr bool operator!=(const qualified_type_ptr & i_source) const
+        {
+            return !operator==(i_source);
+        }
 
       private:
         template <typename TYPE> friend constexpr qualified_type_ptr get_qualified_type();
 
-        friend char_reader & operator>>(char_reader & i_source, qualified_type_ptr & o_dest_qualified_type);
+        friend char_reader &
+          operator>>(char_reader & i_source, qualified_type_ptr & o_dest_qualified_type);
 
       private: // data members (currently a qualified_type_ptr is big as two pointers)
         const type * m_final_type;
-        uintptr_t    m_indirection_levels : (std::numeric_limits<uintptr_t>::digits - s_max_indirection_levels * 2);
-        uintptr_t    m_constness_word : s_max_indirection_levels;
-        uintptr_t    m_volatileness_word : s_max_indirection_levels;
+        uintptr_t    m_indirection_levels
+            : (std::numeric_limits<uintptr_t>::digits - s_max_indirection_levels * 2);
+        uintptr_t m_constness_word : s_max_indirection_levels;
+        uintptr_t m_volatileness_word : s_max_indirection_levels;
     };
 
     char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
 
-    bool try_parse(qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
+    bool try_parse(
+      qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
 
 } // namespace ediacaran
 

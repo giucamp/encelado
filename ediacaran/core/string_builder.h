@@ -21,7 +21,8 @@ namespace ediacaran
             else
             {
                 EDIACARAN_INTERNAL_ASSERT(m_size == 0);
-                return (std::extent_v<decltype(m_inplace_space)> - 1) - static_cast<size_t>(m_writer.remaining_size());
+                return (std::extent_v<decltype(m_inplace_space)> - 1) -
+                       static_cast<size_t>(m_writer.remaining_size());
             }
         }
 
@@ -41,14 +42,15 @@ namespace ediacaran
                 }
                 EDIACARAN_INTERNAL_ASSERT(m_writer.remaining_size() >= 0);
 
-                auto const & last_chunk      = m_chunks.back();
-                auto const last_written_size = (last_chunk.m_size - 1) - static_cast<size_t>(m_writer.remaining_size());
+                auto const & last_chunk = m_chunks.back();
+                auto const   last_written_size =
+                  (last_chunk.m_size - 1) - static_cast<size_t>(m_writer.remaining_size());
                 result.append(last_chunk.m_chars.get(), last_written_size);
             }
             else
             {
-                auto const size =
-                  (std::extent_v<decltype(m_inplace_space)> - 1) - static_cast<size_t>(m_writer.remaining_size());
+                auto const size = (std::extent_v<decltype(m_inplace_space)> - 1) -
+                                  static_cast<size_t>(m_writer.remaining_size());
                 result.append(m_inplace_space, size);
             }
             EDIACARAN_INTERNAL_ASSERT(result.size() == string_size);
@@ -103,7 +105,8 @@ namespace ediacaran
         struct Chunk
         {
             std::unique_ptr<char[]> m_chars;
-            size_t                  m_size; /**< for all the chunks but the last: number of chars written in this chunk
+            size_t
+              m_size; /**< for all the chunks but the last: number of chars written in this chunk
                 for the last chunk: capacity of the chunk (number of allocated bytes) */
 
             Chunk(size_t i_size) : m_chars(new char[i_size]), m_size(i_size) {}

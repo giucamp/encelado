@@ -86,8 +86,8 @@ namespace ediacaran_test
         using bases           = ediacaran::type_list<TestBase_3_1>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties =
-          ediacaran::make_array(REFL_DATA_PROP("m_int2_2_1", m_int2_2_1), REFL_DATA_PROP("m_int2_2_2", m_int2_2_2));
+        auto const properties = ediacaran::make_array(
+          REFL_DATA_PROP("m_int2_2_1", m_int2_2_1), REFL_DATA_PROP("m_int2_2_2", m_int2_2_2));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
     }
 
@@ -102,7 +102,8 @@ namespace ediacaran_test
         using bases           = ediacaran::type_list<TestBase_3_2>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1));
+        auto const properties =
+          ediacaran::make_array(REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
     }
 
@@ -119,7 +120,8 @@ namespace ediacaran_test
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = ediacaran::make_array(
-          REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1), REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2));
+          REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1),
+          REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
     }
 
@@ -156,8 +158,8 @@ namespace ediacaran_test
           REFL_DATA_PROP("m_int8_2_1", m_int8_2_1),
           REFL_DATA_PROP("m_int8_2_2", m_int8_2_2),
           REFL_DATA_PROP("m_int8_2_3", m_int8_2_3));
-        auto const actions =
-          ediacaran::make_array(REFL_ACTION("set_all", set_all, "i_value"), REFL_ACTION("clear_all", clear_all, ""));
+        auto const actions = ediacaran::make_array(
+          REFL_ACTION("set_all", set_all, "i_value"), REFL_ACTION("clear_all", clear_all, ""));
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties, actions);
     }
 
@@ -234,11 +236,12 @@ namespace ediacaran_test
         using bases           = ediacaran::type_list<TestBase_1_1, TestBase_1_2>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties =
-          ediacaran::make_array(REFL_DATA_PROP("integer", m_integer), REFL_DATA_PROP("float", m_float));
+        auto const properties = ediacaran::make_array(
+          REFL_DATA_PROP("integer", m_integer), REFL_DATA_PROP("float", m_float));
 
         auto const actions = ediacaran::make_array(
-          REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"), REFL_ACTION("set", set, "i_int_par, i_flt_par"));
+          REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"),
+          REFL_ACTION("set", set, "i_int_par, i_flt_par"));
 
         return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties, actions);
     }
@@ -275,28 +278,26 @@ namespace ediacaran_test
     {
     };
 
-    template <typename T_1>
-    constexpr auto reflect(Fir1<T_1> ** i_ptr)
+    template <typename T_1> constexpr auto reflect(Fir1<T_1> ** i_ptr)
     {
         auto const class_name = "Fir1";
-        using bases = ediacaran::type_list<>;
-        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+        using bases           = ediacaran::type_list<>;
+        using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const template_arguments = make_template_arguments("T_1", ediacaran::get_qualified_type<T_1>());
+        auto const template_arguments =
+          make_template_arguments("T_1", ediacaran::get_qualified_type<T_1>());
 
         return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
     }
 
-    template <typename T_1, typename T_2>
-    constexpr auto reflect(Fir2<T_1, T_2> ** i_ptr)
+    template <typename T_1, typename T_2> constexpr auto reflect(Fir2<T_1, T_2> ** i_ptr)
     {
         auto const class_name = "Fir2";
-        using bases = ediacaran::type_list<>;
-        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+        using bases           = ediacaran::type_list<>;
+        using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const template_arguments = make_template_arguments("T_1, T_2", 
-            ediacaran::get_qualified_type<T_1>(),
-            ediacaran::get_qualified_type<T_2>());
+        auto const template_arguments = make_template_arguments(
+          "T_1, T_2", ediacaran::get_qualified_type<T_1>(), ediacaran::get_qualified_type<T_2>());
 
         return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
     }
@@ -305,13 +306,14 @@ namespace ediacaran_test
     constexpr auto reflect(Fir3<T_1, T_2, T_3> ** i_ptr)
     {
         auto const class_name = "Fir3";
-        using bases = ediacaran::type_list<>;
-        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+        using bases           = ediacaran::type_list<>;
+        using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const template_arguments = make_template_arguments("T_1, T_2, T_3",
-            ediacaran::get_qualified_type<T_1>(),
-            ediacaran::get_qualified_type<T_2>(),
-            ediacaran::get_qualified_type<T_3>());
+        auto const template_arguments = make_template_arguments(
+          "T_1, T_2, T_3",
+          ediacaran::get_qualified_type<T_1>(),
+          ediacaran::get_qualified_type<T_2>(),
+          ediacaran::get_qualified_type<T_3>());
 
         return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
     }
@@ -329,10 +331,17 @@ namespace ediacaran_test
         get_type<TestClass>();
         try
         {
-            property   props[2] = {property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
-                                 property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
+            property props[2] = {
+              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
+              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
             class_type CC(
-              "abc", 1, 2, special_functions{}, array_view<const base_class>{}, props, array_view<const action>{});
+              "abc",
+              1,
+              2,
+              special_functions{},
+              array_view<const base_class>{},
+              props,
+              array_view<const action>{});
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }
@@ -344,7 +353,8 @@ namespace ediacaran_test
         TestClass test_object;
         for (auto const & prop : inspect_properties(raw_ptr(&test_object)))
         {
-            std::cout << prop.owning_class().name().data() << " -> " << prop.property().name().data() << std::endl;
+            std::cout << prop.owning_class().name().data() << " -> "
+                      << prop.property().name().data() << std::endl;
         }
 
         class_tests_print_props(raw_ptr(&test_object));

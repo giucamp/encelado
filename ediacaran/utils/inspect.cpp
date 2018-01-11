@@ -8,9 +8,13 @@
 
 namespace ediacaran
 {
-    property_inspector inspect_properties(const raw_ptr & i_target) { return property_inspector(i_target); }
+    property_inspector inspect_properties(const raw_ptr & i_target)
+    {
+        return property_inspector(i_target);
+    }
 
-    property_inspector::iterator::iterator(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
+    property_inspector::iterator::iterator(const raw_ptr & i_target) noexcept
+        : m_target(i_target.full_indirection())
     {
         auto const final_type = m_target.qualified_type().final_type();
         if (final_type->is_class())
@@ -38,7 +42,8 @@ namespace ediacaran
 
         for (;;)
         {
-            auto const complete_class = static_cast<const class_type *>(m_target.qualified_type().final_type());
+            auto const complete_class =
+              static_cast<const class_type *>(m_target.qualified_type().final_type());
             if (m_base_index < complete_class->base_classes().size())
             {
                 auto const & base = complete_class->base_classes()[m_base_index];
@@ -122,7 +127,8 @@ namespace ediacaran
         else
         {
             auto final_value = get_prop_value().full_indirection();
-            final_value.qualified_type().final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
+            final_value.qualified_type().final_type()->parse(
+              const_cast<void *>(m_dyn_value.object()), i_source);
         }
     }
 
@@ -156,7 +162,8 @@ namespace ediacaran
         except<parse_error>("Property not found: ", property_name);
     }
 
-    dyn_value get_property_value(const raw_ptr & i_target, const string_view & i_property_name_source)
+    dyn_value
+      get_property_value(const raw_ptr & i_target, const string_view & i_property_name_source)
     {
         char_reader source(i_property_name_source);
         auto        res = get_property_value(i_target, source);
@@ -167,7 +174,8 @@ namespace ediacaran
     namespace detail
     {
         template <typename VALUE>
-        void set_property_value_impl(const raw_ptr & i_target, char_reader & i_property_name_source, VALUE && i_value)
+        void set_property_value_impl(
+          const raw_ptr & i_target, char_reader & i_property_name_source, VALUE && i_value)
         {
             auto const property_name = try_parse_identifier(i_property_name_source);
             if (property_name.empty())
@@ -197,7 +205,8 @@ namespace ediacaran
         }
     } // namespace detail
 
-    void set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value)
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, const raw_ptr & i_value)
     {
         if (i_value.empty())
         {
@@ -206,20 +215,22 @@ namespace ediacaran
         detail::set_property_value_impl(i_target, i_property_name_source, i_value);
     }
 
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value)
+    void set_property_value(
+      const raw_ptr & i_target, const string_view & i_property_name, const raw_ptr & i_value)
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value);
         except_on_tailing(property_name);
     }
 
-    void
-      set_property_value(const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
+    void set_property_value(
+      const raw_ptr & i_target, char_reader & i_property_name_source, char_reader & i_value_source)
     {
         detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
     }
 
-    void set_property_value(const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source)
+    void set_property_value(
+      const raw_ptr & i_target, const string_view & i_property_name, char_reader & i_value_source)
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value_source);
@@ -227,22 +238,30 @@ namespace ediacaran
     }
 
     void set_property_value(
-      const raw_ptr & i_target, char_reader & i_property_name_source, const string_view & i_value_source)
+      const raw_ptr &     i_target,
+      char_reader &       i_property_name_source,
+      const string_view & i_value_source)
     {
         detail::set_property_value_impl(i_target, i_property_name_source, i_value_source);
     }
 
     void set_property_value(
-      const raw_ptr & i_target, const string_view & i_property_name, const string_view & i_value_source)
+      const raw_ptr &     i_target,
+      const string_view & i_property_name,
+      const string_view & i_value_source)
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value_source);
         except_on_tailing(property_name);
     }
 
-    action_inspector inspect_actions(const raw_ptr & i_target) { return action_inspector(i_target); }
+    action_inspector inspect_actions(const raw_ptr & i_target)
+    {
+        return action_inspector(i_target);
+    }
 
-    action_inspector::iterator::iterator(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
+    action_inspector::iterator::iterator(const raw_ptr & i_target) noexcept
+        : m_target(i_target.full_indirection())
     {
         auto const final_type = m_target.qualified_type().final_type();
         if (final_type->is_class())
@@ -270,7 +289,8 @@ namespace ediacaran
 
         for (;;)
         {
-            auto const complete_class = static_cast<const class_type *>(m_target.qualified_type().final_type());
+            auto const complete_class =
+              static_cast<const class_type *>(m_target.qualified_type().final_type());
             if (m_base_index < complete_class->base_classes().size())
             {
                 auto const & base = complete_class->base_classes()[m_base_index];
@@ -330,9 +350,10 @@ namespace ediacaran
             arguments[i] = const_cast<void *>(i_arguments[i].object());
         }
 
-        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
-            m_action->invoke(m_subobject, i_dest, arguments.data());
-        });
+        auto const value =
+          m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
+              m_action->invoke(m_subobject, i_dest, arguments.data());
+          });
         return raw_ptr(value, m_action->qualified_return_type());
     }
 
@@ -362,9 +383,10 @@ namespace ediacaran
             arguments.push_back(const_cast<void *>(dyn_arguments.back().object()));
         }
 
-        auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
-            m_action->invoke(m_subobject, i_dest, arguments.data());
-        });
+        auto const value =
+          m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
+              m_action->invoke(m_subobject, i_dest, arguments.data());
+          });
         return raw_ptr(value, m_action->qualified_return_type());
     }
 
@@ -382,7 +404,8 @@ namespace ediacaran
             try_accept(spaces, i_arguments_source);
 
             auto const & parameter = parameters[i];
-            auto & dyn_value = dyn_arguments.emplace_back(parse_value(parameter.qualified_type(), i_arguments_source));
+            auto &       dyn_value = dyn_arguments.emplace_back(
+              parse_value(parameter.qualified_type(), i_arguments_source));
             arguments.push_back(const_cast<void *>(dyn_value.object()));
 
             if (i + 1 < parameters.size())
@@ -399,9 +422,10 @@ namespace ediacaran
         }
         else
         {
-            auto const value = m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
-                m_action->invoke(m_subobject, i_dest, arguments.data());
-            });
+            auto const value =
+              m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
+                  m_action->invoke(m_subobject, i_dest, arguments.data());
+              });
             return raw_ptr(value, m_action->qualified_return_type());
         }
     }

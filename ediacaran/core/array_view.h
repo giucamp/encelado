@@ -13,7 +13,10 @@ namespace ediacaran
       public:
         constexpr array_view() noexcept : m_objects(nullptr), m_size(0) {}
 
-        constexpr array_view(TYPE * i_objects, size_t i_size) noexcept : m_objects(i_objects), m_size(i_size) {}
+        constexpr array_view(TYPE * i_objects, size_t i_size) noexcept
+            : m_objects(i_objects), m_size(i_size)
+        {
+        }
 
         template <size_t SIZE>
         constexpr array_view(TYPE (&i_objects)[SIZE]) noexcept : m_objects(i_objects), m_size(SIZE)
@@ -27,7 +30,8 @@ namespace ediacaran
         }
 
         constexpr array_view(std::initializer_list<TYPE> i_initializer_list) noexcept
-            : m_objects(i_initializer_list.begin()), m_size(i_initializer_list.end() - i_initializer_list.begin())
+            : m_objects(i_initializer_list.begin()),
+              m_size(i_initializer_list.end() - i_initializer_list.begin())
         {
         }
 

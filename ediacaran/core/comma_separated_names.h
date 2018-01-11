@@ -25,7 +25,8 @@ namespace ediacaran
             using reference         = string_view &;
             using iterator_category = std::input_iterator_tag;
 
-            constexpr const_iterator(const comma_separated_names & i_parent) : m_reader(i_parent.m_string)
+            constexpr const_iterator(const comma_separated_names & i_parent)
+                : m_reader(i_parent.m_string)
             {
                 try_accept(spaces, m_reader);
                 m_current = try_parse_identifier(m_reader);
@@ -34,7 +35,10 @@ namespace ediacaran
 
             constexpr const string_view & operator*() const noexcept { return m_current; }
 
-            constexpr bool operator==(const_iterator_end_marker) const noexcept { return m_current.empty(); }
+            constexpr bool operator==(const_iterator_end_marker) const noexcept
+            {
+                return m_current.empty();
+            }
 
             constexpr bool operator!=(const_iterator_end_marker i_marker) const noexcept
             {
@@ -78,11 +82,17 @@ namespace ediacaran
 
         constexpr const_iterator begin() const { return const_iterator(*this); }
 
-        constexpr const_iterator_end_marker end() const noexcept { return const_iterator_end_marker{}; }
+        constexpr const_iterator_end_marker end() const noexcept
+        {
+            return const_iterator_end_marker{};
+        }
 
         constexpr const_iterator cbegin() const { return const_iterator(*this); }
 
-        constexpr const_iterator_end_marker cend() const noexcept { return const_iterator_end_marker{}; }
+        constexpr const_iterator_end_marker cend() const noexcept
+        {
+            return const_iterator_end_marker{};
+        }
 
       private:
         const char * m_string;

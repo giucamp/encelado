@@ -32,7 +32,8 @@ namespace ediacaran
         {
         }
 
-        template <typename DERIVED, typename BASE> static void * impl_up_cast(void * i_derived) noexcept
+        template <typename DERIVED, typename BASE>
+        static void * impl_up_cast(void * i_derived) noexcept
         {
             auto const derived = static_cast<DERIVED *>(i_derived);
             EDIACARAN_ASSERT(derived != nullptr);
@@ -48,18 +49,28 @@ namespace ediacaran
     {
       public:
         constexpr class_type(
-          const char * const i_name, size_t i_size, size_t i_alignment, const special_functions & i_special_functions,
-          const array_view<const base_class> & i_base_classes, const array_view<const property> & i_properties,
-          const array_view<const action> & i_actions)
+          const char * const                   i_name,
+          size_t                               i_size,
+          size_t                               i_alignment,
+          const special_functions &            i_special_functions,
+          const array_view<const base_class> & i_base_classes,
+          const array_view<const property> &   i_properties,
+          const array_view<const action> &     i_actions)
             : type(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
               m_base_classes(i_base_classes), m_properties(i_properties), m_actions(i_actions)
         {
             check_duplicates();
         }
 
-        constexpr array_view<const base_class> const & base_classes() const noexcept { return m_base_classes; }
+        constexpr array_view<const base_class> const & base_classes() const noexcept
+        {
+            return m_base_classes;
+        }
 
-        constexpr array_view<const property> const & properties() const noexcept { return m_properties; }
+        constexpr array_view<const property> const & properties() const noexcept
+        {
+            return m_properties;
+        }
 
         constexpr array_view<const action> const & actions() const noexcept { return m_actions; }
 
@@ -72,11 +83,13 @@ namespace ediacaran
                 {
                     if (m_properties[i].name() == m_properties[j].name())
                     {
-                        except<std::runtime_error>("duplicate property ", m_properties[i].name(), " in class ", name());
+                        except<std::runtime_error>(
+                          "duplicate property ", m_properties[i].name(), " in class ", name());
                     }
                 }
 
-                for (size_t base_class_index = 0; base_class_index < m_base_classes.size(); base_class_index++)
+                for (size_t base_class_index = 0; base_class_index < m_base_classes.size();
+                     base_class_index++)
                 {
                     auto & base_props = m_base_classes[base_class_index].get_class().m_properties;
                     for (size_t j = 0; j < base_props.size(); j++)

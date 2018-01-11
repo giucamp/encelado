@@ -12,20 +12,20 @@
 
 /** Assert that on failure should cause an halt of the program. Used only locally in this header. */
 #ifdef _MSC_VER
-#define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                                           \
-    if (!(bool_expr))                                                                                                  \
-    {                                                                                                                  \
-        __debugbreak();                                                                                                \
-    }                                                                                                                  \
-    else                                                                                                               \
+#define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                       \
+    if (!(bool_expr))                                                                              \
+    {                                                                                              \
+        __debugbreak();                                                                            \
+    }                                                                                              \
+    else                                                                                           \
         (void)0
 #elif defined(__GNUC__)
-#define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                                           \
-    if (!(bool_expr))                                                                                                  \
-    {                                                                                                                  \
-        __builtin_trap();                                                                                              \
-    }                                                                                                                  \
-    else                                                                                                               \
+#define EDIACARAN_CHECKING_ASSERT(bool_expr)                                                       \
+    if (!(bool_expr))                                                                              \
+    {                                                                                              \
+        __builtin_trap();                                                                          \
+    }                                                                                              \
+    else                                                                                           \
         (void)0
 #else
 #define EDIACARAN_CHECKING_ASSERT(bool_expr) assert(bool_expr)
@@ -33,18 +33,18 @@
 
 /** Macro that tells an invariant to the compiler as hint for the optimizer. Used only locally in this header. */
 #if defined(__clang__)
-#define EDIACARAN_ASSUME(bool_expr)                                                                                    \
-    _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wassume\"") __builtin_assume((bool_expr))    \
-      _Pragma("clang diagnostic pop")
+#define EDIACARAN_ASSUME(bool_expr)                                                                \
+    _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wassume\"")              \
+      __builtin_assume((bool_expr)) _Pragma("clang diagnostic pop")
 #elif defined(_MSC_VER)
 #define EDIACARAN_ASSUME(bool_expr) __assume((bool_expr))
 #elif defined(__GNUC__)
-#define EDIACARAN_ASSUME(bool_expr)                                                                                    \
-    if (!(bool_expr))                                                                                                  \
-    {                                                                                                                  \
-        __builtin_unreachable();                                                                                       \
-    }                                                                                                                  \
-    else                                                                                                               \
+#define EDIACARAN_ASSUME(bool_expr)                                                                \
+    if (!(bool_expr))                                                                              \
+    {                                                                                              \
+        __builtin_unreachable();                                                                   \
+    }                                                                                              \
+    else                                                                                           \
         (void)0 // https://stackoverflow.com/questions/25667901/assume-clause-in-gcc
 #else
 #define EDIACARAN_ASSUME(bool_expr) (void)0
@@ -117,9 +117,13 @@ namespace ediacaran
     class constexpr_char_traits : public std::char_traits<char>
     {
       public:
-        static constexpr void assign(char_type & o_dest, const char_type & i_source) noexcept { o_dest = i_source; }
+        static constexpr void assign(char_type & o_dest, const char_type & i_source) noexcept
+        {
+            o_dest = i_source;
+        }
 
-        static constexpr void assign(char_type * i_dest, size_t i_size, const char_type & i_source) noexcept
+        static constexpr void
+          assign(char_type * i_dest, size_t i_size, const char_type & i_source) noexcept
         {
             for (size_t index = 0; index < i_size; index++)
                 i_dest[index] = i_source;
@@ -133,7 +137,8 @@ namespace ediacaran
             return curr - i_string;
         }
 
-        constexpr static int compare(const char_type * i_first, const char_type * i_second, size_t i_size) noexcept
+        constexpr static int
+          compare(const char_type * i_first, const char_type * i_second, size_t i_size) noexcept
         {
             int result = 0;
             for (size_t index = 0; result == 0 && index < i_size; index++, i_first++, i_second++)
@@ -141,9 +146,15 @@ namespace ediacaran
             return result;
         }
 
-        static constexpr bool eq(char_type i_first, char_type i_second) noexcept { return i_first == i_second; }
+        static constexpr bool eq(char_type i_first, char_type i_second) noexcept
+        {
+            return i_first == i_second;
+        }
 
-        static constexpr bool lt(char_type i_first, char_type i_second) noexcept { return i_first < i_second; }
+        static constexpr bool lt(char_type i_first, char_type i_second) noexcept
+        {
+            return i_first < i_second;
+        }
     };
 
     class string_view : public std::basic_string_view<char, constexpr_char_traits>
@@ -153,7 +164,10 @@ namespace ediacaran
 
         constexpr string_view() {}
 
-        string_view(const std::string & i_source) noexcept : string_view(i_source.c_str(), i_source.size()) {}
+        string_view(const std::string & i_source) noexcept
+            : string_view(i_source.c_str(), i_source.size())
+        {
+        }
 
         operator std::string() { return std::string(data(), size()); }
     };

@@ -24,7 +24,8 @@ namespace ediacaran
 
     constexpr bool is_alphanum(char i_char) noexcept
     {
-        return (i_char >= 'a' && i_char <= 'z') || (i_char >= 'A' && i_char <= 'Z') || (i_char >= '0' && i_char <= '9');
+        return (i_char >= 'a' && i_char <= 'z') || (i_char >= 'A' && i_char <= 'Z') ||
+               (i_char >= '0' && i_char <= '9');
     }
 
     /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters.
@@ -52,7 +53,8 @@ namespace ediacaran
     {
         if (i_reader.remaining_chars() != 0)
         {
-            except<parse_error>(i_reader.remaining_chars() > 0 ? "Unexpected tailing chars" : "Expected more chars");
+            except<parse_error>(
+              i_reader.remaining_chars() > 0 ? "Unexpected tailing chars" : "Expected more chars");
         }
     }
 
@@ -60,7 +62,9 @@ namespace ediacaran
     {
         if (i_reader.remaining_chars() != 0)
         {
-            o_error_dest << (i_reader.remaining_chars() > 0 ? "Unexpected tailing chars" : "Expected more chars");
+            o_error_dest
+              << (i_reader.remaining_chars() > 0 ? "Unexpected tailing chars"
+                                                 : "Expected more chars");
             return false;
         }
         else
@@ -75,8 +79,10 @@ namespace ediacaran
     };
     template <typename TYPE>
     struct has_try_parse<
-      TYPE, std::void_t<decltype(try_parse(
-              std::declval<TYPE &>(), std::declval<char_reader &>(), std::declval<char_writer &>()))>> : std::true_type
+      TYPE,
+      std::void_t<decltype(try_parse(
+        std::declval<TYPE &>(), std::declval<char_reader &>(), std::declval<char_writer &>()))>>
+        : std::true_type
     {
     };
     template <typename TYPE> using has_try_parse_t          = typename has_try_parse<TYPE>::type;
@@ -88,10 +94,12 @@ namespace ediacaran
     };
     template <typename TYPE>
     struct has_try_accept<
-      TYPE, std::void_t<decltype(
-              std::declval<bool &>() = try_accept(
-                std::declval<const TYPE &>(), std::declval<char_reader &>(), std::declval<char_writer &>()))>>
-        : std::true_type
+      TYPE,
+      std::void_t<decltype(
+        std::declval<bool &>() = try_accept(
+          std::declval<const TYPE &>(),
+          std::declval<char_reader &>(),
+          std::declval<char_writer &>()))>> : std::true_type
     {
     };
     template <typename TYPE> using has_try_accept_t          = typename has_try_accept<TYPE>::type;
@@ -99,8 +107,8 @@ namespace ediacaran
 
     // generic try_accept based on try_parse
     template <typename TYPE>
-    std::enable_if_t<has_try_parse_v<TYPE>, bool>
-      try_accept(const TYPE & i_expected_value, char_reader & i_source, char_writer & o_error_dest) noexcept
+    std::enable_if_t<has_try_parse_v<TYPE>, bool> try_accept(
+      const TYPE & i_expected_value, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
         TYPE       actual_value;
         auto const prev_source = i_source;
@@ -128,7 +136,8 @@ namespace ediacaran
 
     // generic try_parse without error_dest
     template <typename TYPE>
-    std::enable_if_t<has_try_parse_v<TYPE>, bool> try_parse(TYPE & i_dest, char_reader & i_source) noexcept
+    std::enable_if_t<has_try_parse_v<TYPE>, bool>
+      try_parse(TYPE & i_dest, char_reader & i_source) noexcept
     {
         char_writer error;
         return try_parse(i_dest, i_source, error);
@@ -156,7 +165,8 @@ namespace ediacaran
     }
 
     // generic char_reader >> val, based on try_parse
-    template <typename TYPE> constexpr char_reader & operator>>(char_reader & i_source, TYPE & o_dest)
+    template <typename TYPE>
+    constexpr char_reader & operator>>(char_reader & i_source, TYPE & o_dest)
     {
         static_assert(has_try_parse_v<TYPE>);
         char error[512];
@@ -166,7 +176,8 @@ namespace ediacaran
     }
 
     // generic char_reader >> const val, based on try_accept
-    template <typename TYPE> constexpr char_reader & operator>>(char_reader & i_source, const TYPE & i_expected_value)
+    template <typename TYPE>
+    constexpr char_reader & operator>>(char_reader & i_source, const TYPE & i_expected_value)
     {
         static_assert(has_try_accept_v<TYPE>);
         char        error[512];
@@ -177,7 +188,8 @@ namespace ediacaran
     }
 
     // try_accept for spaces - they don't have a try_parse
-    constexpr bool try_accept(SpacesTag, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool
+      try_accept(SpacesTag, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         bool some_chars_skipped = false;
         while (is_space(*i_source.next_chars()))
@@ -189,8 +201,10 @@ namespace ediacaran
     }
 
     // try_accept for strings - they don't have a try_parse
-    constexpr bool
-      try_accept(const string_view & i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool try_accept(
+      const string_view & i_expected,
+      char_reader &       i_source,
+      char_writer & /*o_error_dest*/) noexcept
     {
         for (size_t index = 0; index < i_expected.size(); index++)
         {
@@ -204,7 +218,8 @@ namespace ediacaran
     }
 
     // try_accept specialization for chars - optimization
-    constexpr bool try_accept(char i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool
+      try_accept(char i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         if (*i_source.next_chars() == i_expected)
         {
@@ -218,7 +233,8 @@ namespace ediacaran
     }
 
 
-    constexpr bool try_parse(char & i_dest, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    constexpr bool
+      try_parse(char & i_dest, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
     {
         if (i_source.remaining_chars() > 0)
         {
@@ -347,7 +363,8 @@ namespace ediacaran
         }
     }
 
-    constexpr bool try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    constexpr bool
+      try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
     {
         if (try_accept("true", i_source))
         {
@@ -382,5 +399,6 @@ namespace ediacaran
 
     bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
     bool try_parse(double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
-    bool try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
+    bool
+      try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
 }

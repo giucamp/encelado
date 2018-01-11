@@ -91,7 +91,10 @@ namespace ediacaran
 
         [[noreturn]] constexpr reference operator[](size_type) noexcept { EDIACARAN_ASSERT(false); }
 
-        [[noreturn]] constexpr const_reference operator[](size_type) const noexcept { EDIACARAN_ASSERT(false); }
+        [[noreturn]] constexpr const_reference operator[](size_type) const noexcept
+        {
+            EDIACARAN_ASSERT(false);
+        }
 
         [[noreturn]] constexpr reference front() noexcept { EDIACARAN_ASSERT(false); }
 
@@ -119,6 +122,7 @@ namespace ediacaran
 
     template <typename... ARG_TYPES> constexpr auto make_array(ARG_TYPES &&... i_elements)
     {
-        return array<std::common_type_t<ARG_TYPES...>, sizeof...(ARG_TYPES)>{{std::forward<ARG_TYPES>(i_elements)...}};
+        return array<std::common_type_t<ARG_TYPES...>, sizeof...(ARG_TYPES)>{
+          {std::forward<ARG_TYPES>(i_elements)...}};
     }
 }

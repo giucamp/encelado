@@ -36,7 +36,10 @@ namespace ediacaran
     {
       public:
         constexpr type(
-          type_kind i_kind, const char * const i_name, size_t i_size, size_t i_alignment,
+          type_kind                            i_kind,
+          const char * const                   i_name,
+          size_t                               i_size,
+          size_t                               i_alignment,
           const ediacaran::special_functions & i_special_functions) noexcept
             : symbol(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
               m_special_functions(i_special_functions)
@@ -47,7 +50,10 @@ namespace ediacaran
 
         constexpr size_t alignment() const noexcept { return m_alignment; }
 
-        constexpr bool is_fundamental() const noexcept { return m_kind == type_kind::is_fundamental; }
+        constexpr bool is_fundamental() const noexcept
+        {
+            return m_kind == type_kind::is_fundamental;
+        }
 
         constexpr bool is_class() const noexcept { return m_kind == type_kind::is_class; }
 
@@ -58,7 +64,10 @@ namespace ediacaran
             return m_special_functions.scalar_default_constructor() != nullptr;
         }
 
-        constexpr bool is_destructible() const noexcept { return m_special_functions.scalar_destructor() != nullptr; }
+        constexpr bool is_destructible() const noexcept
+        {
+            return m_special_functions.scalar_destructor() != nullptr;
+        }
 
         constexpr bool is_copy_constructible() const noexcept
         {
@@ -80,11 +89,20 @@ namespace ediacaran
             return m_special_functions.scalar_move_assigner() != nullptr;
         }
 
-        constexpr bool is_comparable() const noexcept { return m_special_functions.comparer() != nullptr; }
+        constexpr bool is_comparable() const noexcept
+        {
+            return m_special_functions.comparer() != nullptr;
+        }
 
-        constexpr bool is_stringizable() const noexcept { return m_special_functions.stringizer() != nullptr; }
+        constexpr bool is_stringizable() const noexcept
+        {
+            return m_special_functions.stringizer() != nullptr;
+        }
 
-        constexpr bool is_parsable() const noexcept { return m_special_functions.try_parser() != nullptr; }
+        constexpr bool is_parsable() const noexcept
+        {
+            return m_special_functions.try_parser() != nullptr;
+        }
 
 
         // special functions
@@ -98,25 +116,29 @@ namespace ediacaran
         void copy_construct(void * i_dest, const void * i_source) const
         {
             EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
-            m_special_functions.scalar_copy_constructor()(i_dest, address_add(i_dest, m_size), i_source);
+            m_special_functions.scalar_copy_constructor()(
+              i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void move_construct(void * i_dest, void * i_source) const
         {
             EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
-            m_special_functions.scalar_move_constructor()(i_dest, address_add(i_dest, m_size), i_source);
+            m_special_functions.scalar_move_constructor()(
+              i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void copy_assign(void * i_dest, const void * i_source) const
         {
             EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
-            m_special_functions.scalar_copy_assigner()(i_dest, address_add(i_dest, m_size), i_source);
+            m_special_functions.scalar_copy_assigner()(
+              i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void move_assign(void * i_dest, void * i_source) const
         {
             EDIACARAN_ASSERT(i_dest != nullptr && i_source != nullptr);
-            m_special_functions.scalar_move_assigner()(i_dest, address_add(i_dest, m_size), i_source);
+            m_special_functions.scalar_move_assigner()(
+              i_dest, address_add(i_dest, m_size), i_source);
         }
 
         void destroy(void * i_dest) const noexcept
@@ -147,7 +169,8 @@ namespace ediacaran
             (*m_special_functions.stringizer())(i_source, i_dest);
         }
 
-        bool try_parse(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const noexcept
+        bool try_parse(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const
+          noexcept
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
             auto const try_parser = m_special_functions.try_parser();
@@ -160,7 +183,9 @@ namespace ediacaran
                 return (*try_parser)(i_dest, i_source, i_error_dest);
         }
 
-        bool try_parse(void * i_dest, string_view const & i_source, char_writer & i_error_dest) const noexcept
+        bool
+          try_parse(void * i_dest, string_view const & i_source, char_writer & i_error_dest) const
+          noexcept
         {
             char_reader source(i_source);
             return try_parse(i_dest, source, i_error_dest) && check_tailing(source, i_error_dest);

@@ -20,11 +20,13 @@ namespace ediacaran
         }
 
         template <typename TYPE>
-        explicit raw_ptr(TYPE * i_ptr) : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
+        explicit raw_ptr(TYPE * i_ptr)
+            : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
         {
         }
 
-        raw_ptr(raw_ptr && i_source) noexcept : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
+        raw_ptr(raw_ptr && i_source) noexcept
+            : m_object(i_source.m_object), m_qualified_type(i_source.m_qualified_type)
         {
             i_source.m_object         = nullptr;
             i_source.m_qualified_type = qualified_type_ptr{};
@@ -49,7 +51,10 @@ namespace ediacaran
 
         bool empty() const noexcept { return m_object == nullptr; }
 
-        bool operator==(const raw_ptr & i_source) const noexcept { return m_object == i_source.m_object; }
+        bool operator==(const raw_ptr & i_source) const noexcept
+        {
+            return m_object == i_source.m_object;
+        }
 
         bool operator!=(const raw_ptr & i_source) const noexcept { return !operator==(i_source); }
 

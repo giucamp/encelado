@@ -30,7 +30,8 @@ namespace ediacaran
         m_types.insert(std::make_pair(full_type_name, i_type));
     }
 
-    void global_namespace_::unregister_type(const char * i_full_name, const type * /*i_type*/) noexcept
+    void
+      global_namespace_::unregister_type(const char * i_full_name, const type * /*i_type*/) noexcept
     {
         std::string full_type_name{i_full_name};
 
