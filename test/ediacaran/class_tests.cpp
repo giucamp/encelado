@@ -287,7 +287,7 @@ namespace ediacaran_test
         auto const template_arguments =
           make_template_arguments("T_1", ediacaran::get_qualified_type<T_1>());
 
-        return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
+        return ediacaran::make_static_cast<this_class>(class_name, template_arguments);
     }
 
     template <typename T_1, typename T_2> constexpr auto reflect(Fir2<T_1, T_2> ** i_ptr)
@@ -299,7 +299,7 @@ namespace ediacaran_test
         auto const template_arguments = make_template_arguments(
           "T_1, T_2", ediacaran::get_qualified_type<T_1>(), ediacaran::get_qualified_type<T_2>());
 
-        return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
+        return ediacaran::make_static_cast<this_class>(class_name, template_arguments);
     }
 
     template <typename T_1, typename T_2, typename T_3>
@@ -315,7 +315,7 @@ namespace ediacaran_test
           ediacaran::get_qualified_type<T_2>(),
           ediacaran::get_qualified_type<T_3>());
 
-        return ediacaran::make_static_cast<this_class>(class_name, template_arguments, bases{});
+        return ediacaran::make_static_cast<this_class>(class_name, template_arguments);
     }
 
     void class_tests()
