@@ -13,6 +13,8 @@
 #include <type_traits>
 #include <variant>
 #include <vector>
+#include <tuple>
+#include <utility>
 
 namespace ediacaran_test
 {
@@ -283,6 +285,12 @@ namespace ediacaran_test
         string_view const target("123 456 abc");
         auto              str = to_string(123, ' ', 456, " abc");
         ENCELADO_TEST_ASSERT(target == str.c_str());
+
+        auto str_1 = to_string(std::make_tuple(1, 2, "abc", 3, 4, 'a'));
+        ENCELADO_TEST_ASSERT(str_1 == "1, 2, abc, 3, 4, a");
+
+        auto str_2 = to_string(std::make_pair(1, 2));
+        ENCELADO_TEST_ASSERT(str_2 == "1, 2");
 
         char small_char_array[5];
         auto required = to_chars(small_char_array, 123, ' ', 456, " abc");

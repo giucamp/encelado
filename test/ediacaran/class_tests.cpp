@@ -309,20 +309,25 @@ namespace ediacaran_test
         using bases           = ediacaran::type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const template_arguments = make_template_arguments(
+        constexpr auto const template_arguments = make_template_arguments(
           "T_1, T_2, T_3",
           ediacaran::get_qualified_type<T_1>(),
           ediacaran::get_qualified_type<T_2>(),
           ediacaran::get_qualified_type<T_3>());
+
+        constexpr auto len = template_arguments.name_len();
 
         return ediacaran::make_static_cast<this_class>(class_name, template_arguments);
     }
 
     void class_tests()
     {
-        const auto & temp_1 = ediacaran::get_type<Fir1<int>>();
-        const auto & temp_2 = ediacaran::get_type<Fir2<int, double>>();
-        const auto & temp_3 = ediacaran::get_type<Fir3<float, int, char>>();
+        constexpr auto & temp_1 = ediacaran::get_type<Fir1<int>>();
+        constexpr auto & temp_2 = ediacaran::get_type<Fir2<int, double>>();
+        constexpr auto & temp_3 = ediacaran::get_type<Fir3<float, int, char>>();
+        static_assert(temp_1.template_arguments().size() == 1);
+        static_assert(temp_2.template_arguments().size() == 2);
+        static_assert(temp_3.template_arguments().size() == 3);
 
         static_assert(ediacaran::detail::TemplateArguments<Fir1<int>>::size == 1);
         static_assert(ediacaran::detail::TemplateArguments<Fir2<int, double>>::size == 2);

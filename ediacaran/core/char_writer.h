@@ -220,6 +220,26 @@ namespace ediacaran
     template <typename TYPE> using is_stringizable_t = typename is_stringizable<TYPE>::type;
     template <typename TYPE> constexpr bool is_stringizable_v = is_stringizable<TYPE>::value;
 
+    namespace detail
+    {
+        template <typename TUPLE, size_t... INDICES>
+            constexpr void print_tuple_like(char_writer & o_dest, const TUPLE & i_source, std::index_sequence<INDICES...>)
+        {
+            ((
+                (INDICES + 1 < sizeof...(INDICES)) ?
+                (o_dest << std::get<INDICES>(i_source) << ", ") :
+                (o_dest << std::get<INDICES>(i_source))
+                ), ...);
+        }
+    }
+
+    template <typename TUPLE, typename = decltype(std::tuple_size<TUPLE>::value)>
+        constexpr char_writer & operator << (char_writer & o_dest, const TUPLE & i_tuple)
+    {
+        detail::print_tuple_like(o_dest, i_tuple, std::make_index_sequence<std::tuple_size_v<TUPLE>>{});
+        return o_dest;
+    }
+
     /** Returns the number of bytes required by the char array (including the null terminator) */
     template <typename... TYPE>
     constexpr size_t to_chars(char * o_char_array, size_t i_array_size, const TYPE &... i_objects)

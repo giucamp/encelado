@@ -38,6 +38,10 @@ namespace ediacaran
             return m_template_parameter_names;
         }
 
+        constexpr array_view<const parameter> const & template_parameters() const noexcept { return m_template_parameters; }
+        
+        constexpr array_view<const void * const> const & template_arguments() const noexcept { return m_template_arguments; }
+
       private:
         comma_separated_names const          m_template_parameter_names;
         array_view<const parameter> const    m_template_parameters;
@@ -59,6 +63,21 @@ namespace ediacaran
         template <size_t INDEX> constexpr const auto & get() const
         {
             return std::get<INDEX>(m_arguments);
+        }
+
+        constexpr std::tuple<TYPES...> const & as_tuple() const noexcept { return m_arguments; }
+
+        friend constexpr char_writer & operator << (char_writer & o_dest, const template_arguments<TYPES...> & i_source)
+        {
+            return o_dest << '<' << i_source.as_tuple() << '>';
+        }
+
+        constexpr size_t name_len() const noexcept
+        {
+            char_writer writer;
+            writer << *this;
+            EDIACARAN_ASSERT(writer.remaining_size() <= 0);
+            return static_cast<size_t>(-writer.remaining_size());
         }
 
       private:

@@ -203,7 +203,34 @@ namespace ediacaran
         uintptr_t m_volatileness_word : s_max_indirection_levels;
     };
 
-    char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
+    constexpr char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept
+    {
+        if (!i_source.is_empty())
+        {
+            o_dest << i_source.final_type()->name();
+
+            uintptr_t level = i_source.indirection_levels();
+            for (;;)
+            {
+                if (i_source.is_const(level))
+                {
+                    o_dest << " const";
+                }
+
+                if (i_source.is_volatile(level))
+                {
+                    o_dest << " volatile";
+                }
+
+                if (level == 0)
+                    break;
+
+                level--;
+                o_dest << " *";
+            }
+        }
+        return o_dest;
+    }
 
     bool try_parse(
       qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
