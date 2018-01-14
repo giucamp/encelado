@@ -237,7 +237,7 @@ namespace ediacaran
     template <typename TUPLE, typename = decltype(std::tuple_size<TUPLE>::value)>
         constexpr char_writer & operator << (char_writer & o_dest, const TUPLE & i_tuple)
     {
-        detail::print_tuple_like(o_dest, i_tuple, std::make_index_sequence<std::tuple_size_v<TUPLE>>{});
+        detail::print_tuple_like(o_dest, i_tuple, std::make_index_sequence<std::tuple_size<TUPLE>::value>{});
         return o_dest;
     }
 

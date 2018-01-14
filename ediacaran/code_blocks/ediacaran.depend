@@ -1,1 +1,47 @@
 # depslib dependency file v1.0
+1515920097 source:/home/abc/proj/encelado/ediacaran/core/char_reader.cpp
+	"char_reader.h"
+	<cstdio>
+	<inttypes.h>
+	<stdexcept>
+	<string>
+
+1515920097 /home/abc/proj/encelado/ediacaran/core/char_reader.h
+	"ediacaran/core/char_writer.h"
+	"ediacaran/core/ediacaran_common.h"
+	<algorithm>
+	<cstddef>
+	<stdexcept>
+	<string_view>
+	<type_traits>
+
+1515920151 /home/abc/proj/encelado/ediacaran/core/char_writer.h
+	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/core/array.h"
+	<algorithm>
+	<cstddef>
+	<string>
+	<string_view>
+	<type_traits>
+	<utility>
+
+1515920097 /home/abc/proj/encelado/ediacaran/core/ediacaran_common.h
+	<assert.h>
+	<cstdint>
+	<stdexcept>
+	<string>
+	<string_view>
+	<type_traits>
+
+1515920097 /home/abc/proj/encelado/ediacaran/core/array.h
+	<ediacaran/core/ediacaran_common.h>
+	<iterator>
+	<stdexcept>
+
+1515920097 source:/home/abc/proj/encelado/ediacaran/core/char_writer.cpp
+	"char_writer.h"
+	<cstdio>
+	<inttypes.h>
+	<limits>
+	<stdexcept>
+

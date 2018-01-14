@@ -197,7 +197,7 @@ namespace ediacaran
             {
                 return array<const parameter, sizeof...(TEMPLATE_PARAMETERS)>{
                   {parameter{get_qualified_type<
-                    std::remove_reference_t<decltype(i_template_arguments.get<INDEX>())>>()}...}};
+                    std::remove_reference_t<decltype(i_template_arguments.template get<INDEX>())>>()}...}};
             }
 
             template <size_t... INDEX>
@@ -206,7 +206,7 @@ namespace ediacaran
               std::index_sequence<INDEX...>)
             {
                 return array<const void * const, sizeof...(TEMPLATE_PARAMETERS)>{
-                  {&i_template_arguments.get<INDEX>()...}};
+                  {&i_template_arguments.template get<INDEX>()...}};
             }
 
           public:

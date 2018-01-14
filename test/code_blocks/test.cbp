@@ -41,6 +41,7 @@
 		<Unit filename="../common.h" />
 		<Unit filename="../ediacaran/class_tests.cpp" />
 		<Unit filename="../ediacaran/qualified_type_ptr_tests.cpp" />
+		<Unit filename="../ediacaran/remove_noexcept_tests.cpp" />
 		<Unit filename="../ediacaran/string_tests.cpp" />
 		<Unit filename="../ediacaran/type_list_tests.cpp" />
 		<Unit filename="../ediacaran/type_tests.cpp" />
