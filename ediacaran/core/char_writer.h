@@ -4,6 +4,7 @@
 
 #pragma once
 #include "ediacaran/core/ediacaran_common.h"
+#include "ediacaran/core/array.h"
 #include <algorithm>
 #include <cstddef>
 #include <string>
@@ -255,6 +256,22 @@ namespace ediacaran
     {
         char * const dest = o_char_array;
         return to_chars(dest, SIZE, i_objects...);
+    }
+
+    template <size_t SIZE, typename... TYPE>
+    constexpr array<char,SIZE> to_char_array(const TYPE &... i_objects)
+    {
+        array<char, SIZE> dest{};
+        to_chars(dest.data(), SIZE, i_objects...);
+        return dest;
+    }
+
+    template <typename... TYPE>
+    constexpr size_t char_array_size(const TYPE &... i_objects)
+    {
+        char_writer writer;
+        (writer << ... << i_objects);
+        return 1 + static_cast<size_t>(-writer.remaining_size());
     }
 
     template <

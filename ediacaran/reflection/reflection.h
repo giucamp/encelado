@@ -169,6 +169,7 @@ namespace ediacaran
 
         template <
           typename CLASS,
+          size_t SPECIALIZATION_NAME_LENGTH,
           typename TEMPLATE_PARAMETER_LIST,
           size_t PROPERTY_COUNT,
           size_t ACTION_COUNT,
@@ -177,12 +178,13 @@ namespace ediacaran
 
         template <
           typename CLASS,
+          size_t SPECIALIZATION_NAME_LENGTH,
           size_t PROPERTY_COUNT,
           size_t ACTION_COUNT,
           typename... TEMPLATE_PARAMETERS,
           typename... BASE_CLASSES>
         struct StaticClass<
-          CLASS,
+          CLASS, SPECIALIZATION_NAME_LENGTH,
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           ACTION_COUNT,
@@ -211,11 +213,12 @@ namespace ediacaran
             using bases = type_list<BASE_CLASSES...>;
 
             constexpr StaticClass(
-              const char *                                       i_name,
+              const array<char, SPECIALIZATION_NAME_LENGTH> &    i_specialization_name,
               const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
               array<property, PROPERTY_COUNT> const &            i_properties,
               array<action, ACTION_COUNT> const &                i_actions)
-                : m_properties(i_properties), m_actions(i_actions),
+                : m_specialization_name(i_specialization_name),
+                  m_properties(i_properties), m_actions(i_actions),
                   m_template_arguments(i_template_arguments),
                   m_template_parameters_array(make_template_parameters_array(
                     m_template_arguments,
@@ -224,7 +227,7 @@ namespace ediacaran
                     m_template_arguments,
                     std::make_index_sequence<sizeof...(TEMPLATE_PARAMETERS)>{})),
                   m_class(
-                    i_name,
+                    m_specialization_name.data(),
                     m_template_arguments.parameter_names(),
                     sizeof(CLASS),
                     alignof(CLASS),
@@ -244,6 +247,7 @@ namespace ediacaran
             }
 
           private:
+            array<char, SPECIALIZATION_NAME_LENGTH>          m_specialization_name;
             array<property, PROPERTY_COUNT> const            m_properties;
             array<action, ACTION_COUNT> const                m_actions;
             template_arguments<TEMPLATE_PARAMETERS...> const m_template_arguments;
@@ -260,7 +264,7 @@ namespace ediacaran
           size_t ACTION_COUNT,
           typename... BASE_CLASSES>
         struct StaticClass<
-          CLASS,
+          CLASS, 0,
           template_arguments<>,
           PROPERTY_COUNT,
           ACTION_COUNT,
@@ -309,25 +313,26 @@ namespace ediacaran
       array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
     {
         return detail::
-          StaticClass<CLASS, template_arguments<>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
+          StaticClass<CLASS, 0, template_arguments<>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
             i_name, make_template_arguments(), i_properties, i_actions);
     }
 
     template <
       typename CLASS,
+      size_t SPECIALIZATION_NAME_LENGTH,
       typename... TEMPLATE_PARAMETERS,
       typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
     constexpr auto make_static_cast(
-      const char *                                       i_name,
+      const array<char, SPECIALIZATION_NAME_LENGTH> & i_name,
       const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
       type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
       array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
     {
         return detail::StaticClass<
-          CLASS,
+          CLASS, SPECIALIZATION_NAME_LENGTH,
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           ACTION_COUNT,
