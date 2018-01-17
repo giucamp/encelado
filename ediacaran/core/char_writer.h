@@ -3,8 +3,8 @@
 
 
 #pragma once
-#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/array.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include <algorithm>
 #include <cstddef>
 #include <string>
@@ -224,24 +224,25 @@ namespace ediacaran
     namespace detail
     {
         template <typename TUPLE, size_t... INDICES>
-            constexpr void print_tuple_like(char_writer & o_dest, const TUPLE & i_source, std::index_sequence<INDICES...>)
+        constexpr void print_tuple_like(
+          char_writer & o_dest, const TUPLE & i_source, std::index_sequence<INDICES...>)
         {
-            ((
-                (INDICES + 1 < sizeof...(INDICES)) ?
-                (o_dest << std::get<INDICES>(i_source) << ", ") :
-                (o_dest << std::get<INDICES>(i_source))
-                ), ...);
+            (((INDICES + 1 < sizeof...(INDICES)) ? (o_dest << std::get<INDICES>(i_source) << ", ")
+                                                 : (o_dest << std::get<INDICES>(i_source))),
+             ...);
         }
     }
 
     template <typename TUPLE, typename = decltype(std::tuple_size<TUPLE>::value)>
-        constexpr char_writer & operator << (char_writer & o_dest, const TUPLE & i_tuple)
+    constexpr char_writer & operator<<(char_writer & o_dest, const TUPLE & i_tuple)
     {
-        detail::print_tuple_like(o_dest, i_tuple, std::make_index_sequence<std::tuple_size<TUPLE>::value>{});
+        detail::print_tuple_like(
+          o_dest, i_tuple, std::make_index_sequence<std::tuple_size<TUPLE>::value>{});
         return o_dest;
     }
 
-    /** Returns the number of bytes required by the char array (including the null terminator) */
+    /** The dest must have space for the null terminator
+        Returns the number of bytes required by the char array (including the null terminator) */
     template <typename... TYPE>
     constexpr size_t to_chars(char * o_char_array, size_t i_array_size, const TYPE &... i_objects)
     {
@@ -250,7 +251,8 @@ namespace ediacaran
         return static_cast<size_t>(static_cast<ptrdiff_t>(i_array_size) - writer.remaining_size());
     }
 
-    /** Returns the number of bytes required by the char array (including the null terminator) */
+    /** Returns the number of bytes required by the char array (including the null terminator),
+        that does not depend on SIZE*/
     template <size_t SIZE, typename... TYPE>
     constexpr size_t to_chars(char (&o_char_array)[SIZE], const TYPE &... i_objects)
     {
@@ -258,20 +260,20 @@ namespace ediacaran
         return to_chars(dest, SIZE, i_objects...);
     }
 
+    // SIZE must include the terminator null
     template <size_t SIZE, typename... TYPE>
-    constexpr array<char,SIZE> to_char_array(const TYPE &... i_objects)
+    constexpr array<char, SIZE> to_char_array(const TYPE &... i_objects)
     {
         array<char, SIZE> dest{};
-        char_writer writer(dest.data(), SIZE);
+        char_writer       writer(dest.data(), SIZE);
         (writer << ... << i_objects);
-        if(writer.remaining_size() < 0)
+        if (writer.remaining_size() < 0)
             except<std::runtime_error>("to_char_array - string overflow");
         return dest;
     }
 
-    // does not include the terminator null
-    template <typename... TYPE>
-    constexpr size_t char_array_size(const TYPE &... i_objects)
+    // includes the terminator null
+    template <typename... TYPE> constexpr size_t char_array_size(const TYPE &... i_objects)
     {
         char_writer writer;
         (writer << ... << i_objects);

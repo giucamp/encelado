@@ -22,4 +22,5 @@ namespace ediacaran_test
     void string_tests();
     void type_tests();
     void class_tests();
+    void class_templates_tests();
 }

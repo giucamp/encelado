@@ -10,11 +10,11 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <type_traits>
+#include <utility>
 #include <variant>
 #include <vector>
-#include <tuple>
-#include <utility>
 
 namespace ediacaran_test
 {
@@ -311,6 +311,19 @@ namespace ediacaran_test
         for (int i = 0; i < 20; i++)
             writer << "abcd";
         ENCELADO_TEST_ASSERT(strlen(buff) == 9);
+
+        static_assert(char_array_size('a') == 2);
+        static_assert(char_array_size(33) == 3);
+
+        constexpr auto fixed_array = to_char_array<3>(32);
+        static_assert(fixed_array[0] == '3');
+        static_assert(fixed_array[1] == '2');
+        static_assert(fixed_array[2] == '\0');
+
+        char fix_str_1[1];
+        auto r = to_chars(fix_str_1, 1, " ", 2);
+
+        auto h = r;
     }
 
     template <typename IT_1, typename IT2> constexpr size_t het_it_dist(IT_1 i_begin, IT2 i_end)

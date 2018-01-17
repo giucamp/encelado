@@ -203,7 +203,8 @@ namespace ediacaran
         uintptr_t m_volatileness_word : s_max_indirection_levels;
     };
 
-    constexpr char_writer & operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept
+    constexpr char_writer &
+      operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept
     {
         if (!i_source.is_empty())
         {

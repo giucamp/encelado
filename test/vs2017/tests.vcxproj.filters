@@ -21,6 +21,9 @@
     <ClCompile Include="..\ediacaran\remove_noexcept_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
+    <ClCompile Include="..\ediacaran\class_templates_tests.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ediacaran">
