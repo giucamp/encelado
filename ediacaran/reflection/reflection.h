@@ -319,24 +319,27 @@ namespace ediacaran
 
     template <
       typename CLASS,
-      size_t SPECIALIZATION_NAME_LENGTH,
+      size_t ARGUMENTS_STRING_SIZE,
+      size_t TEMPLATE_NAME_SIZE,
       typename... TEMPLATE_PARAMETERS,
       typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
     constexpr auto make_static_cast(
-      const array<char, SPECIALIZATION_NAME_LENGTH> & i_name,
+      const char (&i_template_name)[TEMPLATE_NAME_SIZE],
       const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
       type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
       array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
     {
+        array<char, ARGUMENTS_STRING_SIZE + TEMPLATE_NAME_SIZE> specialization_name{};
+        to_chars(specialization_name.data(), specialization_name.size(), i_template_name, i_template_arguments);
         return detail::StaticClass<
-          CLASS, SPECIALIZATION_NAME_LENGTH,
+          CLASS, ARGUMENTS_STRING_SIZE + TEMPLATE_NAME_SIZE,
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           ACTION_COUNT,
-          BASE_CLASSES...>(i_name, i_template_arguments, i_properties, i_actions);
+          BASE_CLASSES...>(specialization_name, i_template_arguments, i_properties, i_actions);
     }
 
     template <typename TYPE> constexpr const auto & get_type() noexcept

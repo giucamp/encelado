@@ -262,10 +262,14 @@ namespace ediacaran
     constexpr array<char,SIZE> to_char_array(const TYPE &... i_objects)
     {
         array<char, SIZE> dest{};
-        to_chars(dest.data(), SIZE, i_objects...);
+        char_writer writer(dest.data(), SIZE);
+        (writer << ... << i_objects);
+        if(writer.remaining_size() < 0)
+            except<std::runtime_error>("to_char_array - string overflow");
         return dest;
     }
 
+    // does not include the terminator null
     template <typename... TYPE>
     constexpr size_t char_array_size(const TYPE &... i_objects)
     {

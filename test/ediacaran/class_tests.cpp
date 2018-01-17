@@ -280,37 +280,35 @@ namespace ediacaran_test
 
     template <typename T_1> constexpr auto reflect(Fir1<T_1> ** i_ptr)
     {
+        char const class_name[] = "Fir1";
         using namespace ediacaran;
-        auto const class_name = "Fir1";
         using bases           = type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
         constexpr auto template_arguments =
           make_template_arguments("T_1", get_qualified_type<T_1>());
 
-        constexpr auto specialization_name = to_char_array<char_array_size(class_name, template_arguments)>(class_name, template_arguments);
-        return make_static_cast<this_class>(specialization_name, template_arguments);
+        return make_static_cast<this_class, char_array_size(template_arguments)>(class_name, template_arguments);
     }
 
     template <typename T_1, typename T_2> constexpr auto reflect(Fir2<T_1, T_2> ** i_ptr)
     {
         using namespace ediacaran;
-        auto const class_name = "Fir2";
+        char const class_name[] = "Fir2";
         using bases           = type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
         constexpr auto template_arguments = make_template_arguments(
           "T_1, T_2", get_qualified_type<T_1>(), get_qualified_type<T_2>());
 
-        constexpr auto specialization_name = to_char_array<char_array_size(class_name, template_arguments)>(class_name, template_arguments);
-        return make_static_cast<this_class>(specialization_name, template_arguments);
+        return make_static_cast<this_class, char_array_size(template_arguments)>(class_name, template_arguments);
     }
 
     template <typename T_1, typename T_2, typename T_3>
     constexpr auto reflect(Fir3<T_1, T_2, T_3> ** i_ptr)
     {
         using namespace ediacaran;
-        auto const class_name = "Fir3";
+        char const class_name[] = "Fir3";
         using bases           = type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -320,8 +318,7 @@ namespace ediacaran_test
           get_qualified_type<T_2>(),
           get_qualified_type<T_3>());
 
-        constexpr auto specialization_name = to_char_array<char_array_size(class_name, template_arguments)>(class_name, template_arguments);
-        return make_static_cast<this_class>(specialization_name, template_arguments);
+        return make_static_cast<this_class, char_array_size(template_arguments)>(class_name, template_arguments);
     }
 
     void class_tests()
@@ -332,6 +329,9 @@ namespace ediacaran_test
         static_assert(temp_1.template_arguments().size() == 1);
         static_assert(temp_2.template_arguments().size() == 2);
         static_assert(temp_3.template_arguments().size() == 3);
+        static_assert(temp_1.name() == "Fir1<int32>");
+        static_assert(temp_2.name() == "Fir2<int32, double>");
+        static_assert(temp_3.name() == "Fir3<float, int32, char>");
 
         static_assert(ediacaran::detail::TemplateArguments<Fir1<int>>::size == 1);
         static_assert(ediacaran::detail::TemplateArguments<Fir2<int, double>>::size == 2);
