@@ -96,6 +96,9 @@
     <ClCompile Include="..\utils\raw_ptr.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\string_builder.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="core">

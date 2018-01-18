@@ -110,6 +110,20 @@ namespace ediacaran
         qualified_type_ptr m_qualified_type;
     };
 
+    inline char_writer & operator << (char_writer & o_dest, const dyn_value & i_value)
+    {
+        static_cast<raw_ptr>(i_value).to_string(o_dest);
+        return o_dest;
+    }
+
+    inline string_builder & operator << (string_builder & o_dest, const dyn_value & i_value)
+    {
+        o_dest.custom_write([&i_value](char_writer & o_dest) {
+            o_dest << i_value;
+        });
+        return o_dest;
+    }
+
     dyn_value parse_value(const qualified_type_ptr & i_qualified_type, char_reader & i_source);
 
     inline dyn_value

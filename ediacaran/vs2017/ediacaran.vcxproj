@@ -47,6 +47,7 @@
   <ItemGroup>
     <ClCompile Include="..\core\char_reader.cpp" />
     <ClCompile Include="..\core\char_writer.cpp" />
+    <ClCompile Include="..\core\string_builder.cpp" />
     <ClCompile Include="..\reflection\namespace.cpp" />
     <ClCompile Include="..\reflection\qualified_type_ptr.cpp" />
     <ClCompile Include="..\utils\dyn_value.cpp" />

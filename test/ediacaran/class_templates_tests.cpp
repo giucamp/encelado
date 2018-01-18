@@ -3,6 +3,7 @@
 #include "../common.h"
 #include "ediacaran/reflection/reflection.h"
 #include "ediacaran/core/string_builder.h"
+#include "ediacaran/utils/raw_ptr.h"
 
 namespace ediacaran_test
 {
@@ -19,6 +20,11 @@ namespace ediacaran_test
     };
 
     template <typename A, typename B, typename C, typename D> struct Fir4
+    {
+    };
+
+
+    template <typename A, typename B, typename C, typename D, typename E> struct Fir5
     {
     };
 
@@ -78,6 +84,14 @@ namespace ediacaran_test
         return make_static_cast<this_class>(class_name);
     }
 
+    template <typename... PARAMS>
+    constexpr auto reflect(Fir5<PARAMS...> ** i_ptr)
+    {
+        char const class_name[] = "Fir5";
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+        return ediacaran::make_static_cast<this_class>(class_name);
+    }
+
     std::string class_template_specialization_descr(const ediacaran::class_template_specialization & i_spec)
     {
         using namespace ediacaran;
@@ -87,8 +101,9 @@ namespace ediacaran_test
         for (size_t index = 0; index < templ_par_count; index++, names++)
         {
             auto const & par = i_spec.template_parameters()[index];
-            auto const arg = i_spec.template_arguments()[index];
-            out << *names << ": " << par.qualified_type();
+            void const * const arg = i_spec.template_arguments()[index];
+            out << *names << ": " << par.qualified_type() << " = ";
+            out << raw_ptr(const_cast<void*>(arg), par.qualified_type());
 
             if(index + 1 < templ_par_count)
                 out << ", ";
@@ -104,19 +119,38 @@ namespace ediacaran_test
         constexpr auto & temp_2 = get_type<Fir2<int, double>>();
         constexpr auto & temp_3 = get_type<Fir3<float, 5, char>>();
         constexpr auto & temp_4 = get_type<Fir4<float, char, double, int64_t>>();
+        constexpr auto & temp_5 = get_type<Fir5<float const *const*, void**, char, double*volatile***, int*const*>>();
         static_assert(temp_1.template_arguments().size() == 1);
         static_assert(temp_2.template_arguments().size() == 2);
         static_assert(temp_3.template_arguments().size() == 3);
         static_assert(temp_4.template_arguments().size() == 4);
+        static_assert(temp_5.template_arguments().size() == 5);
         static_assert(temp_1.name() == "Fir1<int32>");
         static_assert(temp_2.name() == "Fir2<int32, double>");
         static_assert(temp_3.name() == "Fir3<float, 5, char>");
         static_assert(temp_4.name() == "Fir4<float, char, double, int64>");
+        static_assert(temp_5.name() == "Fir5<float const * const *, void * *, char, double * volatile * * *, int32 * const *>");
         
         auto descr_1 = class_template_specialization_descr(temp_1);
         auto descr_2 = class_template_specialization_descr(temp_2);
         auto descr_3 = class_template_specialization_descr(temp_3);
         auto descr_4 = class_template_specialization_descr(temp_4);
-        int g = 0;
+        auto descr_5 = class_template_specialization_descr(temp_5);
+
+        ENCELADO_TEST_ASSERT(descr_1 == "T_1: ediacaran::qualified_type_ptr const = int32");
+        ENCELADO_TEST_ASSERT(descr_2 == "T_1: ediacaran::qualified_type_ptr const = int32, "
+                                        "T_2: ediacaran::qualified_type_ptr const = double");
+        ENCELADO_TEST_ASSERT(descr_3 == "T_1: ediacaran::qualified_type_ptr const = float, "
+                                        "T_2: int32 const = 5, "
+                                        "T_3: ediacaran::qualified_type_ptr const = char");
+        ENCELADO_TEST_ASSERT(descr_4 == "a0: ediacaran::qualified_type_ptr const = float, "
+                                        "a1: ediacaran::qualified_type_ptr const = char, "
+                                        "a2: ediacaran::qualified_type_ptr const = double, "
+                                        "a3: ediacaran::qualified_type_ptr const = int64");
+        ENCELADO_TEST_ASSERT(descr_5 == "a0: ediacaran::qualified_type_ptr const = float const * const *, "
+                                        "a1: ediacaran::qualified_type_ptr const = void * *, "
+                                        "a2: ediacaran::qualified_type_ptr const = char, "
+                                        "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
+                                        "a4: ediacaran::qualified_type_ptr const = int32 * const *");
     }
 }

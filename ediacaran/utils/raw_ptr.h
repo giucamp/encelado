@@ -1,5 +1,6 @@
 #pragma once
 #include <ediacaran/core/char_writer.h>
+#include <ediacaran/core/string_builder.h>
 #include <ediacaran/reflection/qualified_type_ptr.h>
 #include <ediacaran/reflection/type.h>
 #include <string>
@@ -88,5 +89,19 @@ namespace ediacaran
         void *             m_object{nullptr};
         qualified_type_ptr m_qualified_type;
     };
+
+    inline char_writer & operator << (char_writer & o_dest, const raw_ptr & i_ptr)
+    {
+        i_ptr.to_string(o_dest);
+        return o_dest;
+    }
+
+    inline string_builder & operator << (string_builder & o_dest, const raw_ptr & i_ptr)
+    {
+        o_dest.custom_write([&i_ptr](char_writer & o_dest){
+            o_dest << i_ptr;
+        });
+        return o_dest;
+    }
 
 } // namespace ediacaran
