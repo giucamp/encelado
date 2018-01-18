@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ediacaran/core/remove_noexcept.h"
+#include "ediacaran/core/constexpr_string.h"
 #include "ediacaran/reflection/class_template_specialization.h"
 #include "ediacaran/reflection/class_type.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
@@ -60,38 +61,45 @@ namespace ediacaran
 
         template <> struct TypeInstance<bool, bool>
         {
-            constexpr static type instance{MakeFundamentalType<bool>("bool")};
+            constexpr static type s_instance{MakeFundamentalType<bool>("bool")};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <> struct TypeInstance<char, char>
         {
-            constexpr static type instance{MakeFundamentalType<char>("char")};
+            constexpr static type s_instance{MakeFundamentalType<char>("char")};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <> struct TypeInstance<float, float>
         {
-            constexpr static type instance{MakeFundamentalType<float>("float")};
+            constexpr static type s_instance{MakeFundamentalType<float>("float")};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <> struct TypeInstance<double, double>
         {
-            constexpr static type instance{MakeFundamentalType<double>("double")};
+            constexpr static type s_instance{MakeFundamentalType<double>("double")};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <> struct TypeInstance<long double, long double>
         {
-            constexpr static type instance{MakeFundamentalType<long double>("long_double")};
+            constexpr static type s_instance{MakeFundamentalType<long double>("long_double")};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <> struct TypeInstance<void *, void *>
         {
-            constexpr static type instance{MakeFundamentalType<void *>("pointer")};
+            constexpr static type s_instance{MakeFundamentalType<void *>("pointer")};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <> struct TypeInstance<void, void>
         {
-            constexpr static type instance{
+            constexpr static type s_instance{
               type_kind::is_fundamental, "void", 1, 1, special_functions{}};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         template <typename INT_TYPE>
@@ -100,8 +108,9 @@ namespace ediacaran
           std::
             enable_if_t<std::is_integral_v<INT_TYPE> && !std::is_same_v<INT_TYPE, bool>, INT_TYPE>>
         {
-            constexpr static type instance{MakeFundamentalType<INT_TYPE>(
+            constexpr static type s_instance{MakeFundamentalType<INT_TYPE>(
               constexpr_string<WriteIntTypeName<INT_TYPE>>::string.data())};
+            constexpr static const auto & instance() noexcept { return s_instance; }
         };
 
         // --------------------------------------------------
@@ -136,27 +145,35 @@ namespace ediacaran
               tl_push_back_t<type_list<BASES...>, typename BasesTypeList<BASES>::type...>;
         };
 
-        // TemplateArguments
-        template <typename CLASS> struct TemplateArguments
+        // TemplateAutoDeducer
+        template <typename CLASS> struct TemplateAutoDeducer
         {
-            constexpr static size_t size = 0;
-        };
-        template <typename FIRST_TYPE, typename... OTHER_TYPES, template <class...> class CLASS>
-        struct TemplateArguments<CLASS<FIRST_TYPE, OTHER_TYPES...>>
-        {
-            constexpr static size_t             size           = 1 + sizeof...(OTHER_TYPES);
-            constexpr static qualified_type_ptr argument_value = get_qualified_type<FIRST_TYPE>();
-
-            constexpr static parameter get_parameter(size_t i_index) noexcept
+            constexpr static size_t arguments_count = 0;
+            constexpr static template_arguments<> get_template_arguments() noexcept
             {
-                return i_index == 0 ? get_qualified_type<qualified_type_ptr>()
-                                    : TemplateArguments<OTHER_TYPES...>::get_parameter(i_index - 1);
+                return make_template_arguments();
             }
-
-            constexpr static void const * get_argument(size_t i_index) noexcept
+        };
+        template <template <class...> class CLASS, typename... TYPES>
+        struct TemplateAutoDeducer<CLASS<TYPES...>>
+        {
+            struct Writer
             {
-                return i_index == 0 ? &argument_value
-                                    : TemplateArguments<OTHER_TYPES...>::get_argument(i_index - 1);
+                constexpr void operator ()(char_writer & i_writer)
+                {
+                    for(size_t index = 0; index < sizeof...(TYPES); index++)
+                    {
+                        i_writer << "a" << index;
+                        if(index + 1 < sizeof...(TYPES))
+                            i_writer << ", ";
+                    }
+                }
+            };
+
+            constexpr static size_t arguments_count = sizeof...(TYPES);
+            constexpr static auto get_template_arguments() noexcept
+            {
+                return make_template_arguments(constexpr_string<Writer>::string.data(), get_qualified_type<TYPES>()...);
             }
         };
 
@@ -164,12 +181,12 @@ namespace ediacaran
         struct TypeInstance<CLASS, std::enable_if_t<std::is_class_v<CLASS>, CLASS>>
         {
             constexpr static auto         static_class{reflect(static_cast<CLASS **>(nullptr))};
-            constexpr static const auto & instance = static_class.get_class();
+            constexpr static const auto & instance() noexcept { return static_class.get_class(); }
         };
 
         template <
           typename CLASS,
-          size_t SPECIALIZATION_NAME_LENGTH,
+          size_t NAME_LENGTH,
           typename TEMPLATE_PARAMETER_LIST,
           size_t PROPERTY_COUNT,
           size_t ACTION_COUNT,
@@ -205,7 +222,7 @@ namespace ediacaran
               const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
               std::index_sequence<INDEX...>)
             {
-                return array<const void * const, sizeof...(TEMPLATE_PARAMETERS)>{
+                return array<void const * const, sizeof...(TEMPLATE_PARAMETERS)>{
                   {&i_template_arguments.template get<INDEX>()...}};
             }
 
@@ -260,11 +277,12 @@ namespace ediacaran
 
         template <
           typename CLASS,
+          size_t CLASS_NAME_LENGTH,
           size_t PROPERTY_COUNT,
           size_t ACTION_COUNT,
           typename... BASE_CLASSES>
         struct StaticClass<
-          CLASS, 0,
+          CLASS, CLASS_NAME_LENGTH,
           template_arguments<>,
           PROPERTY_COUNT,
           ACTION_COUNT,
@@ -274,13 +292,14 @@ namespace ediacaran
             using bases = type_list<BASE_CLASSES...>;
 
             constexpr StaticClass(
-              const char * i_name,
+              const array<char, CLASS_NAME_LENGTH> &    i_name,
               template_arguments<>,
               array<property, PROPERTY_COUNT> const & i_properties,
               array<action, ACTION_COUNT> const &     i_actions)
-                : m_properties(i_properties), m_actions(i_actions),
+                : m_name(i_name),
+                  m_properties(i_properties), m_actions(i_actions),
                   m_class(
-                    i_name,
+                    m_name.data(),
                     sizeof(CLASS),
                     alignof(CLASS),
                     special_functions::make<CLASS>(),
@@ -294,6 +313,7 @@ namespace ediacaran
             constexpr const class_type & get_class() const noexcept { return m_class; }
 
           private:
+            array<char, CLASS_NAME_LENGTH>        m_name;
             array<property, PROPERTY_COUNT> const m_properties;
             array<action, ACTION_COUNT> const     m_actions;
             class_type const                      m_class;
@@ -303,18 +323,35 @@ namespace ediacaran
 
     template <
       typename CLASS,
+        size_t CLASS_NAME_SIZE,
       typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
     constexpr auto make_static_cast(
-      const char * i_name,
+        const char(&i_name)[CLASS_NAME_SIZE],
       type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
       array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
     {
-        return detail::
-          StaticClass<CLASS, 0, template_arguments<>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
-            i_name, make_template_arguments(), i_properties, i_actions);
+        if constexpr(detail::TemplateAutoDeducer<CLASS>::arguments_count == 0)
+        {
+            array<char, CLASS_NAME_SIZE> name{};
+            to_chars(name.data(), CLASS_NAME_SIZE, i_name);
+            return detail::
+              StaticClass<CLASS, CLASS_NAME_SIZE, template_arguments<>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
+                  name, make_template_arguments(), i_properties, i_actions);
+        }
+        else
+        {
+            constexpr auto auto_template_arguments = detail::TemplateAutoDeducer<CLASS>::get_template_arguments();
+            constexpr auto template_arguments_str_size = char_array_size(auto_template_arguments);
+            array<char, CLASS_NAME_SIZE + template_arguments_str_size> name{};
+            to_chars(name.data(), CLASS_NAME_SIZE + template_arguments_str_size, i_name, auto_template_arguments);
+            return detail::
+                StaticClass<CLASS, CLASS_NAME_SIZE + template_arguments_str_size, 
+                std::decay_t<decltype(auto_template_arguments)>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
+                    name, auto_template_arguments, i_properties, i_actions);
+        }
     }
 
     template <
@@ -344,17 +381,17 @@ namespace ediacaran
 
     template <typename TYPE> constexpr const auto & get_type() noexcept
     {
-        return detail::TypeInstance<TYPE, TYPE>::instance;
+        return detail::TypeInstance<TYPE, TYPE>::instance();
     }
 
     constexpr const type & get_ptr_type() noexcept
     {
-        return detail::TypeInstance<void *, void *>::instance;
+        return detail::TypeInstance<void *, void *>::instance();
     }
 
     template <typename TYPE> constexpr const class_type & get_class_type() noexcept
     {
-        return detail::TypeInstance<TYPE, TYPE>::instance;
+        return detail::TypeInstance<TYPE, TYPE>::instance();
     }
 
     /** Retrieves (by value) a qualified_type_ptr associated to the template argument.
@@ -376,7 +413,7 @@ namespace ediacaran
 
     constexpr auto reflect(string_view ** i_ptr)
     {
-        auto const class_name = "ediacaran::string_view";
+        char const class_name[] = "ediacaran::string_view";
         using bases           = type_list<>;
 
         using namespace ediacaran;
@@ -389,7 +426,7 @@ namespace ediacaran
 
     constexpr auto reflect(symbol ** i_ptr)
     {
-        auto const class_name = "ediacaran::symbol";
+        char const class_name[] = "ediacaran::symbol";
         using bases           = type_list<>;
 
         using namespace ediacaran;
@@ -402,7 +439,7 @@ namespace ediacaran
 
     constexpr auto reflect(type ** i_ptr)
     {
-        auto const class_name = "ediacaran::type";
+        char const class_name[] = "ediacaran::type";
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
@@ -426,7 +463,7 @@ namespace ediacaran
 
     constexpr auto reflect(qualified_type_ptr ** i_ptr)
     {
-        auto const class_name = "ediacaran::qualified_type_ptr";
+        char const class_name[] = "ediacaran::qualified_type_ptr";
         using bases           = type_list<>;
 
         using namespace ediacaran;

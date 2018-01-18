@@ -184,15 +184,4 @@ namespace ediacaran
         i_first.append(i_second.data(), i_second.size());
         return i_first;
     }
-
-    using hash_t = size_t;
-
-    constexpr hash_t string_hash(const string_view i_source) noexcept
-    {
-        /*	djb2 - http://www.cse.yorku.ca/~oz/hash.html Bernstein hash function */
-        hash_t hash = 5381;
-        for (auto c : i_source)
-            hash = hash * 33 + c;
-        return hash;
-    }
 }

@@ -22,7 +22,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_3_1 ** i_ptr)
     {
-        auto const class_name = "TestBase_3_1";
+        char const class_name[] = "TestBase_3_1";
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
@@ -46,7 +46,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_3_2 ** i_ptr)
     {
-        auto const class_name = "TestBase_3_2";
+        char const class_name[] = "TestBase_3_2";
         using bases           = ediacaran::type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -66,7 +66,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_2_1 ** i_ptr)
     {
-        auto const class_name = "TestBase_2_1";
+        char const class_name[] = "TestBase_2_1";
         using bases           = ediacaran::type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -82,7 +82,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_2_2 ** i_ptr)
     {
-        auto const class_name = "TestBase_2_2";
+        char const class_name[] = "TestBase_2_2";
         using bases           = ediacaran::type_list<TestBase_3_1>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -98,7 +98,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_2_3 ** i_ptr)
     {
-        auto const class_name = "TestBase_2_3";
+        char const class_name[] = "TestBase_2_3";
         using bases           = ediacaran::type_list<TestBase_3_2>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -115,7 +115,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_2_4 ** i_ptr)
     {
-        auto const class_name = "TestBase_2_4";
+        char const class_name[] = "TestBase_2_4";
         using bases           = ediacaran::type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -150,7 +150,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_2_Base ** i_ptr)
     {
-        auto const class_name = "TestBase_2_Base";
+        char const class_name[] = "TestBase_2_Base";
         using bases           = ediacaran::type_list<>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -172,7 +172,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_1_1 ** i_ptr)
     {
-        auto const class_name = "TestBase_1_1";
+        char const class_name[] = "TestBase_1_1";
         using bases           = ediacaran::type_list<TestBase_2_1, TestBase_2_2, TestBase_2_Base>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -189,7 +189,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_1_2 ** i_ptr)
     {
-        auto const class_name = "TestBase_1_2";
+        char const class_name[] = "TestBase_1_2";
         using bases           = ediacaran::type_list<TestBase_2_3, TestBase_2_4, TestBase_2_Base>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -232,7 +232,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestClass ** i_ptr)
     {
-        auto const class_name = "TestClass";
+        constexpr char class_name[] = "TestClass";
         using bases           = ediacaran::type_list<TestBase_1_1, TestBase_1_2>;
         using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -266,76 +266,8 @@ namespace ediacaran_test
         }
     }
 
-    template <typename A, typename B, typename C> struct Fir3
-    {
-    };
-
-    template <typename A, typename B> struct Fir2
-    {
-    };
-
-    template <typename B> struct Fir1
-    {
-    };
-
-    template <typename T_1> constexpr auto reflect(Fir1<T_1> ** i_ptr)
-    {
-        char const class_name[] = "Fir1";
-        using namespace ediacaran;
-        using bases           = type_list<>;
-        using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
-
-        constexpr auto template_arguments =
-          make_template_arguments("T_1", get_qualified_type<T_1>());
-
-        return make_static_cast<this_class, char_array_size(template_arguments)>(class_name, template_arguments);
-    }
-
-    template <typename T_1, typename T_2> constexpr auto reflect(Fir2<T_1, T_2> ** i_ptr)
-    {
-        using namespace ediacaran;
-        char const class_name[] = "Fir2";
-        using bases           = type_list<>;
-        using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
-
-        constexpr auto template_arguments = make_template_arguments(
-          "T_1, T_2", get_qualified_type<T_1>(), get_qualified_type<T_2>());
-
-        return make_static_cast<this_class, char_array_size(template_arguments)>(class_name, template_arguments);
-    }
-
-    template <typename T_1, typename T_2, typename T_3>
-    constexpr auto reflect(Fir3<T_1, T_2, T_3> ** i_ptr)
-    {
-        using namespace ediacaran;
-        char const class_name[] = "Fir3";
-        using bases           = type_list<>;
-        using this_class      = std::remove_reference_t<decltype(**i_ptr)>;
-
-        constexpr auto const template_arguments = make_template_arguments(
-          "T_1, T_2, T_3",
-          get_qualified_type<T_1>(),
-          get_qualified_type<T_2>(),
-          get_qualified_type<T_3>());
-
-        return make_static_cast<this_class, char_array_size(template_arguments)>(class_name, template_arguments);
-    }
-
     void class_tests()
     {
-        constexpr auto & temp_1 = ediacaran::get_type<Fir1<int>>();
-        constexpr auto & temp_2 = ediacaran::get_type<Fir2<int, double>>();
-        constexpr auto & temp_3 = ediacaran::get_type<Fir3<float, int, char>>();
-        static_assert(temp_1.template_arguments().size() == 1);
-        static_assert(temp_2.template_arguments().size() == 2);
-        static_assert(temp_3.template_arguments().size() == 3);
-        static_assert(temp_1.name() == "Fir1<int32>");
-        static_assert(temp_2.name() == "Fir2<int32, double>");
-        static_assert(temp_3.name() == "Fir3<float, int32, char>");
-
-        static_assert(ediacaran::detail::TemplateArguments<Fir1<int>>::size == 1);
-        static_assert(ediacaran::detail::TemplateArguments<Fir2<int, double>>::size == 2);
-        static_assert(ediacaran::detail::TemplateArguments<Fir3<int, double, char>>::size == 3);
         using namespace ediacaran;
         get_type<TestClass>();
         try
