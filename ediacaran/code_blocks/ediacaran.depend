@@ -6,7 +6,7 @@
 	<stdexcept>
 	<string>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/char_reader.h
+1516345754 /home/abc/proj/encelado/ediacaran/core/char_reader.h
 	"ediacaran/core/char_writer.h"
 	"ediacaran/core/ediacaran_common.h"
 	<algorithm>
@@ -15,9 +15,9 @@
 	<string_view>
 	<type_traits>
 
-1515920151 /home/abc/proj/encelado/ediacaran/core/char_writer.h
-	"ediacaran/core/ediacaran_common.h"
+1516342848 /home/abc/proj/encelado/ediacaran/core/char_writer.h
 	"ediacaran/core/array.h"
+	"ediacaran/core/ediacaran_common.h"
 	<algorithm>
 	<cstddef>
 	<string>
@@ -25,7 +25,12 @@
 	<type_traits>
 	<utility>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/ediacaran_common.h
+1516345732 /home/abc/proj/encelado/ediacaran/core/array.h
+	<ediacaran/core/ediacaran_common.h>
+	<iterator>
+	<stdexcept>
+
+1516342848 /home/abc/proj/encelado/ediacaran/core/ediacaran_common.h
 	<assert.h>
 	<cstdint>
 	<stdexcept>
@@ -33,15 +38,18 @@
 	<string_view>
 	<type_traits>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/array.h
-	<ediacaran/core/ediacaran_common.h>
-	<iterator>
-	<stdexcept>
-
 1515920097 source:/home/abc/proj/encelado/ediacaran/core/char_writer.cpp
 	"char_writer.h"
 	<cstdio>
 	<inttypes.h>
 	<limits>
 	<stdexcept>
+
+1516342848 source:/home/abc/proj/encelado/ediacaran/core/string_builder.cpp
+	<ediacaran/core/string_builder.h>
+
+1516342848 /home/abc/proj/encelado/ediacaran/core/string_builder.h
+	<ediacaran/core/char_writer.h>
+	<memory>
+	<vector>
 

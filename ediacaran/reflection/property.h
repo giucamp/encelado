@@ -3,6 +3,7 @@
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
+#include <cstddef>
 
 namespace ediacaran
 {
@@ -204,7 +205,7 @@ namespace ediacaran
           typename CLASS,
           typename GETTER_RETURN_TYPE,
           GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
-        struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, nullptr_t, GETTER, nullptr>
+        struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, std::nullptr_t, GETTER, nullptr>
         {
             using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;

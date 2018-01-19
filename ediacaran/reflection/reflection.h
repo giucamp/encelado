@@ -24,7 +24,7 @@
 #define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                        \
     ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<                 \
       ediacaran::remove_noexcept_t<decltype(&this_class::Getter)>,                                 \
-      nullptr_t,                                                                                   \
+      std::nullptr_t,                                                                                   \
       &this_class::Getter,                                                                         \
       nullptr>>(Name)
 
@@ -348,7 +348,7 @@ namespace ediacaran
             array<char, CLASS_NAME_SIZE + template_arguments_str_size> name{};
             to_chars(name.data(), CLASS_NAME_SIZE + template_arguments_str_size, i_name, auto_template_arguments);
             return detail::
-                StaticClass<CLASS, CLASS_NAME_SIZE + template_arguments_str_size, 
+                StaticClass<CLASS, CLASS_NAME_SIZE + template_arguments_str_size,
                 std::decay_t<decltype(auto_template_arguments)>, PROPERTY_COUNT, ACTION_COUNT, BASE_CLASSES...>(
                     name, auto_template_arguments, i_properties, i_actions);
         }

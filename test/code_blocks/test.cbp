@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="test" />
 		<Option pch_mode="2" />
-		<Option compiler="gcc" />
+		<Option compiler="clang" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -22,7 +22,7 @@
 				<Option output="bin/Release/test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -39,6 +39,7 @@
 		</Compiler>
 		<Unit filename="../cambrian.cpp" />
 		<Unit filename="../common.h" />
+		<Unit filename="../ediacaran/class_templates_tests.cpp" />
 		<Unit filename="../ediacaran/class_tests.cpp" />
 		<Unit filename="../ediacaran/qualified_type_ptr_tests.cpp" />
 		<Unit filename="../ediacaran/remove_noexcept_tests.cpp" />
@@ -49,6 +50,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

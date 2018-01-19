@@ -4,14 +4,14 @@
 	<Project>
 		<Option title="ediacaran" />
 		<Option pch_mode="2" />
-		<Option compiler="gcc" />
+		<Option compiler="clang" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/ediacaran" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
-				<Option compiler="gcc" />
+				<Option compiler="clang" />
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-Wall" />
@@ -23,11 +23,11 @@
 				<Option working_dir="" />
 				<Option object_output="obj/Release/" />
 				<Option type="2" />
-				<Option compiler="gcc" />
+				<Option compiler="clang" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-O2" />
+					<Add option="-Wall" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -44,10 +44,14 @@
 		<Unit filename="../core/char_reader.h" />
 		<Unit filename="../core/char_writer.cpp" />
 		<Unit filename="../core/char_writer.h" />
+		<Unit filename="../core/char_writer.h.save" />
 		<Unit filename="../core/constexpr_string.h" />
 		<Unit filename="../core/ediacaran_common.h" />
+		<Unit filename="../core/ediacaran_common.h.save" />
+		<Unit filename="../core/string_builder.cpp" />
 		<Unit filename="../core/string_builder.h" />
 		<Unit filename="../core/type_list.h" />
+		<Unit filename="../reflection/action.h" />
 		<Unit filename="../reflection/class_type.h" />
 		<Unit filename="../reflection/namespace.cpp" />
 		<Unit filename="../reflection/namespace.h" />
@@ -57,10 +61,14 @@
 		<Unit filename="../reflection/qualified_type_ptr.inl" />
 		<Unit filename="../reflection/special_functions.h" />
 		<Unit filename="../reflection/type.h" />
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="../utils/dyn_value.cpp" />
+		<Unit filename="../utils/dyn_value.h" />
+		<Unit filename="../utils/inspect.cpp" />
+		<Unit filename="../utils/inspect.h" />
+		<Unit filename="../utils/raw_ptr.cpp" />
+		<Unit filename="../utils/raw_ptr.h" />
 		<Extensions>
+			<envvars />
 			<code_completion />
 			<debugger />
 		</Extensions>

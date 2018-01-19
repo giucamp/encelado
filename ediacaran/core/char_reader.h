@@ -169,7 +169,7 @@ namespace ediacaran
     constexpr char_reader & operator>>(char_reader & i_source, TYPE & o_dest)
     {
         static_assert(has_try_parse_v<TYPE>);
-        char error[512];
+        char error[512]{};
         if (!try_parse(o_dest, i_source, error))
             except<parse_error>(error);
         return i_source;
@@ -180,7 +180,7 @@ namespace ediacaran
     constexpr char_reader & operator>>(char_reader & i_source, const TYPE & i_expected_value)
     {
         static_assert(has_try_accept_v<TYPE>);
-        char        error[512];
+        char        error[512]{};
         char_writer error_writer(error);
         if (!try_accept(i_expected_value, i_source, error_writer))
             except<parse_error>(error);
