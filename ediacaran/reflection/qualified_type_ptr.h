@@ -195,6 +195,9 @@ namespace ediacaran
         friend char_reader &
           operator>>(char_reader & i_source, qualified_type_ptr & o_dest_qualified_type);
 
+        friend constexpr char_writer &
+            operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
+
       private: // data members (currently a qualified_type_ptr is big as two pointers)
         const type * m_final_type;
         uintptr_t    m_indirection_levels
@@ -206,9 +209,9 @@ namespace ediacaran
     constexpr char_writer &
       operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept
     {
-        if (!i_source.is_empty())
+        if (i_source.m_final_type != nullptr)
         {
-            o_dest << i_source.final_type()->name();
+            o_dest << i_source.m_final_type->name();
 
             uintptr_t level = i_source.indirection_levels();
             for (;;)

@@ -443,7 +443,7 @@ namespace ediacaran
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
-        using bases      = type_list<symbol>;
+        using bases      = type_list<>;
 
         auto const properties = make_array(
           REFL_ACCESSOR_RO_PROP("size", size),

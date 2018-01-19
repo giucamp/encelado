@@ -119,7 +119,7 @@ namespace ediacaran_test
         constexpr auto & temp_2 = get_type<Fir2<int, double>>();
         constexpr auto & temp_3 = get_type<Fir3<float, 5, char>>();
         constexpr auto & temp_4 = get_type<Fir4<float, char, double, int64_t>>();
-        constexpr auto & temp_5 = get_type<Fir5<float const *const*, void**, char, double*volatile***, int*const*>>();
+        constexpr auto & temp_5 = get_type<Fir5<float const *const*, symbol, char, double*volatile***, int*const*>>();
         static_assert(temp_1.template_arguments().size() == 1);
         static_assert(temp_2.template_arguments().size() == 2);
         static_assert(temp_3.template_arguments().size() == 3);
@@ -129,7 +129,7 @@ namespace ediacaran_test
         static_assert(temp_2.name() == "Fir2<int32, double>");
         static_assert(temp_3.name() == "Fir3<float, 5, char>");
         static_assert(temp_4.name() == "Fir4<float, char, double, int64>");
-        static_assert(temp_5.name() == "Fir5<float const * const *, void * *, char, double * volatile * * *, int32 * const *>");
+        static_assert(temp_5.name() == "Fir5<float const * const *, ediacaran::symbol, char, double * volatile * * *, int32 * const *>");
         
         auto descr_1 = class_template_specialization_descr(temp_1);
         auto descr_2 = class_template_specialization_descr(temp_2);
@@ -148,7 +148,7 @@ namespace ediacaran_test
                                         "a2: ediacaran::qualified_type_ptr const = double, "
                                         "a3: ediacaran::qualified_type_ptr const = int64");
         ENCELADO_TEST_ASSERT(descr_5 == "a0: ediacaran::qualified_type_ptr const = float const * const *, "
-                                        "a1: ediacaran::qualified_type_ptr const = void * *, "
+                                        "a1: ediacaran::qualified_type_ptr const = ediacaran::symbol, "
                                         "a2: ediacaran::qualified_type_ptr const = char, "
                                         "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
                                         "a4: ediacaran::qualified_type_ptr const = int32 * const *");

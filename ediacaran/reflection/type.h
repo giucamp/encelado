@@ -32,7 +32,7 @@ namespace ediacaran
         is_enum
     };
 
-    class type : public symbol
+    class type
     {
       public:
         constexpr type(
@@ -41,9 +41,15 @@ namespace ediacaran
           size_t                               i_size,
           size_t                               i_alignment,
           const ediacaran::special_functions & i_special_functions) noexcept
-            : symbol(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
+            : m_name(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
               m_special_functions(i_special_functions)
         {
+        }
+
+        constexpr string_view name() const noexcept
+        {
+            // workaround for gcc considering the comparison of two char* non-constexpr
+            return string_view(m_name, string_view::traits_type::length(m_name));
         }
 
         constexpr size_t size() const noexcept { return m_size; }
@@ -215,6 +221,7 @@ namespace ediacaran
         }
 
       private:
+        const char * const                 m_name;
         size_t const                       m_size;
         size_t const                       m_alignment;
         type_kind const                    m_kind;
