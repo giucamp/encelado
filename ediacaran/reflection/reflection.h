@@ -229,6 +229,9 @@ namespace ediacaran
           public:
             using bases = type_list<BASE_CLASSES...>;
 
+            // type list of all the direct and indirect base classes
+            using all_bases = tl_remove_duplicates_t<tl_push_back_t<bases, typename BasesTypeList<BASE_CLASSES>::type... >>;
+
             constexpr StaticClass(
               const array<char, SPECIALIZATION_NAME_LENGTH> &    i_specialization_name,
               const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
@@ -249,8 +252,7 @@ namespace ediacaran
                     sizeof(CLASS),
                     alignof(CLASS),
                     special_functions::make<CLASS>(),
-                    BasesArray<CLASS, tl_remove_duplicates_t<typename BasesTypeList<CLASS>::type>>::
-                      s_bases,
+                    BasesArray<CLASS, all_bases>::s_bases,
                     m_properties,
                     m_actions,
                     m_template_parameters_array,
@@ -291,6 +293,9 @@ namespace ediacaran
           public:
             using bases = type_list<BASE_CLASSES...>;
 
+            // type list of all the direct and indirect base classes
+            using all_bases = tl_remove_duplicates_t<tl_push_back_t<bases, typename BasesTypeList<BASE_CLASSES>::type... >>;
+
             constexpr StaticClass(
               const array<char, CLASS_NAME_LENGTH> &    i_name,
               template_arguments<>,
@@ -303,8 +308,7 @@ namespace ediacaran
                     sizeof(CLASS),
                     alignof(CLASS),
                     special_functions::make<CLASS>(),
-                    BasesArray<CLASS, tl_remove_duplicates_t<typename BasesTypeList<CLASS>::type>>::
-                      s_bases,
+                    BasesArray<CLASS, all_bases>::s_bases,
                     m_properties,
                     m_actions)
             {
