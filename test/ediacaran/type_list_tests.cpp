@@ -26,6 +26,10 @@ namespace ediacaran_test
         static_assert(std::is_same_v<L2, type_list<int, float, double, int>>);
         static_assert(L2::size == 4);
 
+        using L3 = tl_push_back_t<L, type_list<char, int*, int**>, type_list<void, char***>, type_list<void**, char*****>>;
+        static_assert(std::is_same_v<L3, type_list<int, float, double, char, int*, int**, void, char***, void**, char*****>>);
+        static_assert(L3::size == 10);
+
         static_assert(tl_contains_v<int, int>);
         static_assert(tl_contains_v<int, float, int, double>);
         static_assert(!tl_contains_v<char, float, int, double>);

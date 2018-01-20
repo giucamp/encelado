@@ -26,7 +26,7 @@ namespace ediacaran
         : std::disjunction<std::is_same<TARGET_TYPE, LIST_TYPES>...>
     {
     };
-    template <typename... ARGS> constexpr bool tl_contains_v = tl_contains<ARGS...>::value;
+    template <typename... PARAMS> constexpr bool tl_contains_v = tl_contains<PARAMS...>::value;
 
     // tl_difference_impl<type_list<>, type_list<...>, type_list<...>> - types of the first list which are not present in the second list
     namespace detail
@@ -59,10 +59,10 @@ namespace ediacaran
             using type = type_list<RESULT_TYPES...>;
         };
     } // namespace detail
-    template <typename... ARGS>
-    using tl_difference = detail::tl_difference_impl<type_list<>, ARGS...>;
-    template <typename... ARGS>
-    using tl_difference_t = typename detail::tl_difference_impl<type_list<>, ARGS...>::type;
+    template <typename... PARAMS>
+    using tl_difference = detail::tl_difference_impl<type_list<>, PARAMS...>;
+    template <typename... PARAMS>
+    using tl_difference_t = typename detail::tl_difference_impl<type_list<>, PARAMS...>::type;
 
     // tl_push_back, tl_push_back_t
     template <typename...> struct tl_push_back;
@@ -83,7 +83,7 @@ namespace ediacaran
     {
         using type = typename tl_push_back<type_list<TYPES_1..., TYPES_2...>, TYPES_3...>::type;
     };
-    template <typename... ARGS> using tl_push_back_t = typename tl_push_back<ARGS...>::type;
+    template <typename... PARAMS> using tl_push_back_t = typename tl_push_back<PARAMS...>::type;
 
 
     // tl_remove_duplicates, tl_remove_duplicates_t
@@ -111,11 +111,18 @@ namespace ediacaran
 
     } // namespace detail
 
-    template <typename... ARGS>
+    template <typename... PARAMS>
     using tl_remove_duplicates_t =
-      typename detail::tl_remove_duplicates_impl<type_list<>, ARGS...>::type;
-    template <typename... ARGS>
-    struct tl_remove_duplicates : detail::tl_remove_duplicates_impl<type_list<>, ARGS...>
+      typename detail::tl_remove_duplicates_impl<type_list<>, PARAMS...>::type;
+    template <typename... PARAMS>
+    struct tl_remove_duplicates : detail::tl_remove_duplicates_impl<type_list<>, PARAMS...>
     {
     };
+
+    template <typename TYPE>
+        struct is_type_list : std::false_type {};
+    template <typename... TYPES>
+        struct is_type_list<type_list<TYPES...>> : std::true_type {};
+    template <typename TYPE>
+        constexpr bool is_type_list_v = is_type_list<TYPE>::value;
 }
