@@ -96,8 +96,17 @@ namespace ediacaran
         {
             using return_type = RETURN_TYPE;
 
+            #ifdef __clang__
+                /* silent warning: suggest braces around initialization of subobject,
+                    because double braces fail to compile with an array of zero size */
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wmissing-braces"
+            #endif
             constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
               parameter{get_qualified_type<PARAMETER_TYPE>()}...};
+            #ifdef __clang__
+                #pragma clang diagnostic pop
+            #endif
 
             static void func(
               void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
@@ -121,11 +130,20 @@ namespace ediacaran
         {
             using return_type = void;
 
+            #ifdef __clang__
+                /* silent warning: suggest braces around initialization of subobject,
+                    because double braces fail to compile with an array of zero size */
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wmissing-braces"
+            #endif
             constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
               parameter{get_qualified_type<PARAMETER_TYPE>()}...};
+            #ifdef __clang__
+                #pragma clang diagnostic pop
+            #endif
 
             static void func(
-              void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
+              void * i_dest_object, void * /*o_return_value_dest*/, const void * const * i_parameters)
             {
                 auto & object = *static_cast<OWNING_CLASS *>(i_dest_object);
                 (object.*METHOD)(*static_cast<const PARAMETER_TYPE *>(i_parameters[INDEX])...);

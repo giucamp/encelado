@@ -179,7 +179,7 @@ namespace ediacaran
               property::operation i_operation,
               void *              i_object,
               void *              i_value,
-              char_writer &       o_error)
+              char_writer &       /*o_error*/)
             {
                 EDIACARAN_ASSERT(i_object != nullptr);
                 EDIACARAN_ASSERT(i_value != nullptr);

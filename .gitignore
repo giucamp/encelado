@@ -14,3 +14,4 @@ ediacaran/vs2017/Release/
 test/vs2017/Release/
 test/code_blocks/bin/
 test/code_blocks/obj/
+*.save
