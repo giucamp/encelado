@@ -37,64 +37,8 @@ namespace ediacaran_test
 
     class StringConversionTests
     {
-    public:
-
-        StringConversionTests()
-            : m_tests_makers{
-                make_maker<TypedTest<short>>(),
-                make_maker<TypedTest<int>>(),
-                make_maker<TypedTest<long>>(),
-                make_maker<TypedTest<long long>>(),
-                make_maker<TypedTest<short>>(),
-                make_maker<TypedTest<unsigned int>>(),
-                make_maker<TypedTest<unsigned long>>(),
-                make_maker<TypedTest<unsigned long long>>(),
-                make_maker<TypedTest<float>>(),
-                make_maker<TypedTest<double>>(),
-                make_maker<TypedTest<long double>>(),
-                make_maker<CharTest>(),
-                make_maker<StringTest>() }
-        {
-        }
-
-        void run()
-        {
-            using namespace ediacaran;
-            
-            size_t const buffer_size = 1024 * 1024;
-            auto const   buff = std::make_unique<char[]>(buffer_size);
-            memset(buff.get(), 7, buffer_size);
-            ediacaran::char_writer out(buff.get(), buffer_size);
-
-            auto const      seed = std::random_device{}();
-            std::mt19937_64 rand{ seed };
-            
-            ENCELADO_TEST_ASSERT(m_tests_makers.size() > 0);
-            while (out.remaining_size() > 0)
-            {
-                auto const index = uniform_rand<size_t>(rand, 0, m_tests_makers.size() - 1);
-                auto test = m_tests_makers[index](rand);
-
-                test->to_chars(out);
-                out << ' ';
-
-                m_tests.push_back(std::move(test));
-            }
-            m_tests.pop_back();
-
-            char_reader in(string_view(buff.get(), buffer_size));
-            for (const auto & test : m_tests)
-            {
-                test->parse(in);
-                in >> spaces;
-            }
-            m_tests.clear();
-        }
-
     private:
 
-        using ToChars = void (*)(ediacaran::char_writer & o_dest);
-        
         template <typename TEST>
             static auto make_maker()
         {
@@ -116,7 +60,7 @@ namespace ediacaran_test
             TypedTest(std::mt19937_64 & io_rand)
                 : m_value{uniform_rand<TYPE>(io_rand)}
             {
-                
+
             }
 
             void to_chars(ediacaran::char_writer & o_dest) const override
@@ -154,7 +98,7 @@ namespace ediacaran_test
         {
         public:
             CharTest(std::mt19937_64 & io_rand)
-                : m_value{ 'A' + static_cast<char>(uniform_rand<int>(io_rand, 0, 21)) }
+                : m_value{ static_cast<char>('A' + uniform_rand<int>(io_rand, 0, 21)) }
                 { }
 
             void to_chars(ediacaran::char_writer & o_dest) const override
@@ -197,6 +141,60 @@ namespace ediacaran_test
 
         std::vector<std::unique_ptr<Test>> m_tests;
         std::vector<TestMaker> const m_tests_makers;
+
+    public:
+
+        StringConversionTests()
+            : m_tests_makers{
+                make_maker<TypedTest<short>>(),
+                make_maker<TypedTest<int>>(),
+                make_maker<TypedTest<long>>(),
+                make_maker<TypedTest<long long>>(),
+                make_maker<TypedTest<short>>(),
+                make_maker<TypedTest<unsigned int>>(),
+                make_maker<TypedTest<unsigned long>>(),
+                make_maker<TypedTest<unsigned long long>>(),
+                make_maker<TypedTest<float>>(),
+                make_maker<TypedTest<double>>(),
+                make_maker<TypedTest<long double>>(),
+                make_maker<CharTest>(),
+                make_maker<StringTest>() }
+        {
+        }
+
+        void run()
+        {
+            using namespace ediacaran;
+
+            size_t const buffer_size = 1024 * 1024;
+            auto const   buff = std::make_unique<char[]>(buffer_size);
+            memset(buff.get(), 7, buffer_size);
+            ediacaran::char_writer out(buff.get(), buffer_size);
+
+            auto const      seed = std::random_device{}();
+            std::mt19937_64 rand{ seed };
+
+            ENCELADO_TEST_ASSERT(m_tests_makers.size() > 0);
+            while (out.remaining_size() > 0)
+            {
+                auto const index = uniform_rand<size_t>(rand, 0, m_tests_makers.size() - 1);
+                auto test = m_tests_makers[index](rand);
+
+                test->to_chars(out);
+                out << ' ';
+
+                m_tests.push_back(std::move(test));
+            }
+            m_tests.pop_back();
+
+            char_reader in(string_view(buff.get(), buffer_size));
+            for (const auto & test : m_tests)
+            {
+                test->parse(in);
+                in >> spaces;
+            }
+            m_tests.clear();
+        }
     };
 
     void string_conversion_tests()
@@ -317,8 +315,7 @@ namespace ediacaran_test
 
         char fix_str_1[1];
         auto r = to_chars(fix_str_1, 1, " ", 2);
-
-        auto h = r;
+        ENCELADO_TEST_ASSERT(r == 4);
     }
 
     template <typename IT_1, typename IT2> constexpr size_t het_it_dist(IT_1 i_begin, IT2 i_end)
