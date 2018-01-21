@@ -10,7 +10,7 @@
 
 namespace ediacaran
 {
-    class action : public symbol
+    class action
     {
       public:
         using invoke_function = void (*)(
@@ -22,7 +22,7 @@ namespace ediacaran
           array_view<const parameter> const & i_parameters,
           const char *                        i_parameter_names,
           invoke_function                     i_invoke_function)
-            : symbol(i_name), m_invoke_function(i_invoke_function),
+            : m_name(i_name), m_invoke_function(i_invoke_function),
               m_return_qualified_type(i_return_qualified_type), m_parameters(i_parameters),
               m_parameter_names(i_parameter_names)
         {
@@ -40,6 +40,12 @@ namespace ediacaran
                   parameter_names_count,
                   " parameter names provided");
             }
+        }
+
+        constexpr string_view name() const noexcept
+        {
+            // workaround for gcc considering the comparison of two char* non-constexpr
+            return string_view(m_name, string_view::traits_type::length(m_name));
         }
 
         constexpr qualified_type_ptr const & qualified_return_type() const noexcept
@@ -64,6 +70,7 @@ namespace ediacaran
         }
 
       private:
+        const char * const                m_name;
         invoke_function const             m_invoke_function;
         qualified_type_ptr const          m_return_qualified_type;
         array_view<const parameter> const m_parameters;
@@ -96,17 +103,17 @@ namespace ediacaran
         {
             using return_type = RETURN_TYPE;
 
-            #ifdef __clang__
-                /* silent warning: suggest braces around initialization of subobject,
+#ifdef __clang__
+/* silent warning: suggest braces around initialization of subobject,
                     because double braces fail to compile with an array of zero size */
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Wmissing-braces"
-            #endif
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-braces"
+#endif
             constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
               parameter{get_qualified_type<PARAMETER_TYPE>()}...};
-            #ifdef __clang__
-                #pragma clang diagnostic pop
-            #endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
             static void func(
               void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
@@ -130,20 +137,22 @@ namespace ediacaran
         {
             using return_type = void;
 
-            #ifdef __clang__
-                /* silent warning: suggest braces around initialization of subobject,
+#ifdef __clang__
+/* silent warning: suggest braces around initialization of subobject,
                     because double braces fail to compile with an array of zero size */
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Wmissing-braces"
-            #endif
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-braces"
+#endif
             constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
               parameter{get_qualified_type<PARAMETER_TYPE>()}...};
-            #ifdef __clang__
-                #pragma clang diagnostic pop
-            #endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
             static void func(
-              void * i_dest_object, void * /*o_return_value_dest*/, const void * const * i_parameters)
+              void * i_dest_object,
+              void * /*o_return_value_dest*/,
+              const void * const * i_parameters)
             {
                 auto & object = *static_cast<OWNING_CLASS *>(i_dest_object);
                 (object.*METHOD)(*static_cast<const PARAMETER_TYPE *>(i_parameters[INDEX])...);

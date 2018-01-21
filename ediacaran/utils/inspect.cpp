@@ -44,9 +44,9 @@ namespace ediacaran
         {
             auto const complete_class =
               static_cast<const class_type *>(m_target.qualified_type().final_type());
-            if (m_base_index < complete_class->base_classes().size())
+            if (m_base_index < complete_class->bases().size())
             {
-                auto const & base = complete_class->base_classes()[m_base_index];
+                auto const & base = complete_class->bases()[m_base_index];
                 m_class           = &base.get_class();
                 m_subobject       = const_cast<void *>(base.up_cast(m_target.object()));
                 if (!m_class->properties().empty())
@@ -291,9 +291,9 @@ namespace ediacaran
         {
             auto const complete_class =
               static_cast<const class_type *>(m_target.qualified_type().final_type());
-            if (m_base_index < complete_class->base_classes().size())
+            if (m_base_index < complete_class->bases().size())
             {
-                auto const & base = complete_class->base_classes()[m_base_index];
+                auto const & base = complete_class->bases()[m_base_index];
                 m_class           = &base.get_class();
                 m_subobject       = const_cast<void *>(base.up_cast(m_target.object()));
                 if (!m_class->actions().empty())

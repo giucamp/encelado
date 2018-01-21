@@ -62,7 +62,7 @@ namespace ediacaran
             check_duplicates();
         }
 
-        constexpr array_view<const base_class> const & base_classes() const noexcept
+        constexpr array_view<const base_class> const & bases() const noexcept
         {
             return m_base_classes;
         }

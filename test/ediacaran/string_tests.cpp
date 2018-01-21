@@ -18,55 +18,49 @@
 namespace ediacaran_test
 {
     template <typename TYPE, typename PRG, std::enable_if_t<std::is_integral_v<TYPE>> * = nullptr>
-        inline TYPE uniform_rand(PRG & i_generator, const TYPE & i_min, const TYPE & i_max)
+    inline TYPE uniform_rand(PRG & i_generator, const TYPE & i_min, const TYPE & i_max)
     {
         return std::uniform_int_distribution<TYPE>(i_min, i_max)(i_generator);
     }
 
-    template <typename TYPE, typename PRG, std::enable_if_t<std::is_floating_point_v<TYPE>> * = nullptr>
-        inline TYPE uniform_rand(PRG & i_generator, const TYPE & i_min, const TYPE & i_max)
+    template <
+      typename TYPE,
+      typename PRG,
+      std::enable_if_t<std::is_floating_point_v<TYPE>> * = nullptr>
+    inline TYPE uniform_rand(PRG & i_generator, const TYPE & i_min, const TYPE & i_max)
     {
         return std::uniform_real_distribution<TYPE>(i_min, i_max)(i_generator);
     }
 
-    template <typename TYPE, typename PRG>
-        inline TYPE uniform_rand(PRG & i_generator)
+    template <typename TYPE, typename PRG> inline TYPE uniform_rand(PRG & i_generator)
     {
         return uniform_rand(i_generator, TYPE{}, std::numeric_limits<TYPE>::max());
     }
 
     class StringConversionTests
     {
-    private:
-
-        template <typename TEST>
-            static auto make_maker()
+      private:
+        template <typename TEST> static auto make_maker()
         {
-            return [](std::mt19937_64 & i_rand) -> std::unique_ptr<Test> { return std::make_unique<TEST>(i_rand); };
+            return [](std::mt19937_64 & i_rand) -> std::unique_ptr<Test> {
+                return std::make_unique<TEST>(i_rand);
+            };
         }
 
         class Test
         {
-        public:
+          public:
             virtual void to_chars(ediacaran::char_writer & o_dest) const = 0;
-            virtual void parse(ediacaran::char_reader & i_source) const = 0;
-            virtual ~Test() = default;
+            virtual void parse(ediacaran::char_reader & i_source) const  = 0;
+            virtual ~Test()                                              = default;
         };
 
-        template <typename TYPE>
-            class TypedTest : public Test
+        template <typename TYPE> class TypedTest : public Test
         {
-        public:
-            TypedTest(std::mt19937_64 & io_rand)
-                : m_value{uniform_rand<TYPE>(io_rand)}
-            {
+          public:
+            TypedTest(std::mt19937_64 & io_rand) : m_value{uniform_rand<TYPE>(io_rand)} {}
 
-            }
-
-            void to_chars(ediacaran::char_writer & o_dest) const override
-            {
-                o_dest << m_value;
-            }
+            void to_chars(ediacaran::char_writer & o_dest) const override { o_dest << m_value; }
 
             void parse(ediacaran::char_reader & i_source) const override
             {
@@ -90,75 +84,64 @@ namespace ediacaran_test
                 try_accept(val, random_stream);*/
             }
 
-        private:
+          private:
             TYPE const m_value;
         };
 
         class CharTest : public Test
         {
-        public:
+          public:
             CharTest(std::mt19937_64 & io_rand)
-                : m_value{ static_cast<char>('A' + uniform_rand<int>(io_rand, 0, 21)) }
-                { }
-
-            void to_chars(ediacaran::char_writer & o_dest) const override
+                : m_value{static_cast<char>('A' + uniform_rand<int>(io_rand, 0, 21))}
             {
-                o_dest << m_value;
             }
 
-            void parse(ediacaran::char_reader & i_source) const override
-            {
-                i_source >> m_value;
-            }
+            void to_chars(ediacaran::char_writer & o_dest) const override { o_dest << m_value; }
 
-        private:
+            void parse(ediacaran::char_reader & i_source) const override { i_source >> m_value; }
+
+          private:
             char const m_value;
         };
 
         class StringTest : public Test
         {
-        public:
+          public:
             StringTest(std::mt19937_64 & io_rand)
-                : m_value( uniform_rand<size_t>(io_rand, 1, 32),
-                  'A' + static_cast<char>(uniform_rand<int>(io_rand, 0, 21)) )
-            { }
-
-            void to_chars(ediacaran::char_writer & o_dest) const override
+                : m_value(
+                    uniform_rand<size_t>(io_rand, 1, 32),
+                    'A' + static_cast<char>(uniform_rand<int>(io_rand, 0, 21)))
             {
-                o_dest << m_value;
             }
 
-            void parse(ediacaran::char_reader & i_source) const override
-            {
-                i_source >> m_value;
-            }
+            void to_chars(ediacaran::char_writer & o_dest) const override { o_dest << m_value; }
 
-        private:
+            void parse(ediacaran::char_reader & i_source) const override { i_source >> m_value; }
+
+          private:
             std::string const m_value;
         };
 
         using TestMaker = std::unique_ptr<Test> (*)(std::mt19937_64 & i_random);
 
         std::vector<std::unique_ptr<Test>> m_tests;
-        std::vector<TestMaker> const m_tests_makers;
+        std::vector<TestMaker> const       m_tests_makers;
 
-    public:
-
+      public:
         StringConversionTests()
-            : m_tests_makers{
-                make_maker<TypedTest<short>>(),
-                make_maker<TypedTest<int>>(),
-                make_maker<TypedTest<long>>(),
-                make_maker<TypedTest<long long>>(),
-                make_maker<TypedTest<short>>(),
-                make_maker<TypedTest<unsigned int>>(),
-                make_maker<TypedTest<unsigned long>>(),
-                make_maker<TypedTest<unsigned long long>>(),
-                make_maker<TypedTest<float>>(),
-                make_maker<TypedTest<double>>(),
-                make_maker<TypedTest<long double>>(),
-                make_maker<CharTest>(),
-                make_maker<StringTest>() }
+            : m_tests_makers{make_maker<TypedTest<short>>(),
+                             make_maker<TypedTest<int>>(),
+                             make_maker<TypedTest<long>>(),
+                             make_maker<TypedTest<long long>>(),
+                             make_maker<TypedTest<short>>(),
+                             make_maker<TypedTest<unsigned int>>(),
+                             make_maker<TypedTest<unsigned long>>(),
+                             make_maker<TypedTest<unsigned long long>>(),
+                             make_maker<TypedTest<float>>(),
+                             make_maker<TypedTest<double>>(),
+                             make_maker<TypedTest<long double>>(),
+                             make_maker<CharTest>(),
+                             make_maker<StringTest>()}
         {
         }
 
@@ -167,18 +150,18 @@ namespace ediacaran_test
             using namespace ediacaran;
 
             size_t const buffer_size = 1024 * 1024;
-            auto const   buff = std::make_unique<char[]>(buffer_size);
+            auto const   buff        = std::make_unique<char[]>(buffer_size);
             memset(buff.get(), 7, buffer_size);
             ediacaran::char_writer out(buff.get(), buffer_size);
 
             auto const      seed = std::random_device{}();
-            std::mt19937_64 rand{ seed };
+            std::mt19937_64 rand{seed};
 
             ENCELADO_TEST_ASSERT(m_tests_makers.size() > 0);
             while (out.remaining_size() > 0)
             {
                 auto const index = uniform_rand<size_t>(rand, 0, m_tests_makers.size() - 1);
-                auto test = m_tests_makers[index](rand);
+                auto       test  = m_tests_makers[index](rand);
 
                 test->to_chars(out);
                 out << ' ';

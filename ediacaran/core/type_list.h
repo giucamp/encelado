@@ -119,10 +119,11 @@ namespace ediacaran
     {
     };
 
-    template <typename TYPE>
-        struct is_type_list : std::false_type {};
-    template <typename... TYPES>
-        struct is_type_list<type_list<TYPES...>> : std::true_type {};
-    template <typename TYPE>
-        constexpr bool is_type_list_v = is_type_list<TYPE>::value;
+    template <typename TYPE> struct is_type_list : std::false_type
+    {
+    };
+    template <typename... TYPES> struct is_type_list<type_list<TYPES...>> : std::true_type
+    {
+    };
+    template <typename TYPE> constexpr bool is_type_list_v = is_type_list<TYPE>::value;
 }

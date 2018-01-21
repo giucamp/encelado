@@ -85,9 +85,15 @@ namespace ediacaran
         using reverse_iterator       = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-        [[noreturn]] constexpr reference at(size_type) { throw std::out_of_range{"array: out of range"}; }
+        [[noreturn]] constexpr reference at(size_type)
+        {
+            throw std::out_of_range{"array: out of range"};
+        }
 
-        [[noreturn]] constexpr const_reference at(size_type) const { throw std::out_of_range{"array: out of range"}; }
+        [[noreturn]] constexpr const_reference at(size_type) const
+        {
+            throw std::out_of_range{"array: out of range"};
+        }
 
         [[noreturn]] constexpr reference operator[](size_type) noexcept { EDIACARAN_ASSERT(false); }
 

@@ -33,7 +33,7 @@ namespace ediacaran
         {
         }
 
-        constexpr comma_separated_names const & get_template_parameter_names() const noexcept
+        constexpr comma_separated_names const & template_parameter_names() const noexcept
         {
             return m_template_parameter_names;
         }

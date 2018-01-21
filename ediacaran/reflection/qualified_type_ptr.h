@@ -196,7 +196,7 @@ namespace ediacaran
           operator>>(char_reader & i_source, qualified_type_ptr & o_dest_qualified_type);
 
         friend constexpr char_writer &
-            operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
+          operator<<(char_writer & o_dest, const qualified_type_ptr & i_source) noexcept;
 
       private: // data members (currently a qualified_type_ptr is big as two pointers)
         const type * m_final_type;

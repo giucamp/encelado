@@ -7,16 +7,23 @@
 
 namespace ediacaran
 {
-    class namespace_ : public symbol
+    class namespace_
     {
       public:
-        using symbol::symbol;
+        namespace_(const char * i_name) : m_name(i_name) {}
+
+        constexpr string_view name() const noexcept
+        {
+            // workaround for gcc considering the comparison of two char* non-constexpr
+            return string_view(m_name, string_view::traits_type::length(m_name));
+        }
 
         namespace_(const namespace_ &) = delete;
         namespace_ & operator=(const namespace_ &) = delete;
 
 
       private:
+        const char * const              m_name;
         std::vector<const type *>       m_types;
         std::vector<const namespace_ *> m_namespaces;
         friend class global_namespace_;

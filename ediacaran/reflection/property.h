@@ -27,7 +27,7 @@ namespace ediacaran
           static_cast<std::underlying_type_t<property_flags>>(i_second));
     }
 
-    class property : public symbol
+    class property
     {
       public:
         enum class operation
@@ -52,7 +52,7 @@ namespace ediacaran
           const char *               i_name,
           const qualified_type_ptr & i_qualified_type,
           accessor                   i_accessor)
-            : symbol(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type),
+            : m_name(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type),
               m_accessor(i_accessor)
         {
         }
@@ -62,9 +62,15 @@ namespace ediacaran
           const char *               i_name,
           const qualified_type_ptr & i_qualified_type,
           size_t                     i_offset) noexcept
-            : symbol(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type),
+            : m_name(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type),
               m_offset(i_offset)
         {
+        }
+
+        constexpr string_view name() const noexcept
+        {
+            // workaround for gcc considering the comparison of two char* non-constexpr
+            return string_view(m_name, string_view::traits_type::length(m_name));
         }
 
         constexpr qualified_type_ptr const & qualified_type() const noexcept
@@ -140,6 +146,7 @@ namespace ediacaran
         }
 
       private:
+        const char * const       m_name;
         property_flags const     m_flags;
         qualified_type_ptr const m_qualified_type;
         union {
@@ -179,7 +186,7 @@ namespace ediacaran
               property::operation i_operation,
               void *              i_object,
               void *              i_value,
-              char_writer &       /*o_error*/)
+              char_writer & /*o_error*/)
             {
                 EDIACARAN_ASSERT(i_object != nullptr);
                 EDIACARAN_ASSERT(i_value != nullptr);
@@ -205,7 +212,11 @@ namespace ediacaran
           typename CLASS,
           typename GETTER_RETURN_TYPE,
           GETTER_RETURN_TYPE (CLASS::*GETTER)() const>
-        struct PropertyAccessor<GETTER_RETURN_TYPE (CLASS::*)() const, std::nullptr_t, GETTER, nullptr>
+        struct PropertyAccessor<
+          GETTER_RETURN_TYPE (CLASS::*)() const,
+          std::nullptr_t,
+          GETTER,
+          nullptr>
         {
             using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
