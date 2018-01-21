@@ -2,7 +2,7 @@
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
 
 
-#include "ediacaran/reflection/qualified_type_ptr.h"
+#include <ediacaran/reflection/reflection.h>
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/reflection/namespace.h"

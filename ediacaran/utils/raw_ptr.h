@@ -1,8 +1,7 @@
 #pragma once
 #include <ediacaran/core/char_writer.h>
 #include <ediacaran/core/string_builder.h>
-#include <ediacaran/reflection/qualified_type_ptr.h>
-#include <ediacaran/reflection/type.h>
+#include <ediacaran/reflection/reflection.h>
 #include <string>
 #include <utility>
 
