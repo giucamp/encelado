@@ -73,5 +73,9 @@ namespace ediacaran_test
 
         using D5 = tl_difference<L1, L1>::type;
         static_assert(std::is_same_v<D5, type_list<>>);
+
+        // is_type_list_v
+        static_assert(is_type_list_v<D4> &&is_type_list_v<D3>);
+        static_assert(!is_type_list_v<int> && !is_type_list_v<D3*>);
     }
 }

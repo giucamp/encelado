@@ -269,7 +269,6 @@ namespace ediacaran_test
     void class_tests()
     {
         using namespace ediacaran;
-        get_type<TestClass>();
         try
         {
             property props[2] = {

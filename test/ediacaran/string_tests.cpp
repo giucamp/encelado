@@ -13,201 +13,196 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
-#include <variant>
 #include <vector>
 
 namespace ediacaran_test
 {
+    template <typename TYPE, typename PRG, std::enable_if_t<std::is_integral_v<TYPE>> * = nullptr>
+        inline TYPE uniform_rand(PRG & i_generator, const TYPE & i_min, const TYPE & i_max)
+    {
+        return std::uniform_int_distribution<TYPE>(i_min, i_max)(i_generator);
+    }
+
+    template <typename TYPE, typename PRG, std::enable_if_t<std::is_floating_point_v<TYPE>> * = nullptr>
+        inline TYPE uniform_rand(PRG & i_generator, const TYPE & i_min, const TYPE & i_max)
+    {
+        return std::uniform_real_distribution<TYPE>(i_min, i_max)(i_generator);
+    }
+
+    template <typename TYPE, typename PRG>
+        inline TYPE uniform_rand(PRG & i_generator)
+    {
+        return uniform_rand(i_generator, TYPE{}, std::numeric_limits<TYPE>::max());
+    }
+
+    class StringConversionTests
+    {
+    public:
+
+        StringConversionTests()
+            : m_tests_makers{
+                make_maker<TypedTest<short>>(),
+                make_maker<TypedTest<int>>(),
+                make_maker<TypedTest<long>>(),
+                make_maker<TypedTest<long long>>(),
+                make_maker<TypedTest<short>>(),
+                make_maker<TypedTest<unsigned int>>(),
+                make_maker<TypedTest<unsigned long>>(),
+                make_maker<TypedTest<unsigned long long>>(),
+                make_maker<TypedTest<float>>(),
+                make_maker<TypedTest<double>>(),
+                make_maker<TypedTest<long double>>(),
+                make_maker<CharTest>(),
+                make_maker<StringTest>() }
+        {
+        }
+
+        void run()
+        {
+            using namespace ediacaran;
+            
+            size_t const buffer_size = 1024 * 1024;
+            auto const   buff = std::make_unique<char[]>(buffer_size);
+            memset(buff.get(), 7, buffer_size);
+            ediacaran::char_writer out(buff.get(), buffer_size);
+
+            auto const      seed = std::random_device{}();
+            std::mt19937_64 rand{ seed };
+            
+            ENCELADO_TEST_ASSERT(m_tests_makers.size() > 0);
+            while (out.remaining_size() > 0)
+            {
+                auto const index = uniform_rand<size_t>(rand, 0, m_tests_makers.size() - 1);
+                auto test = m_tests_makers[index](rand);
+
+                test->to_chars(out);
+                out << ' ';
+
+                m_tests.push_back(std::move(test));
+            }
+            m_tests.pop_back();
+
+            char_reader in(string_view(buff.get(), buffer_size));
+            for (const auto & test : m_tests)
+            {
+                test->parse(in);
+                in >> spaces;
+            }
+            m_tests.clear();
+        }
+
+    private:
+
+        using ToChars = void (*)(ediacaran::char_writer & o_dest);
+        
+        template <typename TEST>
+            static auto make_maker()
+        {
+            return [](std::mt19937_64 & i_rand) -> std::unique_ptr<Test> { return std::make_unique<TEST>(i_rand); };
+        }
+
+        class Test
+        {
+        public:
+            virtual void to_chars(ediacaran::char_writer & o_dest) const = 0;
+            virtual void parse(ediacaran::char_reader & i_source) const = 0;
+            virtual ~Test() = default;
+        };
+
+        template <typename TYPE>
+            class TypedTest : public Test
+        {
+        public:
+            TypedTest(std::mt19937_64 & io_rand)
+                : m_value{uniform_rand<TYPE>(io_rand)}
+            {
+                
+            }
+
+            void to_chars(ediacaran::char_writer & o_dest) const override
+            {
+                o_dest << m_value;
+            }
+
+            void parse(ediacaran::char_reader & i_source) const override
+            {
+                i_source >> m_value;
+
+                // generate a random string
+                /*char random_input[256];
+                std::generate(std::begin(random_input), std::end(random_input), [&rand] {
+                    return static_cast<char>(rand());
+                });
+                random_input[255] = 0;
+
+                // try to parse the random string
+                char_reader random_stream(random_input);
+                value_type  val;
+                try_parse(val, random_stream);
+
+                // try to accept the random string
+                random_stream = char_reader(random_input);
+                val = value_type{};
+                try_accept(val, random_stream);*/
+            }
+
+        private:
+            TYPE const m_value;
+        };
+
+        class CharTest : public Test
+        {
+        public:
+            CharTest(std::mt19937_64 & io_rand)
+                : m_value{ 'A' + static_cast<char>(uniform_rand<int>(io_rand, 0, 21)) }
+                { }
+
+            void to_chars(ediacaran::char_writer & o_dest) const override
+            {
+                o_dest << m_value;
+            }
+
+            void parse(ediacaran::char_reader & i_source) const override
+            {
+                i_source >> m_value;
+            }
+
+        private:
+            char const m_value;
+        };
+
+        class StringTest : public Test
+        {
+        public:
+            StringTest(std::mt19937_64 & io_rand)
+                : m_value( uniform_rand<size_t>(io_rand, 1, 32),
+                  'A' + static_cast<char>(uniform_rand<int>(io_rand, 0, 21)) )
+            { }
+
+            void to_chars(ediacaran::char_writer & o_dest) const override
+            {
+                o_dest << m_value;
+            }
+
+            void parse(ediacaran::char_reader & i_source) const override
+            {
+                i_source >> m_value;
+            }
+
+        private:
+            std::string const m_value;
+        };
+
+        using TestMaker = std::unique_ptr<Test> (*)(std::mt19937_64 & i_random);
+
+        std::vector<std::unique_ptr<Test>> m_tests;
+        std::vector<TestMaker> const m_tests_makers;
+    };
+
     void string_conversion_tests()
     {
-        using namespace ediacaran;
-
-        size_t const buffer_size = 1024 * 1024;
-        auto const   buff        = std::make_unique<char[]>(buffer_size);
-        memset(buff.get(), 7, buffer_size);
-        char_writer out(buff.get(), buffer_size);
-
-        using var = std::variant<
-          bool,
-          int8_t,
-          int16_t,
-          int32_t,
-          int64_t,
-          uint8_t,
-          uint16_t,
-          uint32_t,
-          uint64_t,
-          float,
-          double,
-          long double,
-          char,
-          std::basic_string<char>>;
-
-
-        auto const      seed = std::random_device{}();
-        std::mt19937_64 mt{seed};
-        auto rand = [&mt] { return std::uniform_int_distribution<unsigned long long>()(mt); };
-
-        std::vector<var>          objects;
-        std::vector<const char *> delimiters;
-        for (;;)
-        {
-            auto const next_char = out.next_dest();
-            auto const op        = rand() % 14;
-            switch (op)
-            {
-            case 0:
-            {
-                auto const value = static_cast<int8_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 1:
-            {
-                auto const value = static_cast<int16_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 2:
-            {
-                auto const value = static_cast<int32_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 3:
-            {
-                auto const value = static_cast<int64_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 4:
-            {
-                auto const value = static_cast<uint8_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 5:
-            {
-                auto const value = static_cast<uint16_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 6:
-            {
-                auto const value = static_cast<uint32_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 7:
-            {
-                auto const value = static_cast<uint64_t>(rand());
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 8:
-            {
-                auto const value = static_cast<float>(rand() & 0xFFFF) / 1.012345678f;
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 9:
-            {
-                auto const value = static_cast<double>(rand() & 0xFFFF) / 1.012345678f;
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 10:
-            {
-                auto const value = static_cast<long double>(rand() & 0xFFFF) / 1.012345678L;
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 11:
-            {
-                auto const value = static_cast<char>('a' + rand() % 16);
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 12:
-            {
-                auto const        c = static_cast<char>('a' + rand() % 16);
-                std::string const value(static_cast<size_t>(1 + rand() % 32), c);
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            case 13:
-            {
-                auto const value = (rand() & 1) == 0;
-                objects.push_back(value);
-                out << value << ' ';
-                break;
-            }
-            default:
-                ENCELADO_TEST_ASSERT(false);
-                break;
-            }
-            if (out.remaining_size() <= 0)
-            {
-                objects.pop_back();
-                break;
-            }
-            ENCELADO_TEST_ASSERT(!is_space(*next_char));
-            auto const start_of_buff = buff.get();
-            auto const buff_len      = strlen(start_of_buff);
-            auto const end_of_buff   = start_of_buff + buff_len;
-            ENCELADO_TEST_ASSERT(end_of_buff == out.next_dest());
-            delimiters.push_back(out.next_dest());
-        }
-
-        char_reader in(string_view(buff.get(), buffer_size));
-        for (size_t index = 0; index < objects.size(); index++)
-        {
-            auto const & obj = objects[index];
-
-            char random_input[256];
-            std::generate(std::begin(random_input), std::end(random_input), [&rand] {
-                return static_cast<char>(rand());
-            });
-            random_input[255] = 0;
-
-            /*std::visit(
-              [&in, &obj, index, &delimiters, &random_input](const auto & i_value) {
-
-                  using value_type = std::decay_t<decltype(i_value)>;
-
-                  // try with the random input
-                  if constexpr (
-                    !std::is_same_v<value_type, std::string> && !std::is_same_v<value_type, char>)
-                  {
-                      char_reader random_stream(random_input);
-                      value_type  val;
-                      try_parse(val, random_stream);
-
-                      random_stream = char_reader(random_input);
-                      val           = value_type{};
-                      try_accept(val, random_stream);
-                  }
-
-                  // consume an object
-                  auto const expected = std::get<value_type>(obj);
-                  in >> expected >> spaces;
-                  ENCELADO_TEST_ASSERT(delimiters[index] == in.next_chars());
-              },
-              obj);*/
-        }
+        StringConversionTests tests;
+        tests.run();
     }
 
     template <typename INT_TYPE, typename BIG_INT_TYPE>
@@ -383,9 +378,9 @@ namespace ediacaran_test
 
     void string_tests()
     {
+        string_conversion_tests();
         string_basic_tests();
         string_builder_tests();
-        string_conversion_tests();
         string_overflow_tests();
         string_comma_separated_names_tests();
 
