@@ -7,19 +7,6 @@
 #include <iostream>
 #include <string>
 
-constexpr ediacaran::qualified_type_ptr t1 = ediacaran::get_qualified_type<int>();
-
-namespace ediacaran
-{
-    void core_tests();
-}
-
-int ha() { return 7786; }
-
-int h = ha();
-
-constexpr auto t = ediacaran::get_type<int>();
-
 
 /*int main()
 {
@@ -32,7 +19,7 @@ constexpr auto t = ediacaran::get_type<int>();
     b << 1234;
 
     int g = 6;
-    
+
     t.special_functions().to_chars()(b, &g);
 
     std::cout << t.name();

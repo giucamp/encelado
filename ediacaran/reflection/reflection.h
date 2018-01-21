@@ -59,47 +59,47 @@ namespace ediacaran
 
         template <typename, typename> struct TypeInstance;
 
+        constexpr type g_type_bool{MakeFundamentalType<bool>("bool")};
+        constexpr type g_type_char{MakeFundamentalType<char>("char")};
+        constexpr type g_type_float{MakeFundamentalType<float>("float")};
+        constexpr type g_type_pointer{MakeFundamentalType<void *>("pointer")};
+        constexpr type g_type_double{MakeFundamentalType<double>("double")};
+        constexpr type g_type_long_double{MakeFundamentalType<long double>("long_double")};
+        constexpr type g_type_void{type_kind::is_fundamental, "void", 1, 1, special_functions{}};
+
         template <> struct TypeInstance<bool, bool>
         {
-            constexpr static type s_instance{MakeFundamentalType<bool>("bool")};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_bool; }
         };
 
         template <> struct TypeInstance<char, char>
         {
-            constexpr static type s_instance{MakeFundamentalType<char>("char")};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_char; }
         };
 
         template <> struct TypeInstance<float, float>
         {
-            constexpr static type s_instance{MakeFundamentalType<float>("float")};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_float; }
         };
 
         template <> struct TypeInstance<double, double>
         {
-            constexpr static type s_instance{MakeFundamentalType<double>("double")};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_double; }
         };
 
         template <> struct TypeInstance<long double, long double>
         {
-            constexpr static type s_instance{MakeFundamentalType<long double>("long_double")};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_long_double; }
         };
 
         template <> struct TypeInstance<void *, void *>
         {
-            constexpr static type s_instance{MakeFundamentalType<void *>("pointer")};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_pointer; }
         };
 
         template <> struct TypeInstance<void, void>
         {
-            constexpr static type s_instance{
-              type_kind::is_fundamental, "void", 1, 1, special_functions{}};
-            constexpr static const auto & instance() noexcept { return s_instance; }
+            constexpr static const auto & instance() noexcept { return g_type_void; }
         };
 
         template <typename INT_TYPE>
@@ -468,11 +468,7 @@ namespace ediacaran
     constexpr auto reflect(qualified_type_ptr ** i_ptr)
     {
         char const class_name[] = "ediacaran::qualified_type_ptr";
-        using bases           = type_list<>;
-
-        using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
-
         return make_static_cast<this_class>(class_name);
     }
 }

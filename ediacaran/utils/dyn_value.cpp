@@ -79,7 +79,11 @@ namespace ediacaran
     {
         EDIACARAN_INTERNAL_ASSERT(m_object != nullptr);
         auto const final_type = m_qualified_type.final_type();
-                   operator delete (m_object, final_type->size(), std::align_val_t{final_type->alignment()});
+        #if __cpp_sized_deallocation
+        operator delete (m_object, final_type->size(), std::align_val_t{final_type->alignment()});
+        #else
+        operator delete (m_object, std::align_val_t{final_type->alignment()});
+        #endif
         m_object         = nullptr;
         m_qualified_type = qualified_type_ptr{};
     }

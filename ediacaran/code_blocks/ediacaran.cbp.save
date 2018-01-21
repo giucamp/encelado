@@ -52,6 +52,7 @@
 		<Unit filename="../core/string_builder.h" />
 		<Unit filename="../core/type_list.h" />
 		<Unit filename="../reflection/action.h" />
+		<Unit filename="../reflection/class_template_specialization.h" />
 		<Unit filename="../reflection/class_type.h" />
 		<Unit filename="../reflection/namespace.cpp" />
 		<Unit filename="../reflection/namespace.h" />

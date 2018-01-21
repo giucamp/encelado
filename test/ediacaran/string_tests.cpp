@@ -183,7 +183,7 @@ namespace ediacaran_test
             });
             random_input[255] = 0;
 
-            std::visit(
+            /*std::visit(
               [&in, &obj, index, &delimiters, &random_input](const auto & i_value) {
 
                   using value_type = std::decay_t<decltype(i_value)>;
@@ -206,7 +206,7 @@ namespace ediacaran_test
                   in >> expected >> spaces;
                   ENCELADO_TEST_ASSERT(delimiters[index] == in.next_chars());
               },
-              obj);
+              obj);*/
         }
     }
 
