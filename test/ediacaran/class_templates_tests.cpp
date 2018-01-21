@@ -84,10 +84,11 @@ namespace ediacaran_test
 
     template <typename... PARAMS> constexpr auto reflect(ClassTemplate5<PARAMS...> ** i_ptr)
     {
+        using namespace ediacaran;
         char const class_name[] = "ClassTemplate5";
         using bases             = type_list<ClassTemplate4<double, double, double, double>>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
-        return ediacaran::make_static_cast<this_class>(class_name, bases());
+        return make_static_cast<this_class>(class_name, bases());
     }
 
     std::string
