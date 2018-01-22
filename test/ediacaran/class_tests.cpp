@@ -13,6 +13,28 @@
 
 namespace ediacaran_test
 {
+    enum class Enum_1
+    {
+        Member_1,
+        Member_2,
+        Member_3
+    };
+
+    constexpr auto reflect(Enum_1 ** i_ptr)
+    {
+        char const class_name[] = "Enum_1";
+
+        using namespace ediacaran;
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+
+        auto const members = make_array(
+            make_enum_member("Member_1", this_class::Member_1),
+            make_enum_member("Member_2", this_class::Member_2),
+            make_enum_member("Member_3", this_class::Member_3));
+
+        return make_enum<this_class>(class_name, members);
+    }
+
     // layer 3
 
     struct TestBase_3_1
@@ -46,15 +68,16 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_3_2 ** i_ptr)
     {
+        using namespace ediacaran;
         char const class_name[] = "TestBase_3_2";
-        using bases             = ediacaran::type_list<>;
+        using bases             = type_list<>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(
+        auto const properties = make_array(
           REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1),
           REFL_ACCESSOR_PROP("prop", get_prop, set_prop),
           REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return make_static_cast<this_class>(class_name, bases{}, properties);
     }
 
     // layer 2
@@ -269,6 +292,12 @@ namespace ediacaran_test
     void class_tests()
     {
         using namespace ediacaran;
+
+        //auto const & te = get_type<Enum_1>();
+
+        /*char dest[40];
+        to_chars(dest, Enum_1::Member_1);*/
+
         try
         {
             property props[2] = {

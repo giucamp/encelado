@@ -4,8 +4,8 @@
 #include "ediacaran/core/remove_noexcept.h"
 #include "ediacaran/reflection/class_template_specialization.h"
 #include "ediacaran/reflection/class_type.h"
+#include "ediacaran/reflection/enum_type.h"
 #include "ediacaran/reflection/qualified_type_ptr.h"
-#include "ediacaran/reflection/type.h"
 #include <ediacaran/core/array.h>
 
 #define REFL_DATA_PROP(Name, DataMember)                                                           \
@@ -178,10 +178,10 @@ namespace ediacaran
             }
         };
 
-        template <typename CLASS>
-        struct TypeInstance<CLASS, std::enable_if_t<std::is_class_v<CLASS>, CLASS>>
+        template <typename UDT>
+        struct TypeInstance<UDT, std::enable_if_t<std::is_class_v<UDT> || std::is_enum_v<UDT>, UDT>>
         {
-            constexpr static auto         static_class{reflect(static_cast<CLASS **>(nullptr))};
+            constexpr static auto         static_class{reflect(static_cast<UDT **>(nullptr))};
             constexpr static const auto & instance() noexcept { return static_class.get_class(); }
         };
 
@@ -326,6 +326,34 @@ namespace ediacaran
             class_type const                      m_class;
         };
 
+        //
+        template <typename ENUM_TYPE, size_t MEMBER_COUNT> class StaticEnum
+        {
+          public:
+            using underlying_type = std::underlying_type_t<ENUM_TYPE>;
+
+            constexpr StaticEnum(
+              const char *                                            i_name,
+              array<enum_member<underlying_type>, MEMBER_COUNT> const i_members)
+                : m_members(i_members), m_enum(
+                                          i_name,
+                                          sizeof(ENUM_TYPE),
+                                          alignof(ENUM_TYPE),
+                                          special_functions::template make<ENUM_TYPE>(),
+                                          m_members)
+            {
+            }
+
+            constexpr const enum_type<underlying_type> & get_class() const noexcept
+            {
+                return m_enum;
+            }
+
+          private:
+            array<enum_member<underlying_type>, MEMBER_COUNT> const m_members;
+            enum_type<underlying_type> const                        m_enum;
+        };
+
     } // namespace detail
 
     template <
@@ -403,6 +431,21 @@ namespace ediacaran
           BASE_CLASSES...>(specialization_name, i_template_arguments, i_properties, i_actions);
     }
 
+    template <typename ENUM_TYPE, size_t MEMBER_COUNT = 0>
+    constexpr auto make_enum(
+      const char *                                                                i_name,
+      array<enum_member<std::underlying_type_t<ENUM_TYPE>>, MEMBER_COUNT> const & i_members =
+        array<enum_member<std::underlying_type_t<ENUM_TYPE>>, 0>{})
+    {
+        return detail::StaticEnum<ENUM_TYPE, MEMBER_COUNT>(i_name, i_members);
+    }
+
+    template <typename ENUM_TYPE>
+        constexpr auto make_enum_member(const char * i_name, ENUM_TYPE i_value)
+    {
+        return enum_member<std::underlying_type_t<ENUM_TYPE>>(i_name, static_cast<std::underlying_type_t<ENUM_TYPE>>(i_value));
+    }
+
     template <typename TYPE> constexpr const auto & get_type() noexcept
     {
         return detail::TypeInstance<TYPE, TYPE>::instance();
@@ -414,6 +457,11 @@ namespace ediacaran
     }
 
     template <typename TYPE> constexpr const class_type & get_class_type() noexcept
+    {
+        return detail::TypeInstance<TYPE, TYPE>::instance();
+    }
+
+    template <typename TYPE> constexpr const enum_type<std::underlying_type_t<TYPE>> & get_enum_type() noexcept
     {
         return detail::TypeInstance<TYPE, TYPE>::instance();
     }

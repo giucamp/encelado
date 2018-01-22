@@ -73,6 +73,9 @@
     <ClInclude Include="..\core\array.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\reflection\enum_type.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

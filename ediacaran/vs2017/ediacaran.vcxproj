@@ -32,6 +32,7 @@
     <ClInclude Include="..\core\type_list.h" />
     <ClInclude Include="..\reflection\action.h" />
     <ClInclude Include="..\reflection\class_template_specialization.h" />
+    <ClInclude Include="..\reflection\enum_type.h" />
     <ClInclude Include="..\reflection\parameter.h" />
     <ClInclude Include="..\reflection\class_type.h" />
     <ClInclude Include="..\reflection\namespace.h" />

@@ -36,11 +36,11 @@ namespace ediacaran
     {
       public:
         constexpr type(
-          type_kind                            i_kind,
-          const char * const                   i_name,
-          size_t                               i_size,
-          size_t                               i_alignment,
-          const ediacaran::special_functions & i_special_functions) noexcept
+          type_kind                 i_kind,
+          const char * const        i_name,
+          size_t                    i_size,
+          size_t                    i_alignment,
+          const special_functions & i_special_functions) noexcept
             : m_name(i_name), m_size(i_size), m_alignment(i_alignment), m_kind(i_kind),
               m_special_functions(i_special_functions)
         {
@@ -221,10 +221,10 @@ namespace ediacaran
         }
 
       private:
-        const char * const                 m_name;
-        size_t const                       m_size;
-        size_t const                       m_alignment;
-        type_kind const                    m_kind;
-        ediacaran::special_functions const m_special_functions;
+        const char * const      m_name;
+        size_t const            m_size;
+        size_t const            m_alignment;
+        type_kind const         m_kind;
+        special_functions const m_special_functions;
     };
 }
