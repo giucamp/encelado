@@ -15,9 +15,9 @@ namespace ediacaran_test
 {
     enum class Enum_1
     {
-        Member_1,
-        Member_2,
-        Member_3
+        Member_1 = 1,
+        Member_2 = 2,
+        Member_3 = 4
     };
 
     constexpr auto reflect(Enum_1 ** i_ptr)
@@ -293,10 +293,10 @@ namespace ediacaran_test
     {
         using namespace ediacaran;
 
-        //auto const & te = get_type<Enum_1>();
+        auto const & te = get_type<Enum_1>();
 
-        /*char dest[40];
-        to_chars(dest, Enum_1::Member_1);*/
+        char dest[40];
+        to_chars(dest, Enum_1(1 | 2 | 8));
 
         try
         {

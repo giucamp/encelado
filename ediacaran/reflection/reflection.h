@@ -327,16 +327,16 @@ namespace ediacaran
         };
 
         //
-        template <typename ENUM_TYPE, size_t MEMBER_COUNT> class StaticEnum
+        template <typename ENUM_TYPE, size_t NAME_LENGTH, size_t MEMBER_COUNT> class StaticEnum
         {
           public:
             using underlying_type = std::underlying_type_t<ENUM_TYPE>;
 
             constexpr StaticEnum(
-              const char *                                            i_name,
+              const array<char, NAME_LENGTH> &                        i_name,
               array<enum_member<underlying_type>, MEMBER_COUNT> const i_members)
-                : m_members(i_members), m_enum(
-                                          i_name,
+                : m_name(i_name), m_members(i_members), m_enum(
+                                          m_name.data(),
                                           sizeof(ENUM_TYPE),
                                           alignof(ENUM_TYPE),
                                           special_functions::template make<ENUM_TYPE>(),
@@ -350,6 +350,7 @@ namespace ediacaran
             }
 
           private:
+            array<char, NAME_LENGTH>                                m_name;
             array<enum_member<underlying_type>, MEMBER_COUNT> const m_members;
             enum_type<underlying_type> const                        m_enum;
         };
@@ -431,13 +432,15 @@ namespace ediacaran
           BASE_CLASSES...>(specialization_name, i_template_arguments, i_properties, i_actions);
     }
 
-    template <typename ENUM_TYPE, size_t MEMBER_COUNT = 0>
+    template <typename ENUM_TYPE, size_t NAME_SIZE, size_t MEMBER_COUNT = 0>
     constexpr auto make_enum(
-      const char *                                                                i_name,
+      const char(&i_name)[NAME_SIZE],
       array<enum_member<std::underlying_type_t<ENUM_TYPE>>, MEMBER_COUNT> const & i_members =
         array<enum_member<std::underlying_type_t<ENUM_TYPE>>, 0>{})
     {
-        return detail::StaticEnum<ENUM_TYPE, MEMBER_COUNT>(i_name, i_members);
+        array<char, NAME_SIZE> name{};
+        to_chars(name.data(), NAME_SIZE, i_name);
+        return detail::StaticEnum<ENUM_TYPE, NAME_SIZE, MEMBER_COUNT>(name, i_members);
     }
 
     template <typename ENUM_TYPE>
