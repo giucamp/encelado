@@ -258,14 +258,14 @@ namespace ediacaran_test
         using this_class            = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
-            make_property<EDIACARAN_DATA(this_class, m_integer)>("integer"),
-            make_property<EDIACARAN_DATA(this_class, m_float)>("float") );
+          make_property<EDIACARAN_DATA(this_class, m_integer)>("integer"),
+          make_property<EDIACARAN_DATA(this_class, m_float)>("float"));
 
         auto const actions = make_array(
           REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"),
           REFL_ACTION("set", set, "i_int_par, i_flt_par"));
 
-        return ediacaran::make_class<this_class, bases>(class_name, properties, actions);
+        return make_class<this_class, bases>(class_name, properties, actions);
     }
 
     void class_tests_print_props(ediacaran::raw_ptr i_source)

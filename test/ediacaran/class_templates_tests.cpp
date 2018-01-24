@@ -100,7 +100,7 @@ namespace ediacaran_test
     {
         using namespace ediacaran;
         char const class_name[] = "ClassTemplate6";
-        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+        using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
         return make_class<this_class>(class_name);
     }
 
@@ -140,12 +140,12 @@ namespace ediacaran_test
           double * volatile ***,
           int * const *>>();
         constexpr auto & temp_6 = get_type<ClassTemplate6<
-            float const * const *,
-            type,
-            void,
-            double * volatile ***,
-            int * const *,
-            int *****>>();
+          float const * const *,
+          type,
+          void,
+          double * volatile ***,
+          int * const *,
+          int *****>>();
         static_assert(temp_1.template_arguments().size() == 1);
         static_assert(temp_2.template_arguments().size() == 2);
         static_assert(temp_3.template_arguments().size() == 3);
@@ -161,9 +161,9 @@ namespace ediacaran_test
                            "ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32>>>, "
                            "double * volatile * * *, int32 * const *>");
         static_assert(
-            temp_6.name() == "ClassTemplate6<float const * const *, ediacaran::type, "
-            "void, double * volatile * * *, int32 * const *, "
-            "int32 * * * * *>");
+          temp_6.name() == "ClassTemplate6<float const * const *, ediacaran::type, "
+                           "void, double * volatile * * *, int32 * const *, "
+                           "int32 * * * * *>");
 
         auto descr_1 = class_template_specialization_descr(temp_1);
         auto descr_2 = class_template_specialization_descr(temp_2);
@@ -194,11 +194,11 @@ namespace ediacaran_test
                      "a4: ediacaran::qualified_type_ptr const = int32 * const *");
 
         ENCELADO_TEST_ASSERT(
-            descr_6 == "a0: ediacaran::qualified_type_ptr const = float const * const *, "
-            "a1: ediacaran::qualified_type_ptr const = ediacaran::type, "
-            "a2: ediacaran::qualified_type_ptr const = void, "
-            "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
-            "a4: ediacaran::qualified_type_ptr const = int32 * const *, "
-            "a5: ediacaran::qualified_type_ptr const = int32 * * * * *");
+          descr_6 == "a0: ediacaran::qualified_type_ptr const = float const * const *, "
+                     "a1: ediacaran::qualified_type_ptr const = ediacaran::type, "
+                     "a2: ediacaran::qualified_type_ptr const = void, "
+                     "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
+                     "a4: ediacaran::qualified_type_ptr const = int32 * const *, "
+                     "a5: ediacaran::qualified_type_ptr const = int32 * * * * *");
     }
 }

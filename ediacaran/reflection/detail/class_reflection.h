@@ -20,11 +20,12 @@
     ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(            \
       Name, ParameterNames)
 
-#define EDIACARAN_DATA(Class, DataMember)           decltype(Class::DataMember), offsetof(Class, DataMember)
+#define EDIACARAN_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
 
-#define EDIACARAN_CONST_ACCESSOR(Class, Getter)     decltype(&Class::Getter), &Class::Getter
+#define EDIACARAN_CONST_ACCESSOR(Class, Getter) decltype(&Class::Getter), &Class::Getter
 
-#define EDIACARAN_ACCESSOR(Class, Getter, Setter)   decltype(&Class::Getter), &Class::Getter, decltype(&Class::Setter), &Class::Setter
+#define EDIACARAN_ACCESSOR(Class, Getter, Setter)                                                  \
+    decltype(&Class::Getter), &Class::Getter, decltype(&Class::Setter), &Class::Setter
 
 namespace ediacaran
 {
@@ -391,8 +392,8 @@ namespace ediacaran
     constexpr auto make_class(
       const char (&i_template_name)[TEMPLATE_NAME_SIZE],
       const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
-      array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
-      array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
+      array<property, PROPERTY_COUNT> const &            i_properties = array<property, 0>{},
+      array<action, ACTION_COUNT> const &                i_actions    = array<action, 0>{})
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
