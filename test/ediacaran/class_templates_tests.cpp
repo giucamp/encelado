@@ -57,8 +57,8 @@ namespace ediacaran_test
         constexpr auto const template_arguments =
           make_template_arguments("A, B, C", get_qualified_type<A>(), B, get_qualified_type<C>());
 
-        return make_class<this_class, char_array_size(template_arguments)>(
-          class_name, template_arguments, bases());
+        return make_class<this_class, char_array_size(template_arguments), bases>(
+          class_name, template_arguments);
     }
 
     template <typename A, typename B, typename C, typename D>
@@ -74,7 +74,7 @@ namespace ediacaran_test
         using bases             = type_list<ClassTemplate3<A, 12, char>, ClassTemplate2<int, int>>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        return make_class<this_class>(class_name, bases());
+        return make_class<this_class, bases>(class_name);
     }
 
     template <typename A, typename B, typename C, typename D, typename E>
@@ -88,7 +88,20 @@ namespace ediacaran_test
         char const class_name[] = "ClassTemplate5";
         using bases             = type_list<ClassTemplate4<double, double, double, double>>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
-        return make_class<this_class>(class_name, bases());
+        return make_class<this_class, bases>(class_name);
+    }
+
+    template <typename A, typename B, typename C, typename D, typename E, typename F>
+    struct ClassTemplate6
+    {
+    };
+
+    template <typename... PARAMS> constexpr auto reflect(ClassTemplate6<PARAMS...> ** i_ptr)
+    {
+        using namespace ediacaran;
+        char const class_name[] = "ClassTemplate6";
+        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
+        return make_class<this_class>(class_name);
     }
 
     std::string
@@ -126,11 +139,19 @@ namespace ediacaran_test
           ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32_t>>>,
           double * volatile ***,
           int * const *>>();
+        constexpr auto & temp_6 = get_type<ClassTemplate6<
+            float const * const *,
+            type,
+            void,
+            double * volatile ***,
+            int * const *,
+            int *****>>();
         static_assert(temp_1.template_arguments().size() == 1);
         static_assert(temp_2.template_arguments().size() == 2);
         static_assert(temp_3.template_arguments().size() == 3);
         static_assert(temp_4.template_arguments().size() == 4);
         static_assert(temp_5.template_arguments().size() == 5);
+        static_assert(temp_6.template_arguments().size() == 6);
         static_assert(temp_1.name() == "ClassTemplate1<int32>");
         static_assert(temp_2.name() == "ClassTemplate2<int32, double>");
         static_assert(temp_3.name() == "ClassTemplate3<float, 5, char>");
@@ -139,12 +160,17 @@ namespace ediacaran_test
           temp_5.name() == "ClassTemplate5<float const * const *, ediacaran::type, "
                            "ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32>>>, "
                            "double * volatile * * *, int32 * const *>");
+        static_assert(
+            temp_6.name() == "ClassTemplate6<float const * const *, ediacaran::type, "
+            "void, double * volatile * * *, int32 * const *, "
+            "int32 * * * * *>");
 
         auto descr_1 = class_template_specialization_descr(temp_1);
         auto descr_2 = class_template_specialization_descr(temp_2);
         auto descr_3 = class_template_specialization_descr(temp_3);
         auto descr_4 = class_template_specialization_descr(temp_4);
         auto descr_5 = class_template_specialization_descr(temp_5);
+        auto descr_6 = class_template_specialization_descr(temp_6);
 
         ENCELADO_TEST_ASSERT(descr_1 == "A: ediacaran::qualified_type_ptr const = int32");
         ENCELADO_TEST_ASSERT(
@@ -166,5 +192,13 @@ namespace ediacaran_test
                      "ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32>>>, "
                      "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
                      "a4: ediacaran::qualified_type_ptr const = int32 * const *");
+
+        ENCELADO_TEST_ASSERT(
+            descr_6 == "a0: ediacaran::qualified_type_ptr const = float const * const *, "
+            "a1: ediacaran::qualified_type_ptr const = ediacaran::type, "
+            "a2: ediacaran::qualified_type_ptr const = void, "
+            "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
+            "a4: ediacaran::qualified_type_ptr const = int32 * const *, "
+            "a5: ediacaran::qualified_type_ptr const = int32 * * * * *");
     }
 }

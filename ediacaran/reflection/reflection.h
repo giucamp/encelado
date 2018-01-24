@@ -145,7 +145,7 @@ namespace ediacaran
 
         auto const properties = make_array(REFL_ACCESSOR_RO_PROP("size", size));
 
-        return make_class<this_class>(class_name, bases{}, properties);
+        return make_class<this_class, bases>(class_name, properties);
     }
 
     constexpr auto reflect(type ** i_ptr)
@@ -154,7 +154,6 @@ namespace ediacaran
 
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
-        using bases      = type_list<>;
 
         auto const properties = make_array(
           REFL_ACCESSOR_RO_PROP("size", size),
@@ -169,7 +168,7 @@ namespace ediacaran
           REFL_ACCESSOR_RO_PROP("is_stringizable", is_stringizable),
           REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable));
 
-        return make_class<this_class>(class_name, bases{}, properties);
+        return make_class<this_class>(class_name, properties);
     }
 
     constexpr auto reflect(qualified_type_ptr ** i_ptr)

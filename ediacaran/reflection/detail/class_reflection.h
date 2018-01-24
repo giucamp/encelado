@@ -20,6 +20,12 @@
     ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(            \
       Name, ParameterNames)
 
+#define EDIACARAN_DATA(Class, DataMember)           decltype(Class::DataMember), offsetof(Class, DataMember)
+
+#define EDIACARAN_CONST_ACCESSOR(Class, Getter)     decltype(&Class::Getter), &Class::Getter
+
+#define EDIACARAN_ACCESSOR(Class, Getter, Setter)   decltype(&Class::Getter), &Class::Getter, decltype(&Class::Setter), &Class::Setter
+
 namespace ediacaran
 {
     namespace detail
@@ -102,7 +108,7 @@ namespace ediacaran
           typename TEMPLATE_PARAMETER_LIST,
           size_t PROPERTY_COUNT,
           size_t ACTION_COUNT,
-          typename... BASE_CLASSES>
+          typename BASE_CLASSES_LIST>
         struct StaticClass;
 
         template <
@@ -118,7 +124,7 @@ namespace ediacaran
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           ACTION_COUNT,
-          BASE_CLASSES...>
+          type_list<BASE_CLASSES...>>
         {
             template <size_t... INDEX>
             constexpr auto make_template_parameters_array(
@@ -202,7 +208,7 @@ namespace ediacaran
           template_arguments<>,
           PROPERTY_COUNT,
           ACTION_COUNT,
-          BASE_CLASSES...>
+          type_list<BASE_CLASSES...>>
         {
           public:
             using bases = type_list<BASE_CLASSES...>;
@@ -326,30 +332,21 @@ namespace ediacaran
             }
         };
 
-        template <typename PROPERTY_ACCESSOR>
-        constexpr property make_accessor_property(const char * i_name)
-        {
-            return property(
-              property::accessor_tag{},
-              i_name,
-              get_qualified_type<typename PROPERTY_ACCESSOR::property_type>(),
-              &PROPERTY_ACCESSOR::func);
-        }
-
     } //namespace detail
 
     template <
       typename CLASS,
+      typename BASE_CLASSES_LIST = type_list<>,
       size_t CLASS_NAME_SIZE,
-      typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
     constexpr auto make_class(
       const char (&i_name)[CLASS_NAME_SIZE],
-      type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
       array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
     {
+        static_assert(is_type_list_v<BASE_CLASSES_LIST>);
+
         if constexpr (detail::TemplateAutoDeducer<CLASS>::arguments_count == 0)
         {
             array<char, CLASS_NAME_SIZE> name{};
@@ -360,7 +357,7 @@ namespace ediacaran
               template_arguments<>,
               PROPERTY_COUNT,
               ACTION_COUNT,
-              BASE_CLASSES...>(name, make_template_arguments(), i_properties, i_actions);
+              BASE_CLASSES_LIST>(name, make_template_arguments(), i_properties, i_actions);
         }
         else
         {
@@ -379,25 +376,26 @@ namespace ediacaran
               std::decay_t<decltype(auto_template_arguments)>,
               PROPERTY_COUNT,
               ACTION_COUNT,
-              BASE_CLASSES...>(name, auto_template_arguments, i_properties, i_actions);
+              BASE_CLASSES_LIST>(name, auto_template_arguments, i_properties, i_actions);
         }
     }
 
     template <
       typename CLASS,
       size_t ARGUMENTS_STRING_SIZE,
+      typename BASE_CLASSES_LIST = type_list<>,
       size_t TEMPLATE_NAME_SIZE,
       typename... TEMPLATE_PARAMETERS,
-      typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
     constexpr auto make_class(
       const char (&i_template_name)[TEMPLATE_NAME_SIZE],
       const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
-      type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
       array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
     {
+        static_assert(is_type_list_v<BASE_CLASSES_LIST>);
+
         array<char, ARGUMENTS_STRING_SIZE + TEMPLATE_NAME_SIZE> specialization_name{};
         to_chars(
           specialization_name.data(),
@@ -410,7 +408,7 @@ namespace ediacaran
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           ACTION_COUNT,
-          BASE_CLASSES...>(specialization_name, i_template_arguments, i_properties, i_actions);
+          BASE_CLASSES_LIST>(specialization_name, i_template_arguments, i_properties, i_actions);
     }
 
     template <typename PROP_TYPE, size_t OFFSET>
