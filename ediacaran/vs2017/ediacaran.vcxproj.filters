@@ -79,6 +79,9 @@
     <ClInclude Include="..\reflection\detail\class_reflection.h">
       <Filter>reflection\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\reflection\detail\enum_reflection.h">
+      <Filter>reflection\detail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

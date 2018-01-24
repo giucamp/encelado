@@ -11,20 +11,6 @@
 
 namespace ediacaran
 {
-    class symbol
-    {
-      public:
-        constexpr symbol(const char * const i_name) noexcept : m_name(i_name) {}
-        constexpr string_view name() const noexcept
-        {
-            // workaround for gcc considering the comparison of two char* non-constexpr
-            return string_view(m_name, string_view::traits_type::length(m_name));
-        }
-
-      private:
-        const char * const m_name;
-    };
-
     enum class type_kind
     {
         is_fundamental,

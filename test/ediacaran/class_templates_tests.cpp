@@ -122,7 +122,7 @@ namespace ediacaran_test
         constexpr auto & temp_4 = get_type<ClassTemplate4<float, char, double, int64_t>>();
         constexpr auto & temp_5 = get_type<ClassTemplate5<
           float const * const *,
-          symbol,
+          type,
           ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32_t>>>,
           double * volatile ***,
           int * const *>>();
@@ -136,7 +136,7 @@ namespace ediacaran_test
         static_assert(temp_3.name() == "ClassTemplate3<float, 5, char>");
         static_assert(temp_4.name() == "ClassTemplate4<float, char, double, int64>");
         static_assert(
-          temp_5.name() == "ClassTemplate5<float const * const *, ediacaran::symbol, "
+          temp_5.name() == "ClassTemplate5<float const * const *, ediacaran::type, "
                            "ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32>>>, "
                            "double * volatile * * *, int32 * const *>");
 
@@ -161,7 +161,7 @@ namespace ediacaran_test
                      "a3: ediacaran::qualified_type_ptr const = int64");
         ENCELADO_TEST_ASSERT(
           descr_5 == "a0: ediacaran::qualified_type_ptr const = float const * const *, "
-                     "a1: ediacaran::qualified_type_ptr const = ediacaran::symbol, "
+                     "a1: ediacaran::qualified_type_ptr const = ediacaran::type, "
                      "a2: ediacaran::qualified_type_ptr const = "
                      "ClassTemplate1<ClassTemplate1<ClassTemplate3<float, 25, int32>>>, "
                      "a3: ediacaran::qualified_type_ptr const = double * volatile * * *, "
