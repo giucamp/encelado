@@ -8,25 +8,7 @@
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include <ediacaran/core/array.h>
 
-#define REFL_DATA_PROP(Name, DataMember)                                                           \
-    ediacaran::detail::make_data_property(                                                         \
-      Name,                                                                                        \
-      ediacaran::get_qualified_type<decltype(this_class::DataMember)>(),                           \
-      offsetof(this_class, DataMember))
-
-#define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                   \
-    ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<                 \
-      ediacaran::remove_noexcept_t<decltype(&this_class::Getter)>,                                 \
-      ediacaran::remove_noexcept_t<decltype(&this_class::Setter)>,                                 \
-      &this_class::Getter,                                                                         \
-      &this_class::Setter>>(Name)
-
-#define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                        \
-    ediacaran::detail::make_accessor_property<ediacaran::detail::PropertyAccessor<                 \
-      ediacaran::remove_noexcept_t<decltype(&this_class::Getter)>,                                 \
-      std::nullptr_t,                                                                              \
-      &this_class::Getter,                                                                         \
-      nullptr>>(Name)
+#include "ediacaran/reflection/detail/class_reflection.h"
 
 #define REFL_ACTION(Name, Method, ParameterNames)                                                  \
     ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(            \
@@ -335,12 +317,13 @@ namespace ediacaran
             constexpr StaticEnum(
               const array<char, NAME_LENGTH> &                        i_name,
               array<enum_member<underlying_type>, MEMBER_COUNT> const i_members)
-                : m_name(i_name), m_members(i_members), m_enum(
-                                          m_name.data(),
-                                          sizeof(ENUM_TYPE),
-                                          alignof(ENUM_TYPE),
-                                          special_functions::template make<ENUM_TYPE>(),
-                                          m_members)
+                : m_name(i_name), m_members(i_members),
+                  m_enum(
+                    m_name.data(),
+                    sizeof(ENUM_TYPE),
+                    alignof(ENUM_TYPE),
+                    special_functions::template make<ENUM_TYPE>(),
+                    m_members)
             {
             }
 
@@ -363,7 +346,7 @@ namespace ediacaran
       typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
-    constexpr auto make_static_cast(
+    constexpr auto make_class(
       const char (&i_name)[CLASS_NAME_SIZE],
       type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
@@ -410,7 +393,7 @@ namespace ediacaran
       typename... BASE_CLASSES,
       size_t PROPERTY_COUNT = 0,
       size_t ACTION_COUNT   = 0>
-    constexpr auto make_static_cast(
+    constexpr auto make_class(
       const char (&i_template_name)[TEMPLATE_NAME_SIZE],
       const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
       type_list<BASE_CLASSES...> /*i_base_classes*/        = type_list<>{},
@@ -434,7 +417,7 @@ namespace ediacaran
 
     template <typename ENUM_TYPE, size_t NAME_SIZE, size_t MEMBER_COUNT = 0>
     constexpr auto make_enum(
-      const char(&i_name)[NAME_SIZE],
+      const char (&i_name)[NAME_SIZE],
       array<enum_member<std::underlying_type_t<ENUM_TYPE>>, MEMBER_COUNT> const & i_members =
         array<enum_member<std::underlying_type_t<ENUM_TYPE>>, 0>{})
     {
@@ -444,9 +427,10 @@ namespace ediacaran
     }
 
     template <typename ENUM_TYPE>
-        constexpr auto make_enum_member(const char * i_name, ENUM_TYPE i_value)
+    constexpr auto make_enum_member(const char * i_name, ENUM_TYPE i_value)
     {
-        return enum_member<std::underlying_type_t<ENUM_TYPE>>(i_name, static_cast<std::underlying_type_t<ENUM_TYPE>>(i_value));
+        return enum_member<std::underlying_type_t<ENUM_TYPE>>(
+          i_name, static_cast<std::underlying_type_t<ENUM_TYPE>>(i_value));
     }
 
     template <typename TYPE> constexpr const auto & get_type() noexcept
@@ -464,7 +448,8 @@ namespace ediacaran
         return detail::TypeInstance<TYPE, TYPE>::instance();
     }
 
-    template <typename TYPE> constexpr const enum_type<std::underlying_type_t<TYPE>> & get_enum_type() noexcept
+    template <typename TYPE>
+    constexpr const enum_type<std::underlying_type_t<TYPE>> & get_enum_type() noexcept
     {
         return detail::TypeInstance<TYPE, TYPE>::instance();
     }
@@ -496,7 +481,7 @@ namespace ediacaran
 
         auto const properties = make_array(REFL_ACCESSOR_RO_PROP("size", size));
 
-        return make_static_cast<this_class>(class_name, bases{}, properties);
+        return make_class<this_class>(class_name, bases{}, properties);
     }
 
     constexpr auto reflect(symbol ** i_ptr)
@@ -509,7 +494,7 @@ namespace ediacaran
 
         auto const properties = make_array(REFL_ACCESSOR_RO_PROP("name", name));
 
-        return make_static_cast<this_class>(class_name, bases{}, properties);
+        return make_class<this_class>(class_name, bases{}, properties);
     }
 
     constexpr auto reflect(type ** i_ptr)
@@ -533,13 +518,13 @@ namespace ediacaran
           REFL_ACCESSOR_RO_PROP("is_stringizable", is_stringizable),
           REFL_ACCESSOR_RO_PROP("is_parsable", is_parsable));
 
-        return make_static_cast<this_class>(class_name, bases{}, properties);
+        return make_class<this_class>(class_name, bases{}, properties);
     }
 
     constexpr auto reflect(qualified_type_ptr ** i_ptr)
     {
         char const class_name[] = "ediacaran::qualified_type_ptr";
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
-        return make_static_cast<this_class>(class_name);
+        return make_class<this_class>(class_name);
     }
 }

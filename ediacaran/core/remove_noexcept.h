@@ -7,6 +7,11 @@ namespace ediacaran
     {
     };
 
+    template <> struct remove_noexcept<std::nullptr_t>
+    {
+        using type = std::nullptr_t;
+    };
+
     template <typename RETURN_VALUE, typename... PARAMETERS>
     struct remove_noexcept<RETURN_VALUE(PARAMETERS...)>
     {

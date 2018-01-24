@@ -76,6 +76,9 @@
     <ClInclude Include="..\reflection\enum_type.h">
       <Filter>reflection</Filter>
     </ClInclude>
+    <ClInclude Include="..\reflection\detail\class_reflection.h">
+      <Filter>reflection\detail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">
@@ -112,6 +115,9 @@
     </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{5ff1a4fc-7456-4786-878c-2d968c6295b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reflection\detail">
+      <UniqueIdentifier>{9ccc4b7f-438b-48e7-a8a2-90442685cdc5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

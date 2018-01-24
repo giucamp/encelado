@@ -20,7 +20,7 @@ namespace ediacaran_test
 
         constexpr auto template_arguments = make_template_arguments("A", get_qualified_type<A>());
 
-        return make_static_cast<this_class, char_array_size(template_arguments)>(
+        return make_class<this_class, char_array_size(template_arguments)>(
           class_name, template_arguments);
     }
 
@@ -37,7 +37,7 @@ namespace ediacaran_test
         constexpr auto template_arguments =
           make_template_arguments("A, B", get_qualified_type<A>(), get_qualified_type<B>());
 
-        return make_static_cast<this_class, char_array_size(template_arguments)>(
+        return make_class<this_class, char_array_size(template_arguments)>(
           class_name, template_arguments);
     }
 
@@ -57,7 +57,7 @@ namespace ediacaran_test
         constexpr auto const template_arguments =
           make_template_arguments("A, B, C", get_qualified_type<A>(), B, get_qualified_type<C>());
 
-        return make_static_cast<this_class, char_array_size(template_arguments)>(
+        return make_class<this_class, char_array_size(template_arguments)>(
           class_name, template_arguments, bases());
     }
 
@@ -74,7 +74,7 @@ namespace ediacaran_test
         using bases             = type_list<ClassTemplate3<A, 12, char>, ClassTemplate2<int, int>>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        return make_static_cast<this_class>(class_name, bases());
+        return make_class<this_class>(class_name, bases());
     }
 
     template <typename A, typename B, typename C, typename D, typename E>
@@ -88,7 +88,7 @@ namespace ediacaran_test
         char const class_name[] = "ClassTemplate5";
         using bases             = type_list<ClassTemplate4<double, double, double, double>>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
-        return make_static_cast<this_class>(class_name, bases());
+        return make_class<this_class>(class_name, bases());
     }
 
     std::string

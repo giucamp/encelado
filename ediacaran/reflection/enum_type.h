@@ -36,7 +36,8 @@ namespace ediacaran
           size_t                                                 i_alignment,
           const special_functions &                              i_special_functions,
           const array_view<const enum_member<UNDERLYING_TYPE>> & i_members)
-            : type(type_kind::is_enum, i_name, i_size, i_alignment, i_special_functions), m_members(i_members)
+            : type(type_kind::is_enum, i_name, i_size, i_alignment, i_special_functions),
+              m_members(i_members)
         {
         }
 
@@ -50,16 +51,19 @@ namespace ediacaran
     };
 
     template <typename UNDERLYING_TYPE>
-        constexpr void enum_to_chars(char_writer & o_dest, const enum_type<UNDERLYING_TYPE> & i_enum, UNDERLYING_TYPE i_value) noexcept
+    constexpr void enum_to_chars(
+      char_writer &                      o_dest,
+      const enum_type<UNDERLYING_TYPE> & i_enum,
+      UNDERLYING_TYPE                    i_value) noexcept
     {
         bool something_written = false;
-        auto remaining_value = i_value;
+        auto remaining_value   = i_value;
         for (auto const & member : i_enum.members())
         {
             auto const memb_val = member.value();
             if ((remaining_value & memb_val) == memb_val)
             {
-                if(something_written)
+                if (something_written)
                     o_dest << " | ";
                 o_dest << member.name();
                 remaining_value &= ~memb_val;
@@ -75,12 +79,14 @@ namespace ediacaran
     }
 
     // forward
-    template <typename TYPE> constexpr const enum_type<std::underlying_type_t<TYPE>> & get_enum_type() noexcept;
+    template <typename TYPE>
+    constexpr const enum_type<std::underlying_type_t<TYPE>> & get_enum_type() noexcept;
 
     template <typename ENUM, std::enable_if_t<std::is_enum_v<ENUM>> * = nullptr>
-        constexpr char_writer & operator << (char_writer & o_dest, ENUM i_value) noexcept
+    constexpr char_writer & operator<<(char_writer & o_dest, ENUM i_value) noexcept
     {
-        enum_to_chars(o_dest, get_enum_type<ENUM>(), static_cast<std::underlying_type_t<ENUM>>(i_value));
+        enum_to_chars(
+          o_dest, get_enum_type<ENUM>(), static_cast<std::underlying_type_t<ENUM>>(i_value));
         return o_dest;
     }
 

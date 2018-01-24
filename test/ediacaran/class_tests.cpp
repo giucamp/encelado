@@ -22,17 +22,14 @@ namespace ediacaran_test
 
     constexpr auto reflect(Enum_1 ** i_ptr)
     {
-        char const class_name[] = "Enum_1";
-
+        using this_enum = std::remove_reference_t<decltype(**i_ptr)>;
         using namespace ediacaran;
-        using this_class = std::remove_reference_t<decltype(**i_ptr)>;
-
-        auto const members = make_array(
-            make_enum_member("Member_1", this_class::Member_1),
-            make_enum_member("Member_2", this_class::Member_2),
-            make_enum_member("Member_3", this_class::Member_3));
-
-        return make_enum<this_class>(class_name, members);
+        return make_enum<this_enum>(
+          "Enum_1",
+          make_array(
+            make_enum_member("Member_1", this_enum::Member_1),
+            make_enum_member("Member_2", this_enum::Member_2),
+            make_enum_member("Member_3", this_enum::Member_3)));
     }
 
     // layer 3
@@ -49,7 +46,7 @@ namespace ediacaran_test
         using namespace ediacaran;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
-        return make_static_cast<this_class>(class_name);
+        return make_class<this_class>(class_name);
     }
 
     struct TestBase_3_2
@@ -77,7 +74,7 @@ namespace ediacaran_test
           REFL_DATA_PROP("m_float_3_2_1", m_float_3_2_1),
           REFL_ACCESSOR_PROP("prop", get_prop, set_prop),
           REFL_ACCESSOR_RO_PROP("readonly_prop", get_readonly_prop));
-        return make_static_cast<this_class>(class_name, bases{}, properties);
+        return make_class<this_class>(class_name, bases{}, properties);
     }
 
     // layer 2
@@ -94,7 +91,7 @@ namespace ediacaran_test
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = ediacaran::make_array(REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties);
     }
 
     struct TestBase_2_2 : TestBase_3_1
@@ -111,7 +108,7 @@ namespace ediacaran_test
 
         auto const properties = ediacaran::make_array(
           REFL_DATA_PROP("m_int2_2_1", m_int2_2_1), REFL_DATA_PROP("m_int2_2_2", m_int2_2_2));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties);
     }
 
     struct TestBase_2_3 : TestBase_3_2
@@ -127,7 +124,7 @@ namespace ediacaran_test
 
         auto const properties =
           ediacaran::make_array(REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties);
     }
 
     struct TestBase_2_4
@@ -145,7 +142,7 @@ namespace ediacaran_test
         auto const properties = ediacaran::make_array(
           REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1),
           REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties);
     }
 
     struct TestBase_2_Base
@@ -183,7 +180,7 @@ namespace ediacaran_test
           REFL_DATA_PROP("m_int8_2_3", m_int8_2_3));
         auto const actions = ediacaran::make_array(
           REFL_ACTION("set_all", set_all, "i_value"), REFL_ACTION("clear_all", clear_all, ""));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties, actions);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties, actions);
     }
 
     // layer 1
@@ -200,7 +197,7 @@ namespace ediacaran_test
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = ediacaran::make_array(REFL_DATA_PROP("m_string_1", m_string_1));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties);
     }
 
     struct TestBase_1_2 : TestBase_2_3, TestBase_2_4, virtual TestBase_2_Base
@@ -220,7 +217,7 @@ namespace ediacaran_test
           REFL_DATA_PROP("m_string_2_1", m_string_2_1),
           REFL_DATA_PROP("m_string_2_2", m_string_2_2),
           REFL_DATA_PROP("m_string_2_3", m_string_2_3));
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties);
     }
 
     // layer 0
@@ -266,7 +263,7 @@ namespace ediacaran_test
           REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"),
           REFL_ACTION("set", set, "i_int_par, i_flt_par"));
 
-        return ediacaran::make_static_cast<this_class>(class_name, bases{}, properties, actions);
+        return ediacaran::make_class<this_class>(class_name, bases{}, properties, actions);
     }
 
     void class_tests_print_props(ediacaran::raw_ptr i_source)
