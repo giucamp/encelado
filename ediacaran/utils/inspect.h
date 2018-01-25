@@ -6,11 +6,11 @@
 namespace ediacaran
 {
     class property_inspector;
-    class action_inspector;
+    class function_inspector;
 
     property_inspector inspect_properties(const raw_ptr & i_target);
 
-    action_inspector inspect_actions(const raw_ptr & i_target);
+    function_inspector inspect_functions(const raw_ptr & i_target);
 
     dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source);
 
@@ -38,11 +38,12 @@ namespace ediacaran
       const string_view & i_property_name,
       const string_view & i_value_source);
 
-    // expects "action(par1, par2, ...)"
-    dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments);
+    // expects "function(par1, par2, ...)"
+    dyn_value invoke_function(const raw_ptr & i_target, char_reader & i_function_and_arguments);
 
-    // expects "action(par1, par2, ...)"
-    dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments);
+    // expects "function(par1, par2, ...)"
+    dyn_value
+      invoke_function(const raw_ptr & i_target, const string_view & i_function_and_arguments);
 
     class property_inspector
     {
@@ -154,10 +155,11 @@ namespace ediacaran
         raw_ptr const m_target;
     };
 
-    class action_inspector
+    class function_inspector
     {
       public:
-        action_inspector(const raw_ptr & i_target) noexcept : m_target(i_target.full_indirection())
+        function_inspector(const raw_ptr & i_target) noexcept
+            : m_target(i_target.full_indirection())
         {
         }
 
@@ -168,21 +170,21 @@ namespace ediacaran
           public:
             content(class iterator & m_parent) noexcept : m_parent(m_parent) {}
 
-            string_view name() const noexcept { return m_parent.m_action->name(); }
+            string_view name() const noexcept { return m_parent.m_function->name(); }
 
             const qualified_type_ptr & qualified_return_type() const noexcept
             {
-                return m_parent.m_action->qualified_return_type();
+                return m_parent.m_function->qualified_return_type();
             }
 
             array_view<const parameter> const & parameters() const noexcept
             {
-                return m_parent.m_action->parameters();
+                return m_parent.m_function->parameters();
             }
 
             class_type const & owning_class() const noexcept { return *m_parent.m_class; }
 
-            class action const & action() const noexcept { return *m_parent.m_action; }
+            class function const & function() const noexcept { return *m_parent.m_function; }
 
             raw_ptr invoke(const array_view<const raw_ptr> & i_arguments) const
             {
@@ -219,8 +221,8 @@ namespace ediacaran
 
             iterator & operator++() noexcept
             {
-                m_action++;
-                if (m_action == m_class->actions().end())
+                m_function++;
+                if (m_function == m_class->functions().end())
                 {
                     next_base();
                 }
@@ -234,18 +236,18 @@ namespace ediacaran
                 return result;
             }
 
-            bool operator==(const end_marker &) const noexcept { return m_action == nullptr; }
+            bool operator==(const end_marker &) const noexcept { return m_function == nullptr; }
 
-            bool operator!=(const end_marker &) const noexcept { return m_action != nullptr; }
+            bool operator!=(const end_marker &) const noexcept { return m_function != nullptr; }
 
             bool operator==(const iterator & i_source) const noexcept
             {
-                return m_action == i_source.m_action;
+                return m_function == i_source.m_function;
             }
 
             bool operator!=(const iterator & i_source) const noexcept
             {
-                return m_action != i_source.m_action;
+                return m_function != i_source.m_function;
             }
 
           private:
@@ -259,7 +261,7 @@ namespace ediacaran
           private:
             void *             m_subobject  = nullptr;
             const class_type * m_class      = nullptr;
-            const action *     m_action     = nullptr;
+            const function *   m_function   = nullptr;
             size_t             m_base_index = 0;
             raw_ptr const      m_target;
             dyn_value          m_dyn_value;

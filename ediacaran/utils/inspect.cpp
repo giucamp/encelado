@@ -255,12 +255,12 @@ namespace ediacaran
         except_on_tailing(property_name);
     }
 
-    action_inspector inspect_actions(const raw_ptr & i_target)
+    function_inspector inspect_functions(const raw_ptr & i_target)
     {
-        return action_inspector(i_target);
+        return function_inspector(i_target);
     }
 
-    action_inspector::iterator::iterator(const raw_ptr & i_target) noexcept
+    function_inspector::iterator::iterator(const raw_ptr & i_target) noexcept
         : m_target(i_target.full_indirection())
     {
         auto const final_type = m_target.qualified_type().final_type();
@@ -268,15 +268,15 @@ namespace ediacaran
         {
             m_class     = static_cast<const class_type *>(final_type);
             m_subobject = const_cast<void *>(m_target.object());
-            m_action    = m_class->actions().data();
-            if (m_class->actions().empty())
+            m_function  = m_class->functions().data();
+            if (m_class->functions().empty())
             {
                 next_base();
             }
         }
     }
 
-    void action_inspector::iterator::next_base() noexcept
+    void function_inspector::iterator::next_base() noexcept
     {
         if (m_class == m_target.qualified_type().final_type())
         {
@@ -296,15 +296,15 @@ namespace ediacaran
                 auto const & base = complete_class->bases()[m_base_index];
                 m_class           = &base.get_class();
                 m_subobject       = const_cast<void *>(base.up_cast(m_target.object()));
-                if (!m_class->actions().empty())
+                if (!m_class->functions().empty())
                 {
-                    m_action = m_class->actions().data();
+                    m_function = m_class->functions().data();
                     break;
                 }
             }
             else
             {
-                m_action = nullptr;
+                m_function = nullptr;
                 break;
             }
 
@@ -312,15 +312,15 @@ namespace ediacaran
         }
     }
 
-    raw_ptr action_inspector::iterator::invoke(const array_view<const raw_ptr> & i_arguments)
+    raw_ptr function_inspector::iterator::invoke(const array_view<const raw_ptr> & i_arguments)
     {
-        auto const & parameters = m_action->parameters();
+        auto const & parameters = m_function->parameters();
 
         if (i_arguments.size() != parameters.size())
         {
             except<mismatching_arguments>(
-              "The action ",
-              m_action->name(),
+              "The function ",
+              m_function->name(),
               " expects ",
               parameters.size(),
               " arguments, ",
@@ -333,14 +333,14 @@ namespace ediacaran
         {
             if (i_arguments[i].qualified_type() != parameters[i].qualified_type())
             {
-                auto const parameter_name = *std::next(m_action->parameter_names().begin(), i);
+                auto const parameter_name = *std::next(m_function->parameter_names().begin(), i);
                 except<mismatching_arguments>(
                   "The argument ",
                   i,
                   " (",
                   parameter_name,
-                  ") of the action ",
-                  m_action->name(),
+                  ") of the function ",
+                  m_function->name(),
                   " is expected to have type ",
                   parameters[i].qualified_type(),
                   ", a ",
@@ -351,21 +351,21 @@ namespace ediacaran
         }
 
         auto const value =
-          m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
-              m_action->invoke(m_subobject, i_dest, arguments.data());
+          m_dyn_value.manual_construct(m_function->qualified_return_type(), [&](void * i_dest) {
+              m_function->invoke(m_subobject, i_dest, arguments.data());
           });
-        return raw_ptr(value, m_action->qualified_return_type());
+        return raw_ptr(value, m_function->qualified_return_type());
     }
 
-    raw_ptr action_inspector::iterator::invoke(const array_view<string_view> & i_arguments)
+    raw_ptr function_inspector::iterator::invoke(const array_view<string_view> & i_arguments)
     {
-        auto const & parameters = m_action->parameters();
+        auto const & parameters = m_function->parameters();
 
         if (i_arguments.size() != parameters.size())
         {
             except<mismatching_arguments>(
-              "The action ",
-              m_action->name(),
+              "The function ",
+              m_function->name(),
               " expects ",
               parameters.size(),
               " arguments, ",
@@ -384,15 +384,15 @@ namespace ediacaran
         }
 
         auto const value =
-          m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
-              m_action->invoke(m_subobject, i_dest, arguments.data());
+          m_dyn_value.manual_construct(m_function->qualified_return_type(), [&](void * i_dest) {
+              m_function->invoke(m_subobject, i_dest, arguments.data());
           });
-        return raw_ptr(value, m_action->qualified_return_type());
+        return raw_ptr(value, m_function->qualified_return_type());
     }
 
-    raw_ptr action_inspector::iterator::invoke(char_reader & i_arguments_source)
+    raw_ptr function_inspector::iterator::invoke(char_reader & i_arguments_source)
     {
-        auto const & parameters = m_action->parameters();
+        auto const & parameters = m_function->parameters();
 
         std::vector<dyn_value> dyn_arguments;
         std::vector<void *>    arguments;
@@ -415,47 +415,47 @@ namespace ediacaran
         }
         try_accept(spaces, i_arguments_source);
 
-        if (m_action->qualified_return_type() == get_qualified_type<void>())
+        if (m_function->qualified_return_type() == get_qualified_type<void>())
         {
-            m_action->invoke(m_subobject, nullptr, arguments.data());
+            m_function->invoke(m_subobject, nullptr, arguments.data());
             return raw_ptr();
         }
         else
         {
             auto const value =
-              m_dyn_value.manual_construct(m_action->qualified_return_type(), [&](void * i_dest) {
-                  m_action->invoke(m_subobject, i_dest, arguments.data());
+              m_dyn_value.manual_construct(m_function->qualified_return_type(), [&](void * i_dest) {
+                  m_function->invoke(m_subobject, i_dest, arguments.data());
               });
-            return raw_ptr(value, m_action->qualified_return_type());
+            return raw_ptr(value, m_function->qualified_return_type());
         }
     }
 
-    dyn_value invoke_action(const raw_ptr & i_target, char_reader & i_action_and_arguments)
+    dyn_value invoke_function(const raw_ptr & i_target, char_reader & i_function_and_arguments)
     {
-        auto const action_name = try_parse_identifier(i_action_and_arguments);
-        if (action_name.empty())
+        auto const function_name = try_parse_identifier(i_function_and_arguments);
+        if (function_name.empty())
         {
-            except<parse_error>("Missing action name");
+            except<parse_error>("Missing function name");
         }
 
         if (i_target.empty())
         {
-            except<parse_error>("Missing action target");
+            except<parse_error>("Missing function target");
         }
 
-        try_accept(spaces, i_action_and_arguments);
-        if (!try_accept('(', i_action_and_arguments))
+        try_accept(spaces, i_function_and_arguments);
+        if (!try_accept('(', i_function_and_arguments))
         {
             except<parse_error>("Missing '('");
         }
 
         dyn_value return_value;
         bool      found = false;
-        for (auto const & action : inspect_actions(i_target))
+        for (auto const & function : inspect_functions(i_target))
         {
-            if (action.name() == action_name)
+            if (function.name() == function_name)
             {
-                return_value = action.invoke(i_action_and_arguments);
+                return_value = function.invoke(i_function_and_arguments);
                 found        = true;
                 break;
             }
@@ -463,10 +463,10 @@ namespace ediacaran
 
         if (!found)
         {
-            except<std::runtime_error>("Could not find the action ", action_name);
+            except<std::runtime_error>("Could not find the function ", function_name);
         }
 
-        if (!try_accept(')', i_action_and_arguments))
+        if (!try_accept(')', i_function_and_arguments))
         {
             except<parse_error>("Missing ')'");
         }
@@ -474,10 +474,11 @@ namespace ediacaran
         return return_value;
     }
 
-    dyn_value invoke_action(const raw_ptr & i_target, const string_view & i_action_and_arguments)
+    dyn_value
+      invoke_function(const raw_ptr & i_target, const string_view & i_function_and_arguments)
     {
-        char_reader source(i_action_and_arguments);
-        dyn_value   return_value = invoke_action(i_target, source);
+        char_reader source(i_function_and_arguments);
+        dyn_value   return_value = invoke_function(i_target, source);
         except_on_tailing(source);
         return return_value;
     }

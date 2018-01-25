@@ -30,7 +30,7 @@
     <ClInclude Include="..\core\remove_noexcept.h" />
     <ClInclude Include="..\core\string_builder.h" />
     <ClInclude Include="..\core\type_list.h" />
-    <ClInclude Include="..\reflection\action.h" />
+    <ClInclude Include="..\reflection\function.h" />
     <ClInclude Include="..\reflection\class_template_specialization.h" />
     <ClInclude Include="..\reflection\detail\class_reflection.h" />
     <ClInclude Include="..\reflection\detail\enum_reflection.h" />

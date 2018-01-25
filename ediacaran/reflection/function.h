@@ -10,13 +10,13 @@
 
 namespace ediacaran
 {
-    class action
+    class function
     {
       public:
         using invoke_function = void (*)(
           void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters);
 
-        constexpr action(
+        constexpr function(
           const char *                        i_name,
           qualified_type_ptr const &          i_return_qualified_type,
           array_view<const parameter> const & i_parameters,
@@ -32,7 +32,7 @@ namespace ediacaran
             if (m_parameters.size() != parameter_names_count)
             {
                 except<std::runtime_error>(
-                  "The action ",
+                  "The function ",
                   i_name,
                   " has ",
                   m_parameters.size(),
@@ -88,7 +88,7 @@ namespace ediacaran
         };
 
         template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE>
-        struct ActionInvoker;
+        struct FunctionInvoker;
 
         template <
           typename OWNING_CLASS,
@@ -96,7 +96,7 @@ namespace ediacaran
           typename... PARAMETER_TYPE,
           RETURN_TYPE (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...),
           size_t... INDEX>
-        struct ActionInvoker<
+        struct FunctionInvoker<
           RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...),
           METHOD,
           std::index_sequence<INDEX...>>
@@ -130,7 +130,7 @@ namespace ediacaran
           typename... PARAMETER_TYPE,
           void (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...),
           size_t... INDEX>
-        struct ActionInvoker<
+        struct FunctionInvoker<
           void (OWNING_CLASS::*)(PARAMETER_TYPE...),
           METHOD,
           std::index_sequence<INDEX...>>
@@ -161,18 +161,18 @@ namespace ediacaran
     }
 
     template <typename METHOD_TYPE, METHOD_TYPE METHOD>
-    constexpr action make_action(const char * i_name, const char * i_parameter_names = "")
+    constexpr function make_function(const char * i_name, const char * i_parameter_names = "")
     {
-        using action_invoker = detail::ActionInvoker<
-            METHOD_TYPE,
-            METHOD,
-            std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
-        return action(
-            i_name,
-            get_qualified_type<typename action_invoker::return_type>(),
-            action_invoker::parameters,
-            i_parameter_names,
-            &action_invoker::func);
+        using function_invoker = detail::FunctionInvoker<
+          METHOD_TYPE,
+          METHOD,
+          std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
+        return function(
+          i_name,
+          get_qualified_type<typename function_invoker::return_type>(),
+          function_invoker::parameters,
+          i_parameter_names,
+          &function_invoker::func);
     }
 
 } // namespace ediacaran

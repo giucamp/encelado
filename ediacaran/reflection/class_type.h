@@ -3,7 +3,7 @@
 #include "ediacaran/core/array_view.h"
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/type_list.h"
-#include "ediacaran/reflection/action.h"
+#include "ediacaran/reflection/function.h"
 #include "ediacaran/reflection/property.h"
 #include "ediacaran/reflection/type.h"
 #include <cstddef>
@@ -55,9 +55,9 @@ namespace ediacaran
           const special_functions &            i_special_functions,
           const array_view<const base_class> & i_base_classes,
           const array_view<const property> &   i_properties,
-          const array_view<const action> &     i_actions)
+          const array_view<const function> &   i_functions)
             : type(type_kind::is_class, i_name, i_size, i_alignment, i_special_functions),
-              m_base_classes(i_base_classes), m_properties(i_properties), m_actions(i_actions)
+              m_base_classes(i_base_classes), m_properties(i_properties), m_functions(i_functions)
         {
             check_duplicates();
         }
@@ -72,7 +72,10 @@ namespace ediacaran
             return m_properties;
         }
 
-        constexpr array_view<const action> const & actions() const noexcept { return m_actions; }
+        constexpr array_view<const function> const & functions() const noexcept
+        {
+            return m_functions;
+        }
 
       private:
         constexpr void check_duplicates() const
@@ -112,7 +115,7 @@ namespace ediacaran
       private:
         array_view<const base_class> const m_base_classes;
         array_view<const property> const   m_properties;
-        array_view<const action> const     m_actions;
+        array_view<const function> const   m_functions;
     };
 
     // forward

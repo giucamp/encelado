@@ -16,18 +16,17 @@
       make_property<decltype(&this_class::Getter), &this_class::Getter, std::nullptr_t, nullptr>(  \
         Name)
 
-#define REFL_ACTION(Name, Method, ParameterNames)                                                  \
-    ediacaran::make_action<decltype(&this_class::Method), &this_class::Method>(            \
+#define REFL_FUNCTION(Name, Method, ParameterNames)                                                \
+    ediacaran::make_function<decltype(&this_class::Method), &this_class::Method>(                  \
       Name, ParameterNames)
 
 #define EDIACARAN_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
 
 #define EDIACARAN_CONST_ACCESSOR(Getter) decltype(Getter), Getter, std::nullptr_t, nullptr
 
-#define EDIACARAN_ACCESSOR(Getter, Setter)                                                  \
-    decltype(Getter), Getter, decltype(Setter), Setter
+#define EDIACARAN_ACCESSOR(Getter, Setter) decltype(Getter), Getter, decltype(Setter), Setter
 
-#define EDIACARAN_FUNC(Method)          decltype(Method), Method
+#define EDIACARAN_FUNC(Method) decltype(Method), Method
 
 namespace ediacaran
 {
@@ -110,7 +109,7 @@ namespace ediacaran
           size_t NAME_LENGTH,
           typename TEMPLATE_PARAMETER_LIST,
           size_t PROPERTY_COUNT,
-          size_t ACTION_COUNT,
+          size_t FUNCTION_COUNT,
           typename BASE_CLASSES_LIST>
         struct StaticClass;
 
@@ -118,7 +117,7 @@ namespace ediacaran
           typename CLASS,
           size_t SPECIALIZATION_NAME_LENGTH,
           size_t PROPERTY_COUNT,
-          size_t ACTION_COUNT,
+          size_t FUNCTION_COUNT,
           typename... TEMPLATE_PARAMETERS,
           typename... BASE_CLASSES>
         struct StaticClass<
@@ -126,7 +125,7 @@ namespace ediacaran
           SPECIALIZATION_NAME_LENGTH,
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
-          ACTION_COUNT,
+          FUNCTION_COUNT,
           type_list<BASE_CLASSES...>>
         {
             template <size_t... INDEX>
@@ -159,9 +158,9 @@ namespace ediacaran
               const array<char, SPECIALIZATION_NAME_LENGTH> &    i_specialization_name,
               const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
               array<property, PROPERTY_COUNT> const &            i_properties,
-              array<action, ACTION_COUNT> const &                i_actions)
+              array<function, FUNCTION_COUNT> const &            i_functions)
                 : m_specialization_name(i_specialization_name), m_properties(i_properties),
-                  m_actions(i_actions), m_template_arguments(i_template_arguments),
+                  m_functions(i_functions), m_template_arguments(i_template_arguments),
                   m_template_parameters_array(make_template_parameters_array(
                     m_template_arguments,
                     std::make_index_sequence<sizeof...(TEMPLATE_PARAMETERS)>{})),
@@ -176,7 +175,7 @@ namespace ediacaran
                     special_functions::make<CLASS>(),
                     BasesArray<CLASS, all_bases>::s_bases,
                     m_properties,
-                    m_actions,
+                    m_functions,
                     m_template_parameters_array,
                     m_template_arguments_array)
             {
@@ -190,7 +189,7 @@ namespace ediacaran
           private:
             array<char, SPECIALIZATION_NAME_LENGTH>          m_specialization_name;
             array<property, PROPERTY_COUNT> const            m_properties;
-            array<action, ACTION_COUNT> const                m_actions;
+            array<function, FUNCTION_COUNT> const            m_functions;
             template_arguments<TEMPLATE_PARAMETERS...> const m_template_arguments;
             array<const parameter, sizeof...(TEMPLATE_PARAMETERS)> const
               m_template_parameters_array;
@@ -203,14 +202,14 @@ namespace ediacaran
           typename CLASS,
           size_t CLASS_NAME_LENGTH,
           size_t PROPERTY_COUNT,
-          size_t ACTION_COUNT,
+          size_t FUNCTION_COUNT,
           typename... BASE_CLASSES>
         struct StaticClass<
           CLASS,
           CLASS_NAME_LENGTH,
           template_arguments<>,
           PROPERTY_COUNT,
-          ACTION_COUNT,
+          FUNCTION_COUNT,
           type_list<BASE_CLASSES...>>
         {
           public:
@@ -224,8 +223,8 @@ namespace ediacaran
               const array<char, CLASS_NAME_LENGTH> & i_name,
               template_arguments<>,
               array<property, PROPERTY_COUNT> const & i_properties,
-              array<action, ACTION_COUNT> const &     i_actions)
-                : m_name(i_name), m_properties(i_properties), m_actions(i_actions),
+              array<function, FUNCTION_COUNT> const & i_functions)
+                : m_name(i_name), m_properties(i_properties), m_functions(i_functions),
                   m_class(
                     m_name.data(),
                     sizeof(CLASS),
@@ -233,7 +232,7 @@ namespace ediacaran
                     special_functions::make<CLASS>(),
                     BasesArray<CLASS, all_bases>::s_bases,
                     m_properties,
-                    m_actions)
+                    m_functions)
             {
             }
 
@@ -242,7 +241,7 @@ namespace ediacaran
           private:
             array<char, CLASS_NAME_LENGTH>        m_name;
             array<property, PROPERTY_COUNT> const m_properties;
-            array<action, ACTION_COUNT> const     m_actions;
+            array<function, FUNCTION_COUNT> const m_functions;
             class_type const                      m_class;
         };
 
@@ -342,11 +341,11 @@ namespace ediacaran
       typename BASE_CLASSES_LIST = type_list<>,
       size_t CLASS_NAME_SIZE,
       size_t PROPERTY_COUNT = 0,
-      size_t ACTION_COUNT   = 0>
+      size_t FUNCTION_COUNT = 0>
     constexpr auto make_class(
       const char (&i_name)[CLASS_NAME_SIZE],
       array<property, PROPERTY_COUNT> const & i_properties = array<property, 0>{},
-      array<action, ACTION_COUNT> const &     i_actions    = array<action, 0>{})
+      array<function, FUNCTION_COUNT> const & i_functions  = array<function, 0>{})
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
@@ -359,8 +358,8 @@ namespace ediacaran
               CLASS_NAME_SIZE,
               template_arguments<>,
               PROPERTY_COUNT,
-              ACTION_COUNT,
-              BASE_CLASSES_LIST>(name, make_template_arguments(), i_properties, i_actions);
+              FUNCTION_COUNT,
+              BASE_CLASSES_LIST>(name, make_template_arguments(), i_properties, i_functions);
         }
         else
         {
@@ -378,8 +377,8 @@ namespace ediacaran
               CLASS_NAME_SIZE + template_arguments_str_size,
               std::decay_t<decltype(auto_template_arguments)>,
               PROPERTY_COUNT,
-              ACTION_COUNT,
-              BASE_CLASSES_LIST>(name, auto_template_arguments, i_properties, i_actions);
+              FUNCTION_COUNT,
+              BASE_CLASSES_LIST>(name, auto_template_arguments, i_properties, i_functions);
         }
     }
 
@@ -390,12 +389,12 @@ namespace ediacaran
       size_t TEMPLATE_NAME_SIZE,
       typename... TEMPLATE_PARAMETERS,
       size_t PROPERTY_COUNT = 0,
-      size_t ACTION_COUNT   = 0>
+      size_t FUNCTION_COUNT = 0>
     constexpr auto make_class(
       const char (&i_template_name)[TEMPLATE_NAME_SIZE],
       const template_arguments<TEMPLATE_PARAMETERS...> & i_template_arguments,
       array<property, PROPERTY_COUNT> const &            i_properties = array<property, 0>{},
-      array<action, ACTION_COUNT> const &                i_actions    = array<action, 0>{})
+      array<function, FUNCTION_COUNT> const &            i_functions  = array<function, 0>{})
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
@@ -410,8 +409,8 @@ namespace ediacaran
           ARGUMENTS_STRING_SIZE + TEMPLATE_NAME_SIZE,
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
-          ACTION_COUNT,
-          BASE_CLASSES_LIST>(specialization_name, i_template_arguments, i_properties, i_actions);
+          FUNCTION_COUNT,
+          BASE_CLASSES_LIST>(specialization_name, i_template_arguments, i_properties, i_functions);
     }
 
     template <typename PROP_TYPE, size_t OFFSET>

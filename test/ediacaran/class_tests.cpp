@@ -178,9 +178,9 @@ namespace ediacaran_test
           REFL_DATA_PROP("m_int8_2_1", m_int8_2_1),
           REFL_DATA_PROP("m_int8_2_2", m_int8_2_2),
           REFL_DATA_PROP("m_int8_2_3", m_int8_2_3));
-        auto const actions = ediacaran::make_array(
-          REFL_ACTION("set_all", set_all, "i_value"), REFL_ACTION("clear_all", clear_all, ""));
-        return ediacaran::make_class<this_class, bases>(class_name, properties, actions);
+        auto const functions = ediacaran::make_array(
+          REFL_FUNCTION("set_all", set_all, "i_value"), REFL_FUNCTION("clear_all", clear_all, ""));
+        return ediacaran::make_class<this_class, bases>(class_name, properties, functions);
     }
 
     // layer 1
@@ -261,11 +261,11 @@ namespace ediacaran_test
           make_property<EDIACARAN_DATA(this_class, m_integer)>("integer"),
           make_property<EDIACARAN_DATA(this_class, m_float)>("float"));
 
-        auto const actions = make_array(
-          REFL_ACTION("add", add, "i_int_par, i_flt_par, i_invert"),
-          REFL_ACTION("set", set, "i_int_par, i_flt_par"));
+        auto const functions = make_array(
+          REFL_FUNCTION("add", add, "i_int_par, i_flt_par, i_invert"),
+          REFL_FUNCTION("set", set, "i_int_par, i_flt_par"));
 
-        return make_class<this_class, bases>(class_name, properties, actions);
+        return make_class<this_class, bases>(class_name, properties, functions);
     }
 
     void class_tests_print_props(ediacaran::raw_ptr i_source)
@@ -309,7 +309,7 @@ namespace ediacaran_test
               special_functions{},
               array_view<const base_class>{},
               props,
-              array_view<const action>{});
+              array_view<const function>{});
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }
@@ -328,7 +328,7 @@ namespace ediacaran_test
         class_tests_print_props(raw_ptr(&test_object));
 
         const auto & t = get_type<TestClass>();
-        for (auto const & act : t.actions())
+        for (auto const & act : t.functions())
         {
             std::cout << act.name().data() << std::endl;
 
@@ -346,10 +346,10 @@ namespace ediacaran_test
             auto flt_v = get_property_value(obj, "float").to_string();
             ENCELADO_TEST_ASSERT(int_v == "4");
             ENCELADO_TEST_ASSERT(flt_v == "5");
-            auto action_res = invoke_action(obj, "add(2, 3, false)").to_string();
-            auto int_v_1    = get_property_value(obj, "integer").to_string();
-            auto flt_v_2    = get_property_value(obj, "float").to_string();
-            ENCELADO_TEST_ASSERT(action_res == "6");
+            auto function_res = invoke_function(obj, "add(2, 3, false)").to_string();
+            auto int_v_1      = get_property_value(obj, "integer").to_string();
+            auto flt_v_2      = get_property_value(obj, "float").to_string();
+            ENCELADO_TEST_ASSERT(function_res == "6");
             ENCELADO_TEST_ASSERT(int_v_1 == "6");
             ENCELADO_TEST_ASSERT(flt_v_2 == "8");
         }
@@ -360,11 +360,11 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(v1 == "1");
             ENCELADO_TEST_ASSERT(v2 == "2");
             ENCELADO_TEST_ASSERT(v3 == "3");
-            invoke_action(obj, "set_all(11)");
+            invoke_function(obj, "set_all(11)");
             auto n1 = get_property_value(obj, "m_int8_2_1").to_string();
             auto n2 = get_property_value(obj, "m_int8_2_2").to_string();
             auto n3 = get_property_value(obj, "m_int8_2_3").to_string();
-            //ENCELADO_TEST_ASSERT(action_res == "1");
+            //ENCELADO_TEST_ASSERT(function_res == "1");
             ENCELADO_TEST_ASSERT(n1 == "11");
             ENCELADO_TEST_ASSERT(n2 == "12");
             ENCELADO_TEST_ASSERT(n3 == "13");
