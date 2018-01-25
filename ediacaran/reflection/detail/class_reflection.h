@@ -17,15 +17,17 @@
         Name)
 
 #define REFL_ACTION(Name, Method, ParameterNames)                                                  \
-    ediacaran::detail::make_action<decltype(&this_class::Method), &this_class::Method>(            \
+    ediacaran::make_action<decltype(&this_class::Method), &this_class::Method>(            \
       Name, ParameterNames)
 
 #define EDIACARAN_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
 
-#define EDIACARAN_CONST_ACCESSOR(Class, Getter) decltype(&Class::Getter), &Class::Getter
+#define EDIACARAN_CONST_ACCESSOR(Getter) decltype(Getter), Getter, std::nullptr_t, nullptr
 
-#define EDIACARAN_ACCESSOR(Class, Getter, Setter)                                                  \
-    decltype(&Class::Getter), &Class::Getter, decltype(&Class::Setter), &Class::Setter
+#define EDIACARAN_ACCESSOR(Getter, Setter)                                                  \
+    decltype(Getter), Getter, decltype(Setter), Setter
+
+#define EDIACARAN_FUNC(Method)          decltype(Method), Method
 
 namespace ediacaran
 {

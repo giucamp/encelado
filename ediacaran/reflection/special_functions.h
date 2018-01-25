@@ -244,7 +244,7 @@ namespace ediacaran
         constexpr static scalar_copy_assigner_function make_copy_assigner() noexcept
         {
             if constexpr (std::is_copy_assignable_v<TYPE>)
-                return &scalar_copy_construct_impl<TYPE>;
+                return &scalar_copy_assign_impl<TYPE>;
             else
                 return nullptr;
         }
@@ -253,7 +253,7 @@ namespace ediacaran
         constexpr static scalar_move_assigner_function make_move_assigner() noexcept
         {
             if constexpr (std::is_move_assignable_v<TYPE>)
-                return &scalar_move_construct_impl<TYPE>;
+                return &scalar_move_assign_impl<TYPE>;
             else
                 return nullptr;
         }

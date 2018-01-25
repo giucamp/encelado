@@ -42,6 +42,7 @@
     <ClInclude Include="..\reflection\qualified_type_ptr.h" />
     <ClInclude Include="..\reflection\reflection.h" />
     <ClInclude Include="..\reflection\special_functions.h" />
+    <ClInclude Include="..\reflection\std_containers_reflection.h" />
     <ClInclude Include="..\reflection\type.h" />
     <ClInclude Include="..\utils\dyn_value.h" />
     <ClInclude Include="..\utils\inspect.h" />

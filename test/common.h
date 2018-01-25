@@ -23,4 +23,5 @@ namespace ediacaran_test
     void type_tests();
     void class_tests();
     void class_templates_tests();
+    void animalia_test();
 }
