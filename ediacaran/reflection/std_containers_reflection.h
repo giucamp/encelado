@@ -5,13 +5,8 @@
 namespace std
 {
     template <typename TYPE> class allocator;
-    template <typename TYPE, typename ALLOCATOR = std::allocator<TYPE>> class vector;
-
-    template <
-      typename CHAR,
-      typename TRAITS    = std::char_traits<CHAR>,
-      typename ALLOCATOR = std::allocator<CHAR>>
-    class basic_string;
+    template <typename TYPE, typename ALLOCATOR> class vector;
+    template < typename CHAR, typename TRAITS, typename ALLOCATOR> class basic_string;
 }
 
 namespace ediacaran

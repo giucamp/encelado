@@ -22,7 +22,7 @@
 
 #define EDI_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
 
-#define EDI_FUNC(Method) decltype(Method), Method
+#define EDI_FUNC(Class, Method) decltype(&Class::Method), &Class::Method
 
 namespace ediacaran
 {
