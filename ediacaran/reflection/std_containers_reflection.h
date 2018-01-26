@@ -1,13 +1,15 @@
 #pragma once
 
 #include "ediacaran/reflection/reflection.h"
+#include <vector>
+#include <string>
 
-namespace std
+/*namespace std
 {
     template <typename TYPE> class allocator;
     template <typename TYPE, typename ALLOCATOR> class vector;
     template < typename CHAR, typename TRAITS, typename ALLOCATOR> class basic_string;
-}
+}*/
 
 namespace ediacaran
 {
@@ -16,7 +18,7 @@ namespace ediacaran
         static constexpr auto reflect()
         {
             return make_class< std::allocator<PARAMS...> >("std::allocator");
-        }        
+        }
     };
 
     template <typename... PARAMS> struct non_intrusive_reflection< std::vector<PARAMS...> >

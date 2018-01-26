@@ -51,12 +51,12 @@ namespace ediacaran
             else if constexpr(HasAdlReflection<UDT>::value)
                 return reflect(static_cast<UDT**>(nullptr));
             else if constexpr(HasIntrusiveReflection<UDT>::value)
-                return TYPE::reflect();
+                return UDT::reflect();
             else
             {
                 struct UnreflectedType {};
                 UDT t = UnreflectedType{};
-                static_assert(false, "This type is not reflected");
+                //static_assert(false, "This type is not reflected");
             }
         }
 

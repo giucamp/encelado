@@ -54,6 +54,7 @@
 		<Unit filename="../reflection/action.h" />
 		<Unit filename="../reflection/class_template_specialization.h" />
 		<Unit filename="../reflection/class_type.h" />
+		<Unit filename="../reflection/detail/class_reflection.h" />
 		<Unit filename="../reflection/namespace.cpp" />
 		<Unit filename="../reflection/namespace.h" />
 		<Unit filename="../reflection/property.h" />

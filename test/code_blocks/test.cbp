@@ -39,6 +39,7 @@
 		</Compiler>
 		<Unit filename="../cambrian.cpp" />
 		<Unit filename="../common.h" />
+		<Unit filename="../ediacaran/animalia.cpp" />
 		<Unit filename="../ediacaran/class_templates_tests.cpp" />
 		<Unit filename="../ediacaran/class_tests.cpp" />
 		<Unit filename="../ediacaran/qualified_type_ptr_tests.cpp" />
