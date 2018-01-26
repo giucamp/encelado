@@ -20,13 +20,9 @@
     ediacaran::make_function<decltype(&this_class::Method), &this_class::Method>(                  \
       Name, ParameterNames)
 
-#define EDIACARAN_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
+#define EDI_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
 
-#define EDIACARAN_CONST_ACCESSOR(Getter) decltype(Getter), Getter, std::nullptr_t, nullptr
-
-#define EDIACARAN_ACCESSOR(Getter, Setter) decltype(Getter), Getter, decltype(Setter), Setter
-
-#define EDIACARAN_FUNC(Method) decltype(Method), Method
+#define EDI_FUNC(Method) decltype(Method), Method
 
 namespace ediacaran
 {
@@ -419,8 +415,13 @@ namespace ediacaran
         return property(property::offset_tag{}, i_name, get_qualified_type<PROP_TYPE>(), OFFSET);
     }
 
-    template <typename GETTER_TYPE, GETTER_TYPE GETTER, typename SETTER_TYPE, SETTER_TYPE SETTER>
-    constexpr property make_property(const char * i_name)
+    template <
+      typename GETTER_TYPE,
+      GETTER_TYPE GETTER,
+      typename SETTER_TYPE = std::nullptr_t,
+      SETTER_TYPE SETTER   = nullptr>
+    constexpr std::enable_if_t<std::is_member_function_pointer_v<GETTER_TYPE>, property>
+      make_property(const char * i_name)
     {
         using accessor = detail::PropertyAccessor<
           ediacaran::remove_noexcept_t<GETTER_TYPE>,

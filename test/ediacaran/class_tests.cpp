@@ -258,8 +258,8 @@ namespace ediacaran_test
         using this_class            = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
-          make_property<EDIACARAN_DATA(this_class, m_integer)>("integer"),
-          make_property<EDIACARAN_DATA(this_class, m_float)>("float"));
+          make_property<EDI_DATA(this_class, m_integer)>("integer"),
+          make_property<EDI_DATA(this_class, m_float)>("float"));
 
         auto const functions = make_array(
           REFL_FUNCTION("add", add, "i_int_par, i_flt_par, i_invert"),

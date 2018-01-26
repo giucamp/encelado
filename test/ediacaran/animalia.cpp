@@ -42,16 +42,17 @@ namespace ediacaran_test
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
-          make_property<EDIACARAN_DATA(this_class, m_name)>("name"),
-          make_property<EDIACARAN_CONST_ACCESSOR(&this_class::get_name_2)>("name_2"),
-          make_property<EDIACARAN_CONST_ACCESSOR(&this_class::get_name_3)>("name_3"),
-          make_property<EDIACARAN_ACCESSOR(&this_class::get_name_4, &this_class::set_name_4)>(
-            "name_4"),
-          make_property<EDIACARAN_ACCESSOR(&this_class::get_name_5, &this_class::set_name_5)>(
-            "name_5"),
-          make_property<EDIACARAN_CONST_ACCESSOR(&this_class::get_color)>("color"));
+          make_property<EDI_DATA(this_class, m_name)>("name"),
+          make_property<EDI_FUNC(&this_class::get_name_2)>("name_2"),
+          make_property<EDI_FUNC(&this_class::get_name_3)>("name_3"),
+          make_property<EDI_FUNC(&this_class::get_name_4), EDI_FUNC(&this_class::set_name_4)>("name_4"),
+          make_property<EDI_FUNC(&this_class::get_name_5), EDI_FUNC(&this_class::set_name_5)>("name_5"),
+          make_property<EDI_FUNC(&this_class::get_color)>("color"));
+
         auto const functions = ediacaran::make_array(
-          make_function<EDIACARAN_FUNC(&this_class::make_sound)>("make_sound"));
+            make_function<EDI_FUNC(&this_class::make_sound)>("make_sound"),
+            make_function<EDI_FUNC(&this_class::move_by)>("move_by", "x, y")
+        );
         return make_class<this_class>(class_name, properties, functions);
     }
 
@@ -74,8 +75,8 @@ namespace ediacaran_test
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
-          make_property<EDIACARAN_DATA(this_class, m_wings)>("m_wings"),
-          make_property<EDIACARAN_CONST_ACCESSOR(&this_class::wing_count)>("m_wings"));
+          make_property<EDI_DATA(this_class, m_wings)>("m_wings"),
+          make_property<EDI_FUNC(&this_class::wing_count)>("m_wings"));
         return make_class<this_class>(class_name, properties);
     }
 
@@ -95,7 +96,7 @@ namespace ediacaran_test
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties =
-          make_array(make_property<EDIACARAN_DATA(this_class, m_vertebre_count)>("vertebre_count"));
+          make_array(make_property<EDI_DATA(this_class, m_vertebre_count)>("vertebre_count"));
 
         return make_class<this_class, bases>(class_name, properties);
     }

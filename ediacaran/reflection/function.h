@@ -6,6 +6,7 @@
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
 #include <ediacaran/core/array.h>
+#include <ediacaran/core/remove_noexcept.h>
 #include <utility>
 
 namespace ediacaran
@@ -23,7 +24,7 @@ namespace ediacaran
           const char *                        i_parameter_names,
           invoke_function                     i_invoke_function)
             : m_name(i_name), m_invoke_function(i_invoke_function),
-              m_return_qualified_type(i_return_qualified_type), m_parameters(i_parameters),
+              m_qualified_return_type(i_return_qualified_type), m_parameters(i_parameters),
               m_parameter_names(i_parameter_names)
         {
             size_t parameter_names_count = 0;
@@ -50,7 +51,7 @@ namespace ediacaran
 
         constexpr qualified_type_ptr const & qualified_return_type() const noexcept
         {
-            return m_return_qualified_type;
+            return m_qualified_return_type;
         }
 
         constexpr array_view<const parameter> const & parameters() const noexcept
@@ -72,7 +73,7 @@ namespace ediacaran
       private:
         const char * const                m_name;
         invoke_function const             m_invoke_function;
-        qualified_type_ptr const          m_return_qualified_type;
+        qualified_type_ptr const          m_qualified_return_type;
         array_view<const parameter> const m_parameters;
         comma_separated_names const       m_parameter_names;
     };
@@ -81,14 +82,23 @@ namespace ediacaran
     {
         template <typename METHOD_TYPE> struct MethodTraits;
 
+        template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE>
+        struct FunctionInvoker;
+
+
+
+#ifdef __clang__
+        /* silent warning: suggest braces around initialization of subobject,
+        because double braces fail to compile with an array of zero size */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-braces"
+#endif
+
         template <typename OWNING_CLASS, typename RETURN_TYPE, typename... PARAMETER_TYPE>
-        struct MethodTraits<RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...)>
+        struct MethodTraits<RETURN_TYPE(OWNING_CLASS::*)(PARAMETER_TYPE...)>
         {
             constexpr static size_t parameter_count = sizeof...(PARAMETER_TYPE);
         };
-
-        template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE>
-        struct FunctionInvoker;
 
         template <
           typename OWNING_CLASS,
@@ -102,18 +112,8 @@ namespace ediacaran
           std::index_sequence<INDEX...>>
         {
             using return_type = RETURN_TYPE;
-
-#ifdef __clang__
-/* silent warning: suggest braces around initialization of subobject,
-                    because double braces fail to compile with an array of zero size */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-braces"
-#endif
             constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
               parameter{get_qualified_type<PARAMETER_TYPE>()}...};
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 
             static void func(
               void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
@@ -136,18 +136,8 @@ namespace ediacaran
           std::index_sequence<INDEX...>>
         {
             using return_type = void;
-
-#ifdef __clang__
-/* silent warning: suggest braces around initialization of subobject,
-                    because double braces fail to compile with an array of zero size */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-braces"
-#endif
             constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
               parameter{get_qualified_type<PARAMETER_TYPE>()}...};
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 
             static void func(
               void * i_dest_object,
@@ -158,15 +148,20 @@ namespace ediacaran
                 (object.*METHOD)(*static_cast<const PARAMETER_TYPE *>(i_parameters[INDEX])...);
             }
         };
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
     }
 
     template <typename METHOD_TYPE, METHOD_TYPE METHOD>
     constexpr function make_function(const char * i_name, const char * i_parameter_names = "")
     {
+        using method_type = remove_noexcept_t<METHOD_TYPE>;
         using function_invoker = detail::FunctionInvoker<
-          METHOD_TYPE,
+          method_type,
           METHOD,
-          std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
+          std::make_index_sequence<detail::MethodTraits<method_type>::parameter_count>>;
         return function(
           i_name,
           get_qualified_type<typename function_invoker::return_type>(),
