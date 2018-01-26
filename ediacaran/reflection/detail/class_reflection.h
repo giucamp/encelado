@@ -26,12 +26,42 @@
 
 namespace ediacaran
 {
+    template <typename UDT>
+    struct non_intrusive_reflection;
+
     namespace detail
     {
-        // class
+        #define EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT(Name, Expression) \
+            template <typename TYPE, typename = std::void_t<>> \
+                struct Name : std::false_type {}; \
+            template <typename TYPE> \
+                struct Name<TYPE, std::void_t<decltype(Expression)>> : std::true_type {}
+
+        EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT(HasNonintrusiveReflection, non_intrusive_reflection<TYPE>::reflect());
+        EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT(HasAdlReflection, reflect(static_cast<TYPE **>(nullptr)));
+        EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT(HasIntrusiveReflection, TYPE::reflect());
+
+        #undef EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT
+
+        template <typename UDT>
+            static constexpr auto reflect()
+        {
+            if constexpr(HasNonintrusiveReflection<UDT>::value)
+                return non_intrusive_reflection<UDT>::reflect();
+            else if constexpr(HasAdlReflection<UDT>::value)
+                return reflect(static_cast<UDT**>(nullptr));
+            else if constexpr(HasIntrusiveReflection<UDT>::value)
+                return TYPE::reflect();
+            else
+            {
+                struct UnreflectedType {};
+                UDT t = UnreflectedType{};
+                static_assert(false, "This type is not reflected");
+            }
+        }
 
         template <typename TYPE>
-        using class_descriptor = decltype(reflect(std::declval<TYPE **>()));
+            using class_descriptor = decltype(reflect<TYPE>());
 
         // BasesArray - array of base_class, constructed from an input type_list
         template <typename...> struct BasesArray;
@@ -96,7 +126,7 @@ namespace ediacaran
         template <typename UDT>
         struct TypeInstance<UDT, std::enable_if_t<std::is_class_v<UDT> || std::is_enum_v<UDT>, UDT>>
         {
-            constexpr static auto         static_class{reflect(static_cast<UDT **>(nullptr))};
+            constexpr static auto         static_class{ reflect<UDT>() };
             constexpr static const auto & instance() noexcept { return static_class.get_class(); }
         };
 

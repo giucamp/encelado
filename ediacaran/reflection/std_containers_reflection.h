@@ -11,22 +11,44 @@ namespace std
 
 namespace ediacaran
 {
-    template <typename... PARAMS> constexpr auto reflect(std::allocator<PARAMS...> ** i_ptr)
+    template <typename... PARAMS> struct non_intrusive_reflection< std::allocator<PARAMS...> >
     {
-        return make_class<std::remove_reference_t<decltype(**i_ptr)>>("std::allocator");
-    }
+        static constexpr auto reflect()
+        {
+            return make_class< std::allocator<PARAMS...> >("std::allocator");
+        }        
+    };
 
-    template <typename... PARAMS> constexpr auto reflect(std::vector<PARAMS...> ** i_ptr)
+    template <typename... PARAMS> struct non_intrusive_reflection< std::vector<PARAMS...> >
     {
-        return make_class<std::remove_reference_t<decltype(**i_ptr)>>("std::vector");
-    }
+        static constexpr auto reflect()
+        {
+            return make_class< std::vector<PARAMS...> >("std::vector");
+        }
+    };
 
-    constexpr auto reflect(std::string ** i_ptr)
+    template <typename... PARAMS> struct non_intrusive_reflection< std::char_traits<PARAMS...> >
+    {
+        static constexpr auto reflect()
+        {
+            return make_class< std::char_traits<PARAMS...> >("std::char_traits");
+        }
+    };
+
+    template <typename... PARAMS> struct non_intrusive_reflection< std::basic_string<PARAMS...> >
+    {
+        static constexpr auto reflect()
+        {
+            return make_class< std::basic_string<PARAMS...> >("std::char_traits");
+        }
+    };
+
+    /*constexpr auto reflect(std::string ** i_ptr)
     {
         constexpr auto const template_arguments = make_template_arguments();
         return make_class<
           std::remove_reference_t<decltype(**i_ptr)>,
           char_array_size(template_arguments)>("std::string", template_arguments);
-    }
+    }*/
 
 } // namespace ediacaran
