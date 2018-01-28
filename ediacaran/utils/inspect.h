@@ -172,7 +172,7 @@ namespace ediacaran
 
             string_view name() const noexcept { return m_parent.m_function->name(); }
 
-            const qualified_type_ptr & qualified_return_type() const noexcept
+            const qualified_type_ptr qualified_return_type() const noexcept
             {
                 return m_parent.m_function->qualified_return_type();
             }
