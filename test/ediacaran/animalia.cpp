@@ -138,6 +138,9 @@ namespace ediacaran_test
     void animalia_test()
     {
         using namespace ediacaran;
+
+        constexpr auto coll = make_container_reflection<std::vector<int>>();
+
         constexpr auto anlimal_type = get_qualified_type<Animal>();
         auto           u            = get_type<Animal>();
         static_assert(

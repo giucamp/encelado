@@ -18,7 +18,8 @@ namespace ediacaran
           const array_view<const property> &     i_properties,
           const array_view<const function> &     i_functions,
           const array_view<const parameter> &    i_template_parameters,
-          const array_view<const void * const> & i_template_arguments)
+          const array_view<const void * const> & i_template_arguments,
+          const class container *                i_container)
             : class_type(
                 i_name,
                 i_size,
@@ -26,7 +27,8 @@ namespace ediacaran
                 i_special_functions,
                 i_base_classes,
                 i_properties,
-                i_functions),
+                i_functions,
+                i_container),
               m_template_parameter_names(i_template_parameter_names),
               m_template_parameters(i_template_parameters),
               m_template_arguments(i_template_arguments)

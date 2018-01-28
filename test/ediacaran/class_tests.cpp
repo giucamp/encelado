@@ -348,7 +348,8 @@ namespace ediacaran_test
               special_functions{},
               array_view<const base_class>{},
               props,
-              array_view<const function>{});
+              array_view<const function>{},
+              nullptr);
 
             ENCELADO_TEST_ASSERT(false); // should have thrown
         }

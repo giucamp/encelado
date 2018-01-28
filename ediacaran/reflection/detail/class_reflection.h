@@ -139,8 +139,21 @@ namespace ediacaran
           typename TEMPLATE_PARAMETER_LIST,
           size_t PROPERTY_COUNT,
           size_t FUNCTION_COUNT,
-          typename BASE_CLASSES_LIST>
+          typename BASE_CLASSES_LIST,
+          bool IS_CONTAINER>
         struct StaticClass;
+
+        template <typename TYPE, bool IS_CONTAINER> struct ContainerBase
+        {
+            constexpr container * get_ptr() noexcept { return nullptr; }
+        };
+
+        template <typename TYPE> struct ContainerBase<TYPE, true> : container
+        {
+            constexpr ContainerBase() : container(make_container_reflection<TYPE>()) {}
+
+            constexpr container * get_ptr() noexcept { return this; }
+        };
 
         template <
           typename CLASS,
@@ -148,14 +161,16 @@ namespace ediacaran
           size_t PROPERTY_COUNT,
           size_t FUNCTION_COUNT,
           typename... TEMPLATE_PARAMETERS,
-          typename... BASE_CLASSES>
+          typename... BASE_CLASSES,
+          bool IS_CONTAINER>
         struct StaticClass<
           CLASS,
           SPECIALIZATION_NAME_LENGTH,
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           FUNCTION_COUNT,
-          type_list<BASE_CLASSES...>>
+          type_list<BASE_CLASSES...>,
+          IS_CONTAINER> : ContainerBase<CLASS, IS_CONTAINER>
         {
             template <size_t... INDEX>
             constexpr auto make_template_parameters_array(
@@ -206,7 +221,8 @@ namespace ediacaran
                     m_properties,
                     m_functions,
                     m_template_parameters_array,
-                    m_template_arguments_array)
+                    m_template_arguments_array,
+                    ContainerBase<CLASS, IS_CONTAINER>::get_ptr())
             {
             }
 
@@ -232,14 +248,16 @@ namespace ediacaran
           size_t CLASS_NAME_LENGTH,
           size_t PROPERTY_COUNT,
           size_t FUNCTION_COUNT,
-          typename... BASE_CLASSES>
+          typename... BASE_CLASSES,
+          bool IS_CONTAINER>
         struct StaticClass<
           CLASS,
           CLASS_NAME_LENGTH,
           template_arguments<>,
           PROPERTY_COUNT,
           FUNCTION_COUNT,
-          type_list<BASE_CLASSES...>>
+          type_list<BASE_CLASSES...>,
+          IS_CONTAINER> : ContainerBase<CLASS, IS_CONTAINER>
         {
           public:
             using bases = type_list<BASE_CLASSES...>;
@@ -261,7 +279,8 @@ namespace ediacaran
                     special_functions::make<CLASS>(),
                     BasesArray<CLASS, all_bases>::s_bases,
                     m_properties,
-                    m_functions)
+                    m_functions,
+                    ContainerBase<CLASS, IS_CONTAINER>::get_ptr())
             {
             }
 
@@ -378,6 +397,8 @@ namespace ediacaran
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
+        constexpr bool is_container = false;
+
         if constexpr (detail::TemplateAutoDeducer<CLASS>::arguments_count == 0)
         {
             array<char, CLASS_NAME_SIZE> name{};
@@ -388,7 +409,8 @@ namespace ediacaran
               template_arguments<>,
               PROPERTY_COUNT,
               FUNCTION_COUNT,
-              BASE_CLASSES_LIST>(name, make_template_arguments(), i_properties, i_functions);
+              BASE_CLASSES_LIST,
+              is_container>(name, make_template_arguments(), i_properties, i_functions);
         }
         else
         {
@@ -407,7 +429,8 @@ namespace ediacaran
               std::decay_t<decltype(auto_template_arguments)>,
               PROPERTY_COUNT,
               FUNCTION_COUNT,
-              BASE_CLASSES_LIST>(name, auto_template_arguments, i_properties, i_functions);
+              BASE_CLASSES_LIST,
+              is_container>(name, auto_template_arguments, i_properties, i_functions);
         }
     }
 
@@ -427,6 +450,8 @@ namespace ediacaran
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
+        constexpr bool is_container = false;
+
         array<char, ARGUMENTS_STRING_SIZE + TEMPLATE_NAME_SIZE> specialization_name{};
         to_chars(
           specialization_name.data(),
@@ -439,7 +464,8 @@ namespace ediacaran
           template_arguments<TEMPLATE_PARAMETERS...>,
           PROPERTY_COUNT,
           FUNCTION_COUNT,
-          BASE_CLASSES_LIST>(specialization_name, i_template_arguments, i_properties, i_functions);
+          BASE_CLASSES_LIST,
+          is_container>(specialization_name, i_template_arguments, i_properties, i_functions);
     }
 
     template <typename PROP_TYPE, size_t OFFSET>

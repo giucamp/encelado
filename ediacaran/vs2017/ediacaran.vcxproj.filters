@@ -97,6 +97,15 @@
     <ClInclude Include="..\reflection\detail\function_accessor.h">
       <Filter>reflection\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\reflection\container.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\detail\container_reflection.h">
+      <Filter>reflection\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utils\iterator.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">
@@ -122,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="..\core\string_builder.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utils\iterator.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
