@@ -110,19 +110,19 @@ namespace ediacaran
 
         /** Retrieves a \c cv_qualification that specifies the cv-qualification for the specified indirection level.
             Given the type <tt>get_qualified_type<float volatile*const volatile*const*>()</tt>:
-                - \c qualification(0) returns <tt> cv_qualification::None </tt>
-                - \c qualification(1) returns <tt> cv_qualification::Const </tt>
-                - \c qualification(2) returns <tt> cv_qualification::Const | cv_qualification::Volatile </tt>
-                - \c qualification(3) returns <tt> cv_qualification::Volatile </tt>
+                - \c qualification(0) returns <tt> cv_qualification::no_q </tt>
+                - \c qualification(1) returns <tt> cv_qualification::const_q </tt>
+                - \c qualification(2) returns <tt> cv_qualification::const_q | cv_qualification::volatile_q </tt>
+                - \c qualification(3) returns <tt> cv_qualification::volatile_q </tt>
 
             Implementation note: \c qualification() is impemented using \c is_const() and \c is_volatile().
             @param i_indirection_level indirection level for which the qualification is queried. It must be <= \c indirection_levels() */
         constexpr cv_qualification qualification(size_t i_indirection_level) const noexcept
         {
-            return (is_const(i_indirection_level) ? cv_qualification::Const
-                                                  : cv_qualification::None) |
-                   (is_volatile(i_indirection_level) ? cv_qualification::Volatile
-                                                     : cv_qualification::None);
+            return (is_const(i_indirection_level) ? cv_qualification::const_q
+                                                  : cv_qualification::no_q) |
+                   (is_volatile(i_indirection_level) ? cv_qualification::volatile_q
+                                                     : cv_qualification::no_q);
         }
 
         constexpr size_t constness_word() const noexcept { return m_constness_word; }
@@ -144,7 +144,7 @@ namespace ediacaran
         /** Constructs a non-empty qualified_type_ptr from a final type and an array of cv_qualification's that specifies the cv-qualifiers of the indirection levels.
             The size of the array of cv_qualification's determines the number of indirection levels.
             In the the following code <tt>q_type_ptr_1 == q_type_ptr_2</tt>:<br>
-            <tt>qualified_type_ptr q_type_ptr_1(get_type<void>(), { cv_qualification::Const | cv_qualification::Volatile, cv_qualification::None, cv_qualification::Volatile });<br>
+            <tt>qualified_type_ptr q_type_ptr_1(get_type<void>(), { cv_qualification::const_q | cv_qualification::volatile_q, cv_qualification::no_q, cv_qualification::volatile_q });<br>
             qualified_type_ptr q_type_ptr_2 = get_qualified_type<void volatile * * volatile const >();</tt><br>
             @param i_final_type final type. May be get_type<void>().
             @param i_cv_flags cv-qualification for each indirection level. The n-th element of this array specifies a combination of cv flags for the n-th indirection

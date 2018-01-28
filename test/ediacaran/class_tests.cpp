@@ -131,18 +131,57 @@ namespace ediacaran_test
     {
         double m_double_2_4_1{};
         double m_double_2_4_2{};
+
+        void           f_1() {}
+        double const * f_2() { return nullptr; }
+        void           f_3() noexcept {}
+        double const * f_4() noexcept { return nullptr; }
+
+        void           f_5() const {}
+        double const * f_6() const { return nullptr; }
+        void           f_7() const noexcept {}
+        double const * f_8() const noexcept { return nullptr; }
+
+        void           f_9() const volatile {}
+        double const * f_10() const volatile { return nullptr; }
+        void           f_11() const volatile noexcept {}
+        double const * f_12() const volatile noexcept { return nullptr; }
+
+        void           f_13() volatile {}
+        double const * f_14() volatile { return nullptr; }
+        void           f_15() volatile noexcept {}
+        double const * f_16() volatile noexcept { return nullptr; }
     };
 
     constexpr auto reflect(TestBase_2_4 ** i_ptr)
     {
+        using namespace ediacaran;
         char const class_name[] = "TestBase_2_4";
-        using bases             = ediacaran::type_list<>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(
+        auto const properties = make_array(
           REFL_DATA_PROP("m_double_2_4_1", m_double_2_4_1),
           REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2));
-        return ediacaran::make_class<this_class, bases>(class_name, properties);
+
+        auto const functions = make_array(
+          make_function<EDI_FUNC(this_class, f_1)>("f_1"),
+          make_function<EDI_FUNC(this_class, f_2)>("f_2"),
+          make_function<EDI_FUNC(this_class, f_3)>("f_3"),
+          make_function<EDI_FUNC(this_class, f_4)>("f_4"),
+          make_function<EDI_FUNC(this_class, f_5)>("f_5"),
+          make_function<EDI_FUNC(this_class, f_6)>("f_6"),
+          make_function<EDI_FUNC(this_class, f_7)>("f_7"),
+          make_function<EDI_FUNC(this_class, f_8)>("f_8"),
+          make_function<EDI_FUNC(this_class, f_9)>("f_9"),
+          make_function<EDI_FUNC(this_class, f_10)>("f_10"),
+          make_function<EDI_FUNC(this_class, f_11)>("f_11"),
+          make_function<EDI_FUNC(this_class, f_12)>("f_12"),
+          make_function<EDI_FUNC(this_class, f_13)>("f_13"),
+          make_function<EDI_FUNC(this_class, f_14)>("f_14"),
+          make_function<EDI_FUNC(this_class, f_15)>("f_15"),
+          make_function<EDI_FUNC(this_class, f_16)>("f_16"));
+
+        return make_class<this_class>(class_name, properties, functions);
     }
 
     struct TestBase_2_Base
@@ -385,5 +424,57 @@ namespace ediacaran_test
         }
 
         std::cout << "------------------" << std::endl;
+
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_1")->qualification() ==
+          cv_qualification::no_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_2")->qualification() ==
+          cv_qualification::no_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_3")->qualification() ==
+          cv_qualification::no_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_4")->qualification() ==
+          cv_qualification::no_q);
+
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_5")->qualification() ==
+          cv_qualification::const_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_6")->qualification() ==
+          cv_qualification::const_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_7")->qualification() ==
+          cv_qualification::const_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_8")->qualification() ==
+          cv_qualification::const_q);
+
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_9")->qualification() ==
+          (cv_qualification::const_q | cv_qualification::volatile_q));
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_10")->qualification() ==
+          (cv_qualification::const_q | cv_qualification::volatile_q));
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_11")->qualification() ==
+          (cv_qualification::const_q | cv_qualification::volatile_q));
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_12")->qualification() ==
+          (cv_qualification::const_q | cv_qualification::volatile_q));
+
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_13")->qualification() ==
+          cv_qualification::volatile_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_14")->qualification() ==
+          cv_qualification::volatile_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_15")->qualification() ==
+          cv_qualification::volatile_q);
+        static_assert(
+          find_named(get_type<TestBase_2_4>().functions(), "f_16")->qualification() ==
+          cv_qualification::volatile_q);
     }
 }

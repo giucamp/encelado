@@ -184,7 +184,7 @@ namespace ediacaran
         return make_enum<this_enum>(
           "ediacaran::cv_qualification",
           make_array(
-            make_enum_member("const", this_enum::Const),
-            make_enum_member("volatile", this_enum::Volatile)));
+            make_enum_member("const", this_enum::const_q),
+            make_enum_member("volatile", this_enum::volatile_q)));
     }
 }

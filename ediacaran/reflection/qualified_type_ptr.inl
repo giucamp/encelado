@@ -152,12 +152,12 @@ namespace ediacaran
         for (size_t index = 0; index < i_cv_flags_size; index++)
         {
             cv_qualification flags = i_cv_flags[index];
-            if ((flags & cv_qualification::Const) != cv_qualification::None)
+            if ((flags & cv_qualification::const_q) != cv_qualification::no_q)
             {
                 constness_word |= uintptr_t(1) << index;
             }
 
-            if ((flags & cv_qualification::Volatile) != cv_qualification::None)
+            if ((flags & cv_qualification::volatile_q) != cv_qualification::no_q)
             {
                 volatileness_word |= uintptr_t(1) << index;
             }

@@ -140,5 +140,8 @@ namespace ediacaran_test
         using namespace ediacaran;
         constexpr auto anlimal_type = get_qualified_type<Animal>();
         auto           u            = get_type<Animal>();
+        static_assert(
+          find_named(get_type<Animal>().functions(), "make_sound")->qualification() ==
+          cv_qualification::const_q);
     }
 }

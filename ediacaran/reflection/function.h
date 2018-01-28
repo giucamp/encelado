@@ -53,7 +53,7 @@ namespace ediacaran
         constexpr qualified_type_ptr qualified_return_type() const noexcept
         {
             return qualified_type_ptr(m_qualified_return_type)
-              .set_qualification(0, cv_qualification::None);
+              .set_qualification(0, cv_qualification::no_q);
         }
 
         constexpr array_view<const parameter> const & parameters() const noexcept
@@ -72,7 +72,7 @@ namespace ediacaran
             return m_parameter_names;
         }
 
-        cv_qualification cv_qualification() const noexcept
+        constexpr cv_qualification qualification() const noexcept
         {
             return m_qualified_return_type.qualification(0);
         }
@@ -102,38 +102,40 @@ namespace ediacaran
 #endif
 
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::None
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::no_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
 #include <ediacaran/reflection/detail/function_accessor.h>
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::None
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::no_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
 #include <ediacaran/reflection/detail/function_accessor.h>
 
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION const
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::const_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
 #include <ediacaran/reflection/detail/function_accessor.h>
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION const
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::const_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
 #include <ediacaran/reflection/detail/function_accessor.h>
 
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION volatile
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::volatile_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
 #include <ediacaran/reflection/detail/function_accessor.h>
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION volatile
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::volatile_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
 #include <ediacaran/reflection/detail/function_accessor.h>
 
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION const volatile
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const | cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V                                                      \
+    cv_qualification::const_q | cv_qualification::volatile_q
 #include <ediacaran/reflection/detail/function_accessor.h>
 #define EDIACARAN_FUNC_REFL_CV_QUALFICATION const volatile
-#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const | cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V                                                      \
+    cv_qualification::const_q | cv_qualification::volatile_q
 #define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
 #include <ediacaran/reflection/detail/function_accessor.h>
 

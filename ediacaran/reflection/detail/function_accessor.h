@@ -1,6 +1,6 @@
 
 #ifndef EDIACARAN_FUNC_REFL_CV_QUALFICATION
-    #error "This is a private header, do not include it"
+#error "This is a private header, do not include it"
 #endif
 
 template <typename OWNING_CLASS, typename RETURN_TYPE, typename... PARAMETER_TYPE>

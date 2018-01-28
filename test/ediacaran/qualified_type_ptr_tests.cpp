@@ -35,7 +35,7 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(0));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const cv_qualification cvs[] = {cv_qualification::None};
+            const cv_qualification cvs[] = {cv_qualification::no_q};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -50,7 +50,7 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_const(0));
             ENCELADO_TEST_ASSERT(q_type_ptr.is_volatile(0));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const cv_qualification cvs[] = {cv_qualification::Volatile};
+            const cv_qualification cvs[] = {cv_qualification::volatile_q};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -67,7 +67,7 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(0));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(1));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const cv_qualification cvs[] = {cv_qualification::Const, cv_qualification::Const};
+            const cv_qualification cvs[] = {cv_qualification::const_q, cv_qualification::const_q};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -92,12 +92,12 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(4));
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_volatile(5));
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
-            const cv_qualification cvs[] = {cv_qualification::Const,
-                                            cv_qualification::None,
-                                            cv_qualification::None,
-                                            cv_qualification::Volatile,
-                                            cv_qualification::Const,
-                                            cv_qualification::None};
+            const cv_qualification cvs[] = {cv_qualification::const_q,
+                                            cv_qualification::no_q,
+                                            cv_qualification::no_q,
+                                            cv_qualification::volatile_q,
+                                            cv_qualification::const_q,
+                                            cv_qualification::no_q};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
         }
@@ -120,6 +120,15 @@ namespace ediacaran_test
     {
         using namespace ediacaran;
 
+        static_assert(!is_const(cv_qualification::no_q));
+        static_assert(!is_volatile(cv_qualification::no_q));
+        static_assert(is_const(cv_qualification::const_q));
+        static_assert(!is_volatile(cv_qualification::const_q));
+        static_assert(!is_const(cv_qualification::volatile_q));
+        static_assert(is_volatile(cv_qualification::volatile_q));
+        static_assert(is_const(cv_qualification::const_q | cv_qualification::volatile_q));
+        static_assert(is_volatile(cv_qualification::const_q | cv_qualification::volatile_q));
+
         // test empty
         {
             qualified_type_ptr q_type_ptr;
@@ -140,9 +149,9 @@ namespace ediacaran_test
         {
             qualified_type_ptr q_type_ptr(
               get_type<float>(),
-              {cv_qualification::Const | cv_qualification::Volatile,
-               cv_qualification::None,
-               cv_qualification::Volatile});
+              {cv_qualification::const_q | cv_qualification::volatile_q,
+               cv_qualification::no_q,
+               cv_qualification::volatile_q});
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
             ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<float>());
             ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
@@ -155,9 +164,9 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 2);
             ENCELADO_TEST_ASSERT(
               q_type_ptr.qualification(0) ==
-              (cv_qualification::Const | cv_qualification::Volatile));
-            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(1) == cv_qualification::None);
-            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(2) == cv_qualification::Volatile);
+              (cv_qualification::const_q | cv_qualification::volatile_q));
+            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(1) == cv_qualification::no_q);
+            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(2) == cv_qualification::volatile_q);
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
             ENCELADO_TEST_ASSERT(
@@ -166,15 +175,15 @@ namespace ediacaran_test
         {
             ENCELADO_TEST_ASSERT(
               qualified_type_ptr(get_type<void>(), {}) ==
-              qualified_type_ptr(get_type<void>(), {cv_qualification::None}));
+              qualified_type_ptr(get_type<void>(), {cv_qualification::no_q}));
         }
 
         {
             qualified_type_ptr q_type_ptr(
               get_type<void>(),
-              {cv_qualification::Const | cv_qualification::Volatile,
-               cv_qualification::None,
-               cv_qualification::Volatile});
+              {cv_qualification::const_q | cv_qualification::volatile_q,
+               cv_qualification::no_q,
+               cv_qualification::volatile_q});
             ENCELADO_TEST_ASSERT(!q_type_ptr.is_empty());
             ENCELADO_TEST_ASSERT(q_type_ptr.final_type() == &get_type<void>());
             ENCELADO_TEST_ASSERT(q_type_ptr.primary_type() == &get_type<void *>());
@@ -187,9 +196,9 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(q_type_ptr.indirection_levels() == 2);
             ENCELADO_TEST_ASSERT(
               q_type_ptr.qualification(0) ==
-              (cv_qualification::Const | cv_qualification::Volatile));
-            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(1) == cv_qualification::None);
-            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(2) == cv_qualification::Volatile);
+              (cv_qualification::const_q | cv_qualification::volatile_q));
+            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(1) == cv_qualification::no_q);
+            ENCELADO_TEST_ASSERT(q_type_ptr.qualification(2) == cv_qualification::volatile_q);
             ENCELADO_TEST_ASSERT(q_type_ptr == q_type_ptr);
             ENCELADO_TEST_ASSERT(q_type_ptr != qualified_type_ptr());
             ENCELADO_TEST_ASSERT(
@@ -267,10 +276,11 @@ namespace ediacaran_test
         // test cv qualifiers for float volatile*const volatile*const*
         {
             const auto q_type_ptr = get_qualified_type<float volatile * const volatile * const *>();
-            const cv_qualification cvs[] = {cv_qualification::None,
-                                            cv_qualification::Const,
-                                            cv_qualification::Const | cv_qualification::Volatile,
-                                            cv_qualification::Volatile};
+            const cv_qualification cvs[] = {cv_qualification::no_q,
+                                            cv_qualification::const_q,
+                                            cv_qualification::const_q |
+                                              cv_qualification::volatile_q,
+                                            cv_qualification::volatile_q};
             qualified_type_ptr_unit_test_cvs(q_type_ptr, cvs);
         }
 

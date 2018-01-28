@@ -184,4 +184,16 @@ namespace ediacaran
         i_first.append(i_second.data(), i_second.size());
         return i_first;
     }
+
+    template <typename CONTAINER>
+    constexpr auto find_named(CONTAINER && i_container, const string_view & i_name)
+    {
+        auto const end = std::forward<CONTAINER>(i_container).end();
+        for (auto it = std::forward<CONTAINER>(i_container).begin(); it != end; it++)
+        {
+            if (it->name() == i_name)
+                return it;
+        }
+        return end;
+    }
 }
