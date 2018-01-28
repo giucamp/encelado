@@ -30,6 +30,8 @@
     <ClInclude Include="..\core\remove_noexcept.h" />
     <ClInclude Include="..\core\string_builder.h" />
     <ClInclude Include="..\core\type_list.h" />
+    <ClInclude Include="..\reflection\cv_qualification.h" />
+    <ClInclude Include="..\reflection\detail\function_accessor.h" />
     <ClInclude Include="..\reflection\function.h" />
     <ClInclude Include="..\reflection\class_template_specialization.h" />
     <ClInclude Include="..\reflection\detail\class_reflection.h" />
@@ -42,8 +44,10 @@
     <ClInclude Include="..\reflection\qualified_type_ptr.h" />
     <ClInclude Include="..\reflection\reflection.h" />
     <ClInclude Include="..\reflection\special_functions.h" />
-    <ClInclude Include="..\reflection\std_containers_reflection.h" />
     <ClInclude Include="..\reflection\type.h" />
+    <ClInclude Include="..\std_refl\allocator.h" />
+    <ClInclude Include="..\std_refl\string.h" />
+    <ClInclude Include="..\std_refl\vector.h" />
     <ClInclude Include="..\utils\dyn_value.h" />
     <ClInclude Include="..\utils\inspect.h" />
     <ClInclude Include="..\utils\raw_ptr.h" />

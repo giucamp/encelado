@@ -79,11 +79,23 @@
     <ClInclude Include="..\reflection\detail\enum_reflection.h">
       <Filter>reflection\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\reflection\std_containers_reflection.h">
-      <Filter>reflection</Filter>
-    </ClInclude>
     <ClInclude Include="..\reflection\function.h">
       <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\std_refl\vector.h">
+      <Filter>std_refl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\std_refl\string.h">
+      <Filter>std_refl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\std_refl\allocator.h">
+      <Filter>std_refl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\cv_qualification.h">
+      <Filter>reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reflection\detail\function_accessor.h">
+      <Filter>reflection\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +136,9 @@
     </Filter>
     <Filter Include="reflection\detail">
       <UniqueIdentifier>{9ccc4b7f-438b-48e7-a8a2-90442685cdc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="std_refl">
+      <UniqueIdentifier>{c5bee08b-d754-4833-b872-69e49703b52f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

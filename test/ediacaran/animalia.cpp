@@ -2,7 +2,8 @@
 
 #include "../common.h"
 #include "ediacaran/core/string_builder.h"
-#include "ediacaran/reflection/std_containers_reflection.h"
+#include "ediacaran/std_refl/string.h"
+#include "ediacaran/std_refl/vector.h"
 #include "ediacaran/utils/dyn_value.h"
 #include "ediacaran/utils/inspect.h"
 #include <iostream>
@@ -15,9 +16,9 @@ namespace ediacaran_test
 
     class Animal
     {
-      public:
         std::string m_name;
 
+      public:
         std::string get_name_2() const { return m_name; }
 
         std::string const & get_name_3() const { return m_name; }
@@ -30,9 +31,11 @@ namespace ediacaran_test
 
         virtual const char * get_color() const noexcept = 0;
 
-        virtual std::string make_sound() = 0;
+        virtual std::string make_sound() const = 0;
 
         virtual void move_by(int x, int y) noexcept = 0;
+
+        friend constexpr auto reflect(Animal ** i_ptr);
     };
 
     constexpr auto reflect(Animal ** i_ptr)
@@ -45,14 +48,15 @@ namespace ediacaran_test
           make_property<EDI_DATA(this_class, m_name)>("name"),
           make_property<EDI_FUNC(this_class, get_name_2)>("name_2"),
           make_property<EDI_FUNC(this_class, get_name_3)>("name_3"),
-          make_property<EDI_FUNC(this_class, get_name_4), EDI_FUNC(this_class, set_name_4)>("name_4"),
-          make_property<EDI_FUNC(this_class, get_name_5), EDI_FUNC(this_class, set_name_5)>("name_5"),
+          make_property<EDI_FUNC(this_class, get_name_4), EDI_FUNC(this_class, set_name_4)>(
+            "name_4"),
+          make_property<EDI_FUNC(this_class, get_name_5), EDI_FUNC(this_class, set_name_5)>(
+            "name_5"),
           make_property<EDI_FUNC(this_class, get_color)>("color"));
 
         auto const functions = ediacaran::make_array(
-            make_function<EDI_FUNC(this_class, make_sound)>("make_sound"),
-            make_function<EDI_FUNC(this_class, move_by)>("move_by", "x, y")
-        );
+          make_function<EDI_FUNC(this_class, make_sound)>("make_sound"),
+          make_function<EDI_FUNC(this_class, move_by)>("move_by", "x, y"));
         return make_class<this_class>(class_name, properties, functions);
     }
 

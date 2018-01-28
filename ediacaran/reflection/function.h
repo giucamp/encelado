@@ -6,7 +6,6 @@
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include "ediacaran/reflection/type.h"
 #include <ediacaran/core/array.h>
-#include <ediacaran/core/remove_noexcept.h>
 #include <utility>
 
 namespace ediacaran
@@ -19,13 +18,15 @@ namespace ediacaran
 
         constexpr function(
           const char *                        i_name,
-          qualified_type_ptr const &          i_return_qualified_type,
+          cv_qualification                    i_cv_qualification,
+          qualified_type_ptr                  i_return_qualified_type,
           array_view<const parameter> const & i_parameters,
           const char *                        i_parameter_names,
           invoke_function                     i_invoke_function)
             : m_name(i_name), m_invoke_function(i_invoke_function),
-              m_qualified_return_type(i_return_qualified_type), m_parameters(i_parameters),
-              m_parameter_names(i_parameter_names)
+              m_qualified_return_type(
+                i_return_qualified_type.set_qualification(0, i_cv_qualification)),
+              m_parameters(i_parameters), m_parameter_names(i_parameter_names)
         {
             size_t parameter_names_count = 0;
             for (auto it = m_parameter_names.cbegin(); it != m_parameter_names.end(); it++)
@@ -49,9 +50,10 @@ namespace ediacaran
             return string_view(m_name, string_view::traits_type::length(m_name));
         }
 
-        constexpr qualified_type_ptr const & qualified_return_type() const noexcept
+        constexpr qualified_type_ptr qualified_return_type() const noexcept
         {
-            return m_qualified_return_type;
+            return qualified_type_ptr(m_qualified_return_type)
+              .set_qualification(0, cv_qualification::None);
         }
 
         constexpr array_view<const parameter> const & parameters() const noexcept
@@ -70,10 +72,17 @@ namespace ediacaran
             return m_parameter_names;
         }
 
+        cv_qualification cv_qualification() const noexcept
+        {
+            return m_qualified_return_type.qualification(0);
+        }
+
       private:
-        const char * const                m_name;
-        invoke_function const             m_invoke_function;
-        qualified_type_ptr const          m_qualified_return_type;
+        const char * const    m_name;
+        invoke_function const m_invoke_function;
+        qualified_type_ptr const
+                                          m_qualified_return_type; /**< The cv-qualification of the first indirection level is the
+                                                                        cv-qualification of the function */
         array_view<const parameter> const m_parameters;
         comma_separated_names const       m_parameter_names;
     };
@@ -85,8 +94,6 @@ namespace ediacaran
         template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE>
         struct FunctionInvoker;
 
-
-
 #ifdef __clang__
         /* silent warning: suggest braces around initialization of subobject,
         because double braces fail to compile with an array of zero size */
@@ -94,60 +101,41 @@ namespace ediacaran
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #endif
 
-        template <typename OWNING_CLASS, typename RETURN_TYPE, typename... PARAMETER_TYPE>
-        struct MethodTraits<RETURN_TYPE(OWNING_CLASS::*)(PARAMETER_TYPE...)>
-        {
-            constexpr static size_t parameter_count = sizeof...(PARAMETER_TYPE);
-        };
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::None
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
+#include <ediacaran/reflection/detail/function_accessor.h>
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::None
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
+#include <ediacaran/reflection/detail/function_accessor.h>
 
-        template <
-          typename OWNING_CLASS,
-          typename RETURN_TYPE,
-          typename... PARAMETER_TYPE,
-          RETURN_TYPE (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...),
-          size_t... INDEX>
-        struct FunctionInvoker<
-          RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...),
-          METHOD,
-          std::index_sequence<INDEX...>>
-        {
-            using return_type = RETURN_TYPE;
-            constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
-              parameter{get_qualified_type<PARAMETER_TYPE>()}...};
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION const
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
+#include <ediacaran/reflection/detail/function_accessor.h>
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION const
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
+#include <ediacaran/reflection/detail/function_accessor.h>
 
-            static void func(
-              void * i_dest_object, void * o_return_value_dest, const void * const * i_parameters)
-            {
-                EDIACARAN_ASSERT(o_return_value_dest != nullptr);
-                auto & object = *static_cast<OWNING_CLASS *>(i_dest_object);
-                new (o_return_value_dest) RETURN_TYPE(
-                  (object.*METHOD)(*static_cast<const PARAMETER_TYPE *>(i_parameters[INDEX])...));
-            }
-        };
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
+#include <ediacaran/reflection/detail/function_accessor.h>
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
+#include <ediacaran/reflection/detail/function_accessor.h>
 
-        template <
-          typename OWNING_CLASS,
-          typename... PARAMETER_TYPE,
-          void (OWNING_CLASS::*METHOD)(PARAMETER_TYPE...),
-          size_t... INDEX>
-        struct FunctionInvoker<
-          void (OWNING_CLASS::*)(PARAMETER_TYPE...),
-          METHOD,
-          std::index_sequence<INDEX...>>
-        {
-            using return_type = void;
-            constexpr static array<parameter, sizeof...(PARAMETER_TYPE)> parameters = {
-              parameter{get_qualified_type<PARAMETER_TYPE>()}...};
-
-            static void func(
-              void * i_dest_object,
-              void * /*o_return_value_dest*/,
-              const void * const * i_parameters)
-            {
-                auto & object = *static_cast<OWNING_CLASS *>(i_dest_object);
-                (object.*METHOD)(*static_cast<const PARAMETER_TYPE *>(i_parameters[INDEX])...);
-            }
-        };
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION const volatile
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const | cv_qualification::Volatile
+#include <ediacaran/reflection/detail/function_accessor.h>
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION const volatile
+#define EDIACARAN_FUNC_REFL_CV_QUALFICATION_V cv_qualification::Const | cv_qualification::Volatile
+#define EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC noexcept
+#include <ediacaran/reflection/detail/function_accessor.h>
 
 #ifdef __clang__
 #pragma clang diagnostic pop
@@ -157,13 +145,13 @@ namespace ediacaran
     template <typename METHOD_TYPE, METHOD_TYPE METHOD>
     constexpr function make_function(const char * i_name, const char * i_parameter_names = "")
     {
-        using method_type = remove_noexcept_t<METHOD_TYPE>;
         using function_invoker = detail::FunctionInvoker<
-          method_type,
+          METHOD_TYPE,
           METHOD,
-          std::make_index_sequence<detail::MethodTraits<method_type>::parameter_count>>;
+          std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
         return function(
           i_name,
+          detail::MethodTraits<METHOD_TYPE>::qualification,
           get_qualified_type<typename function_invoker::return_type>(),
           function_invoker::parameters,
           i_parameter_names,

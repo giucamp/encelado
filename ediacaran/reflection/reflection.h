@@ -177,4 +177,14 @@ namespace ediacaran
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
         return make_class<this_class>(class_name);
     }
+
+    constexpr auto reflect(cv_qualification ** i_ptr)
+    {
+        using this_enum = std::remove_reference_t<decltype(**i_ptr)>;
+        return make_enum<this_enum>(
+          "ediacaran::cv_qualification",
+          make_array(
+            make_enum_member("const", this_enum::Const),
+            make_enum_member("volatile", this_enum::Volatile)));
+    }
 }

@@ -139,7 +139,7 @@ namespace ediacaran
     }
 
     constexpr qualified_type_ptr::qualified_type_ptr(const type & i_final_type,
-      const CV_Flags * i_cv_flags, size_t i_cv_flags_size)
+      const cv_qualification * i_cv_flags, size_t i_cv_flags_size)
         : m_final_type(&i_final_type), m_indirection_levels(0), m_constness_word(0), m_volatileness_word(0)
     {
         if (i_cv_flags_size > s_max_indirection_levels)
@@ -151,13 +151,13 @@ namespace ediacaran
 
         for (size_t index = 0; index < i_cv_flags_size; index++)
         {
-            CV_Flags flags = i_cv_flags[index];
-            if ((flags & CV_Flags::Const) != CV_Flags::None)
+            cv_qualification flags = i_cv_flags[index];
+            if ((flags & cv_qualification::Const) != cv_qualification::None)
             {
                 constness_word |= uintptr_t(1) << index;
             }
 
-            if ((flags & CV_Flags::Volatile) != CV_Flags::None)
+            if ((flags & cv_qualification::Volatile) != cv_qualification::None)
             {
                 volatileness_word |= uintptr_t(1) << index;
             }

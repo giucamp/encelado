@@ -44,9 +44,9 @@ namespace ediacaran
         template <typename CALLABLE>
         void * manual_construct(const qualified_type_ptr & i_type, CALLABLE && i_constructor)
         {
+            uninitialized_allocate(i_type);
             try
             {
-                uninitialized_allocate(i_type);
                 std::forward<CALLABLE>(i_constructor)(m_object);
             }
             catch (...)

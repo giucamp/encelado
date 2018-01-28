@@ -3,6 +3,7 @@
 
 #pragma once
 #include "ediacaran/core/ediacaran_common.h"
+#include "ediacaran/reflection/cv_qualification.h"
 #include "ediacaran/reflection/type.h"
 #include <ediacaran/core/array.h>
 #include <limits>
@@ -19,29 +20,6 @@ namespace ediacaran
         The result is never empty (is_empty() always return false). The template
         argument may be void or any void pointer (with any cv-qualification). */
     template <typename TYPE> constexpr qualified_type_ptr get_qualified_type();
-
-    /** Scoped enum that stores a combination of cv-qualifiers. CV_Flags can be combined and subtracted with the overloaded bitwise operators | and &. */
-    enum class CV_Flags
-    {
-        None     = 0,      /**< No flags */
-        Const    = 1 << 0, /**< Set for const types */
-        Volatile = 1 << 1, /**< Set for volatile types */
-    };
-
-    constexpr inline CV_Flags operator|(CV_Flags i_first, CV_Flags i_seconds) noexcept
-    {
-        using underlying_type = std::underlying_type<CV_Flags>::type;
-        return static_cast<CV_Flags>(
-          static_cast<underlying_type>(i_first) | static_cast<underlying_type>(i_seconds));
-    }
-
-    constexpr inline CV_Flags operator&(CV_Flags i_first, CV_Flags i_seconds) noexcept
-    {
-        using underlying_type = std::underlying_type<CV_Flags>::type;
-        return static_cast<CV_Flags>(
-          static_cast<underlying_type>(i_first) & static_cast<underlying_type>(i_seconds));
-    }
-
 
     /** Lightweight value-class holding a pointer to a type, a number of indirection levels, and the cv-qualification
         (is it \c const? is it \c volatile?) for each indirection level. A qualified_type_ptr can tell:
@@ -117,22 +95,34 @@ namespace ediacaran
         /** Retrieves whether the type rapresent a pointer, that is indirection_levels() > 0 */
         constexpr bool is_pointer() const noexcept { return indirection_levels() > 0; }
 
+        constexpr qualified_type_ptr &
+          set_qualification(size_t i_indirection_level, cv_qualification i_cv) noexcept
+        {
+            auto const mask             = uintptr_t(1) << i_indirection_level;
+            auto const constness_add    = ediacaran::is_const(i_cv) ? mask : uintptr_t(0);
+            m_constness_word            = (m_constness_word & ~mask) | constness_add;
+            auto const volatileness_add = ediacaran::is_volatile(i_cv) ? mask : uintptr_t(0);
+            m_volatileness_word         = (m_volatileness_word & ~mask) | volatileness_add;
+            return *this;
+        }
 
         // derived getters
 
-        /** Retrieves a \c CV_Flags that specifies the cv-qualification for the specified indirection level.
+        /** Retrieves a \c cv_qualification that specifies the cv-qualification for the specified indirection level.
             Given the type <tt>get_qualified_type<float volatile*const volatile*const*>()</tt>:
-                - \c cv_flags(0) returns <tt> CV_Flags::None </tt>
-                - \c cv_flags(1) returns <tt> CV_Flags::Const </tt>
-                - \c cv_flags(2) returns <tt> CV_Flags::Const | CV_Flags::Volatile </tt>
-                - \c cv_flags(3) returns <tt> CV_Flags::Volatile </tt>
+                - \c qualification(0) returns <tt> cv_qualification::None </tt>
+                - \c qualification(1) returns <tt> cv_qualification::Const </tt>
+                - \c qualification(2) returns <tt> cv_qualification::Const | cv_qualification::Volatile </tt>
+                - \c qualification(3) returns <tt> cv_qualification::Volatile </tt>
 
-            Implementation note: \c cv_flags() is impemented using \c is_const() and \c is_volatile().
+            Implementation note: \c qualification() is impemented using \c is_const() and \c is_volatile().
             @param i_indirection_level indirection level for which the qualification is queried. It must be <= \c indirection_levels() */
-        constexpr CV_Flags cv_flags(size_t i_indirection_level) const noexcept
+        constexpr cv_qualification qualification(size_t i_indirection_level) const noexcept
         {
-            return (is_const(i_indirection_level) ? CV_Flags::Const : CV_Flags::None) |
-                   (is_volatile(i_indirection_level) ? CV_Flags::Volatile : CV_Flags::None);
+            return (is_const(i_indirection_level) ? cv_qualification::Const
+                                                  : cv_qualification::None) |
+                   (is_volatile(i_indirection_level) ? cv_qualification::Volatile
+                                                     : cv_qualification::None);
         }
 
         constexpr size_t constness_word() const noexcept { return m_constness_word; }
@@ -151,20 +141,20 @@ namespace ediacaran
         /** Constructs an empty qualified_type_ptr (is_empty() will return true). The object may be later the destination of an assignment, changing its state. */
         constexpr qualified_type_ptr() noexcept;
 
-        /** Constructs a non-empty qualified_type_ptr from a final type and an array of CV_Flags's that specifies the cv-qualifiers of the indirection levels.
-            The size of the array of CV_Flags's determines the number of indirection levels.
+        /** Constructs a non-empty qualified_type_ptr from a final type and an array of cv_qualification's that specifies the cv-qualifiers of the indirection levels.
+            The size of the array of cv_qualification's determines the number of indirection levels.
             In the the following code <tt>q_type_ptr_1 == q_type_ptr_2</tt>:<br>
-            <tt>qualified_type_ptr q_type_ptr_1(get_type<void>(), { CV_Flags::Const | CV_Flags::Volatile, CV_Flags::None, CV_Flags::Volatile });<br>
+            <tt>qualified_type_ptr q_type_ptr_1(get_type<void>(), { cv_qualification::Const | cv_qualification::Volatile, cv_qualification::None, cv_qualification::Volatile });<br>
             qualified_type_ptr q_type_ptr_2 = get_qualified_type<void volatile * * volatile const >();</tt><br>
             @param i_final_type final type. May be get_type<void>().
             @param i_cv_flags cv-qualification for each indirection level. The n-th element of this array specifies a combination of cv flags for the n-th indirection
                 level. The number of indirection levels of the type is the size of this array, minus 1. So, to construct a pointer to a pointer, specify an array
                 of 3 elements. If the array is empty, the number of indirection levels is zero. */
         constexpr qualified_type_ptr(
-          const type & i_final_type, const CV_Flags * i_cv_flags, size_t i_cv_flags_size);
+          const type & i_final_type, const cv_qualification * i_cv_flags, size_t i_cv_flags_size);
 
         constexpr qualified_type_ptr(
-          const type & i_final_type, const std::initializer_list<CV_Flags> & i_cv_flags)
+          const type & i_final_type, const std::initializer_list<cv_qualification> & i_cv_flags)
             : qualified_type_ptr(
                 i_final_type, i_cv_flags.begin(), i_cv_flags.end() - i_cv_flags.begin())
         {
