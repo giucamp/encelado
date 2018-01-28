@@ -19,16 +19,16 @@ namespace ediacaran
         constexpr friend capabilities
           operator|(capabilities i_first, capabilities i_seconds) noexcept
         {
-            using underlying_type = std::underlying_type<enum class capabilities>::type;
-            return static_cast<enum class capabilities>(
+            using underlying_type = std::underlying_type<enum capabilities>::type;
+            return static_cast<enum capabilities>(
               static_cast<underlying_type>(i_first) | static_cast<underlying_type>(i_seconds));
         }
 
         constexpr friend capabilities
           operator&(capabilities i_first, capabilities i_seconds) noexcept
         {
-            using underlying_type = std::underlying_type<enum class capabilities>::type;
-            return static_cast<enum class capabilities>(
+            using underlying_type = std::underlying_type<enum capabilities>::type;
+            return static_cast<enum capabilities>(
               static_cast<underlying_type>(i_first) & static_cast<underlying_type>(i_seconds));
         }
 
@@ -80,7 +80,7 @@ namespace ediacaran
         }
 
       private:
-        enum class capabilities const m_capabilities
+        enum capabilities const m_capabilities
         {
             capabilities::none
         };

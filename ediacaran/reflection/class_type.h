@@ -80,7 +80,7 @@ namespace ediacaran
             return m_functions;
         }
 
-        constexpr const class container * const container() const noexcept { return m_container; }
+        constexpr const class container * container() const noexcept { return m_container; }
 
       private:
         constexpr void check_duplicates() const

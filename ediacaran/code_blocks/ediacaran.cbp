@@ -60,12 +60,15 @@
 		<Unit filename="../reflection/qualified_type_ptr.cpp" />
 		<Unit filename="../reflection/qualified_type_ptr.h" />
 		<Unit filename="../reflection/qualified_type_ptr.inl" />
+		<Unit filename="../reflection/reflection.h" />
 		<Unit filename="../reflection/special_functions.h" />
 		<Unit filename="../reflection/type.h" />
 		<Unit filename="../utils/dyn_value.cpp" />
 		<Unit filename="../utils/dyn_value.h" />
 		<Unit filename="../utils/inspect.cpp" />
 		<Unit filename="../utils/inspect.h" />
+		<Unit filename="../utils/iterator.cpp" />
+		<Unit filename="../utils/iterator.h" />
 		<Unit filename="../utils/raw_ptr.cpp" />
 		<Unit filename="../utils/raw_ptr.h" />
 		<Extensions>

@@ -91,7 +91,7 @@ namespace ediacaran
                 using difference_type =
                   typename std::iterator_traits<native_iterator>::difference_type;
                 auto const index_offset = static_cast<difference_type>(i_index_offset);
-                if (static_cast<container::index>(index_offset) != i_index_offset)
+                if (static_cast<container::signed_index>(index_offset) != i_index_offset)
                 {
                     except<std::runtime_error>(
                       "Narrowing conversion of ",
@@ -113,7 +113,7 @@ namespace ediacaran
     {
         using Cont = detail::StdContainer<CONTAINER>;
         return container{container::capabilities::none,
-                         get_qualified_type<Cont::element_type>(),
+                         get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,
                          &Cont::construct_iterator,
                          &Cont::destroy_iterator,
