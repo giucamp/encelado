@@ -397,7 +397,7 @@ namespace ediacaran
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
-        constexpr bool is_container = false;
+        constexpr bool is_container = detail::HasStdContainerInterface<CLASS>::value;
 
         if constexpr (detail::TemplateAutoDeducer<CLASS>::arguments_count == 0)
         {
@@ -450,7 +450,7 @@ namespace ediacaran
     {
         static_assert(is_type_list_v<BASE_CLASSES_LIST>);
 
-        constexpr bool is_container = false;
+        constexpr bool is_container = detail::HasStdContainerInterface<CLASS>::value;
 
         array<char, ARGUMENTS_STRING_SIZE + TEMPLATE_NAME_SIZE> specialization_name{};
         to_chars(

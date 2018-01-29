@@ -168,6 +168,7 @@
     <ClCompile Include="..\ediacaran\animalia.cpp" />
     <ClCompile Include="..\ediacaran\class_templates_tests.cpp" />
     <ClCompile Include="..\ediacaran\class_tests.cpp" />
+    <ClCompile Include="..\ediacaran\container_tests.cpp" />
     <ClCompile Include="..\ediacaran\qualified_type_ptr_tests.cpp" />
     <ClCompile Include="..\ediacaran\remove_noexcept_tests.cpp" />
     <ClCompile Include="..\ediacaran\string_tests.cpp" />

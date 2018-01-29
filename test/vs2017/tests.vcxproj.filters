@@ -27,6 +27,9 @@
     <ClCompile Include="..\ediacaran\animalia.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
+    <ClCompile Include="..\ediacaran\container_tests.cpp">
+      <Filter>ediacaran</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ediacaran">

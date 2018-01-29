@@ -135,7 +135,7 @@ namespace ediacaran_test
     {
     };
 
-    void animalia_test()
+    void animalia_tests()
     {
         using namespace ediacaran;
 

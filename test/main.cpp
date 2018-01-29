@@ -48,7 +48,8 @@ int main()
 #endif
 
     using namespace ediacaran_test;
-    animalia_test();
+    container_tests();
+    animalia_tests();
     class_templates_tests();
     remove_noexcept_tests();
     type_list_tests();

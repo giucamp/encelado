@@ -19,6 +19,26 @@ namespace ediacaran
         {
         };
 
+        template <typename FORWARD_ITERATOR>
+            constexpr FORWARD_ITERATOR bounded_next(const FORWARD_ITERATOR & i_iterator,
+                typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
+                const FORWARD_ITERATOR & i_end, std::random_access_iterator_tag)
+        {
+            return i_iterator + i_offset;
+        }
+
+        template <typename FORWARD_ITERATOR>
+            constexpr FORWARD_ITERATOR bounded_next(const FORWARD_ITERATOR & i_iterator,
+                typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
+                const FORWARD_ITERATOR & i_end, std::input_iterator_tag)
+        {
+            for(; i_offset > 0 && i_iterator != i_end; i_offset--)
+            {
+                i_iterator++;
+            }
+            return i_iterator;
+        }
+
         template <typename CONTAINER> struct StdContainer
         {
             using native_iterator = decltype(std::begin(std::declval<CONTAINER>()));
@@ -43,10 +63,13 @@ namespace ediacaran
 
             static Iterator * get_iterator_ptr(void * i_storage) noexcept
             {
+                Iterator * result{};
                 if constexpr (alignof(Iterator) <= container::iterator_alignment)
-                    return static_cast<Iterator *>(i_storage);
+                    result = static_cast<Iterator *>(i_storage);
                 else
-                    return address_upper_align(i_storage, container::iterator_alignment);
+                    result = address_upper_align(i_storage, container::iterator_alignment);
+                EDIACARAN_ASSERT(result + 1 <= address_add(i_storage, iterator_storage_size));
+                return result;
             }
 
             static void construct_iterator(
@@ -112,7 +135,7 @@ namespace ediacaran
     constexpr container make_container_reflection() noexcept
     {
         using Cont = detail::StdContainer<CONTAINER>;
-        return container{container::capabilities::none,
+        return container{container::capability::none,
                          get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,
                          &Cont::construct_iterator,

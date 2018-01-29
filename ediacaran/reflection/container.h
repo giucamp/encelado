@@ -4,31 +4,28 @@
 
 namespace ediacaran
 {
-
-
     class container
     {
       public:
-        enum class capabilities
+
+        enum class capability
         {
             none          = 0,
             heterogeneous = 1 << 0,
             contigous     = 1 << 1,
         };
 
-        constexpr friend capabilities
-          operator|(capabilities i_first, capabilities i_seconds) noexcept
+        constexpr friend capability operator|(capability i_first, capability i_seconds) noexcept
         {
-            using underlying_type = std::underlying_type<enum capabilities>::type;
-            return static_cast<enum capabilities>(
+            using underlying_type = std::underlying_type<capability>::type;
+            return static_cast<capability>(
               static_cast<underlying_type>(i_first) | static_cast<underlying_type>(i_seconds));
         }
 
-        constexpr friend capabilities
-          operator&(capabilities i_first, capabilities i_seconds) noexcept
+        constexpr friend capability operator&(capability i_first, capability i_seconds) noexcept
         {
-            using underlying_type = std::underlying_type<enum capabilities>::type;
-            return static_cast<enum capabilities>(
+            using underlying_type = std::underlying_type<capability>::type;
+            return static_cast<capability>(
               static_cast<underlying_type>(i_first) & static_cast<underlying_type>(i_seconds));
         }
 
@@ -38,6 +35,7 @@ namespace ediacaran
 
         using construct_iterator_function_ptr =
           void (*)(void * i_container, void * i_iterator_dest, index i_start_index);
+
         using destroy_iterator_function_ptr = void (*)(void * i_iterator_dest) noexcept;
 
         using iterator_move_and_get_function_ptr = void (*)(
@@ -50,7 +48,7 @@ namespace ediacaran
         constexpr container() = default;
 
         constexpr container(
-          capabilities                       i_capabilities,
+          capability                         i_capabilities,
           qualified_type_ptr                 i_elements_type,
           size_t                             i_iterator_size,
           construct_iterator_function_ptr    i_construct_iterator,
@@ -63,7 +61,7 @@ namespace ediacaran
         {
         }
 
-        capabilities                    capabilities() const noexcept { return m_capabilities; }
+        capability                      capabilities() const noexcept { return m_capabilities; }
         qualified_type_ptr              elements_type() const noexcept { return m_elements_type; }
         size_t                          iterator_size() const noexcept { return m_iterator_size; }
         construct_iterator_function_ptr construct_iterator() const noexcept
@@ -80,11 +78,8 @@ namespace ediacaran
         }
 
       private:
-        enum capabilities const m_capabilities
-        {
-            capabilities::none
-        };
-        qualified_type_ptr const                 m_elements_type;
+        capability const                         m_capabilities{capability::none};
+        qualified_type_ptr const                 m_elements_type{};
         size_t const                             m_iterator_size{};
         construct_iterator_function_ptr const    m_construct_iterator{};
         destroy_iterator_function_ptr const      m_destroy_iterator_function{};
