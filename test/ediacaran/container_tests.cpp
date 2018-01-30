@@ -3,7 +3,8 @@
 #include "../common.h"
 #include "ediacaran/std_refl/string.h"
 #include "ediacaran/std_refl/vector.h"
-#include "ediacaran/utils/iterator.h"
+#include "ediacaran/utils/universal_iterator.h"
+#include "ediacaran/core/string_builder.h"
 #include <iostream>
 
 namespace ediacaran_test
@@ -16,10 +17,17 @@ namespace ediacaran_test
 
         auto & vector_t = get_class_type<std::vector<int>>();
 
+
         std::vector<int> vector = {1, 2, 3, 4, 5, 6};
 
+        string_builder str;
+        for (universal_iterator it{&vector}; !it.is_over(); ++it)
+        {
+            str << *it << '\n';
+        }
 
-        iterator it{raw_ptr(&vector)};
+        std::cout << str.to_string();
+        std::cout << std::endl;
     }
 
     void container_tests() { vector_tests(); }

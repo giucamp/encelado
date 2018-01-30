@@ -52,7 +52,7 @@
     <ClInclude Include="..\std_refl\vector.h" />
     <ClInclude Include="..\utils\dyn_value.h" />
     <ClInclude Include="..\utils\inspect.h" />
-    <ClInclude Include="..\utils\iterator.h" />
+    <ClInclude Include="..\utils\universal_iterator.h" />
     <ClInclude Include="..\utils\raw_ptr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -63,7 +63,7 @@
     <ClCompile Include="..\reflection\qualified_type_ptr.cpp" />
     <ClCompile Include="..\utils\dyn_value.cpp" />
     <ClCompile Include="..\utils\inspect.cpp" />
-    <ClCompile Include="..\utils\iterator.cpp" />
+    <ClCompile Include="..\utils\universal_iterator.cpp" />
     <ClCompile Include="..\utils\raw_ptr.cpp" />
   </ItemGroup>
   <ItemGroup>

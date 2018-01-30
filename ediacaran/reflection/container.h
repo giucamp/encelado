@@ -7,7 +7,6 @@ namespace ediacaran
     class container
     {
       public:
-
         enum class capability
         {
             none          = 0,
@@ -30,35 +29,38 @@ namespace ediacaran
         }
 
         using index                                = uint64_t;
-        using signed_index                         = int64_t;
         constexpr static size_t iterator_alignment = alignof(void *);
 
+        struct segment
+        {
+            qualified_type_ptr element_type;
+            void *             m_elements{};
+            index              m_element_count{};
+        };
+
         using construct_iterator_function_ptr =
-          void (*)(void * i_container, void * i_iterator_dest, index i_start_index);
+          segment (*)(void * i_container, void * i_iterator_dest);
 
-        using destroy_iterator_function_ptr = void (*)(void * i_iterator_dest) noexcept;
+        using next_segment_function_ptr = segment (*)(void * i_iterator);
 
-        using iterator_move_and_get_function_ptr = void (*)(
-          void *               i_iterator,
-          signed_index         i_index_offset,
-          qualified_type_ptr * o_element_type,
-          void **              o_elements,
-          index *              o_count);
-
-        constexpr container() = default;
+        using destroy_iterator_function_ptr = void(*)(void * i_iterator) noexcept;
 
         constexpr container(
-          capability                         i_capabilities,
-          qualified_type_ptr                 i_elements_type,
-          size_t                             i_iterator_size,
-          construct_iterator_function_ptr    i_construct_iterator,
-          destroy_iterator_function_ptr      i_destroy_iterator_function,
-          iterator_move_and_get_function_ptr i_iterator_move_and_get) noexcept
+          capability                      i_capabilities,
+          qualified_type_ptr              i_elements_type,
+          size_t                          i_iterator_size,
+          construct_iterator_function_ptr i_construct_iterator,
+          next_segment_function_ptr       i_next_segment,
+          destroy_iterator_function_ptr   i_destroy_iterator_function) noexcept
             : m_capabilities(i_capabilities), m_elements_type(i_elements_type),
               m_iterator_size(i_iterator_size), m_construct_iterator(i_construct_iterator),
-              m_destroy_iterator_function(i_destroy_iterator_function),
-              m_iterator_move_and_get(i_iterator_move_and_get)
+              m_next_segment(i_next_segment),
+              m_destroy_iterator_function(i_destroy_iterator_function)
+
         {
+            EDIACARAN_ASSERT(i_construct_iterator != nullptr);
+            EDIACARAN_ASSERT(i_next_segment != nullptr);
+            EDIACARAN_ASSERT(i_destroy_iterator_function != nullptr);
         }
 
         capability                      capabilities() const noexcept { return m_capabilities; }
@@ -68,22 +70,19 @@ namespace ediacaran
         {
             return m_construct_iterator;
         }
+        next_segment_function_ptr     next_segment() const noexcept { return m_next_segment; }
         destroy_iterator_function_ptr destroy_iterator_function() const noexcept
         {
             return m_destroy_iterator_function;
         }
-        iterator_move_and_get_function_ptr iterator_move_and_get() const noexcept
-        {
-            return m_iterator_move_and_get;
-        }
 
       private:
-        capability const                         m_capabilities{capability::none};
-        qualified_type_ptr const                 m_elements_type{};
-        size_t const                             m_iterator_size{};
-        construct_iterator_function_ptr const    m_construct_iterator{};
-        destroy_iterator_function_ptr const      m_destroy_iterator_function{};
-        iterator_move_and_get_function_ptr const m_iterator_move_and_get{};
+        capability const                      m_capabilities{capability::none};
+        qualified_type_ptr const              m_elements_type{};
+        size_t const                          m_iterator_size{};
+        construct_iterator_function_ptr const m_construct_iterator{};
+        next_segment_function_ptr const       m_next_segment{};
+        destroy_iterator_function_ptr const   m_destroy_iterator_function{};
     };
 
 } // namespace ediacaran

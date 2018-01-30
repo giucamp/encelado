@@ -20,28 +20,39 @@ namespace ediacaran
         };
 
         template <typename FORWARD_ITERATOR>
-            constexpr FORWARD_ITERATOR bounded_next(const FORWARD_ITERATOR & i_iterator,
-                typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
-                const FORWARD_ITERATOR & i_end, std::random_access_iterator_tag)
+        constexpr FORWARD_ITERATOR bounded_next(
+          const FORWARD_ITERATOR &                                   i_iterator,
+          typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
+          const FORWARD_ITERATOR &                                   i_end,
+          std::random_access_iterator_tag)
         {
             return i_iterator + i_offset;
         }
 
         template <typename FORWARD_ITERATOR>
-            constexpr FORWARD_ITERATOR bounded_next(const FORWARD_ITERATOR & i_iterator,
-                typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
-                const FORWARD_ITERATOR & i_end, std::input_iterator_tag)
+        constexpr FORWARD_ITERATOR bounded_next(
+          const FORWARD_ITERATOR &                                   i_iterator,
+          typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
+          const FORWARD_ITERATOR &                                   i_end,
+          std::input_iterator_tag)
         {
-            for(; i_offset > 0 && i_iterator != i_end; i_offset--)
+            for (; i_offset > 0 && i_iterator != i_end; i_offset--)
             {
                 i_iterator++;
             }
             return i_iterator;
         }
 
-        template <typename CONTAINER> struct StdContainer
+        template <typename TYPE> std::add_lvalue_reference_t<TYPE> declval_value();
+
+        template <typename CONTAINER, bool IS_CONTIGUOUS>
+        struct StdContainer;
+
+        template <typename CONTAINER>
+          struct StdContainer<CONTAINER, false>
         {
-            using native_iterator = decltype(std::begin(std::declval<CONTAINER>()));
+            using native_iterator = decltype(std::begin(declval_value<CONTAINER>()));
+
             using element_type =
               std::remove_reference_t<decltype(*std::declval<native_iterator>())>;
 
@@ -72,28 +83,25 @@ namespace ediacaran
                 return result;
             }
 
-            static void construct_iterator(
-              void * i_container, void * i_iterator_dest, container::index i_start_index)
+            static container::segment construct_iterator(void * i_iterator_dest, void * i_container)
             {
                 EDIACARAN_ASSERT(i_container != nullptr);
                 EDIACARAN_ASSERT(i_iterator_dest != nullptr);
 
-                // convert start_index to the native difference_type
-                using difference_type =
-                  typename std::iterator_traits<native_iterator>::difference_type;
-                auto const start_index = static_cast<difference_type>(i_start_index);
-                if (static_cast<container::index>(start_index) != i_start_index)
-                {
-                    except<std::runtime_error>(
-                      "Narrowing conversion of ",
-                      i_start_index,
-                      " to the difference_type of the container");
-                }
-
                 // construct the iterator
                 auto & container = *static_cast<CONTAINER *>(i_container);
-                new (get_iterator_ptr(i_iterator_dest))
-                  Iterator{std::next(std::begin(container), start_index), std::end(container)};
+                auto & iterator = *new (get_iterator_ptr(i_iterator_dest))
+                  Iterator{std::begin(container), std::end(container)};
+
+                if(iterator.m_curr != iterator.m_end)
+                {
+                    void * const elements = const_cast<std::remove_cv_t<element_type> *>(&*iterator.m_curr);
+                    return container::segment{ get_qualified_type<element_type>(), elements, 1 };
+                }
+                else
+                {
+                    return container::segment{};
+                }
             }
 
             static void destroy_iterator(void * i_iterator_dest) noexcept
@@ -101,29 +109,19 @@ namespace ediacaran
                 std::destroy_at(get_iterator_ptr(i_iterator_dest));
             }
 
-            static void iterator_move_and_get(
-              void *                  i_iterator,
-              container::signed_index i_index_offset,
-              qualified_type_ptr *    o_element_type,
-              void **                 o_elements,
-              container::index *      o_count)
+            static container::segment next_segment(void * i_iterator)
             {
                 auto & iterator = *get_iterator_ptr(i_iterator);
-
-                // convert start_index to the native difference_type
-                using difference_type =
-                  typename std::iterator_traits<native_iterator>::difference_type;
-                auto const index_offset = static_cast<difference_type>(i_index_offset);
-                if (static_cast<container::signed_index>(index_offset) != i_index_offset)
+                ++iterator.m_curr;
+                if (iterator.m_curr != iterator.m_end)
                 {
-                    except<std::runtime_error>(
-                      "Narrowing conversion of ",
-                      i_index_offset,
-                      " to the difference_type of the container");
+                    void * const elements = const_cast<std::remove_cv_t<element_type> *>(&*iterator.m_curr);
+                    return container::segment{ get_qualified_type<element_type>(), elements, 1 };
                 }
-
-                iterator.m_curr = std::next(iterator.m_curr, index_offset);
-                *o_element_type = get_qualified_type<element_type>();
+                else
+                {
+                    return container::segment{};
+                }
             }
         };
 
@@ -134,13 +132,13 @@ namespace ediacaran
       typename std::enable_if_t<detail::HasStdContainerInterface<CONTAINER>::value> * = nullptr>
     constexpr container make_container_reflection() noexcept
     {
-        using Cont = detail::StdContainer<CONTAINER>;
+        using Cont = detail::StdContainer<CONTAINER, false>;
         return container{container::capability::none,
                          get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,
                          &Cont::construct_iterator,
-                         &Cont::destroy_iterator,
-                         &Cont::iterator_move_and_get};
+                         &Cont::next_segment,
+                         &Cont::destroy_iterator};
     }
 
 } // namespace ediacaran

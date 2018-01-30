@@ -103,7 +103,7 @@
     <ClInclude Include="..\reflection\detail\container_reflection.h">
       <Filter>reflection\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\utils\iterator.h">
+    <ClInclude Include="..\utils\universal_iterator.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -132,7 +132,7 @@
     <ClCompile Include="..\core\string_builder.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\utils\iterator.cpp">
+    <ClCompile Include="..\utils\universal_iterator.cpp">
       <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
