@@ -19,30 +19,6 @@ namespace ediacaran
         {
         };
 
-        template <typename FORWARD_ITERATOR>
-        constexpr FORWARD_ITERATOR bounded_next(
-          const FORWARD_ITERATOR &                                   i_iterator,
-          typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
-          const FORWARD_ITERATOR &                                   i_end,
-          std::random_access_iterator_tag)
-        {
-            return i_iterator + i_offset;
-        }
-
-        template <typename FORWARD_ITERATOR>
-        constexpr FORWARD_ITERATOR bounded_next(
-          const FORWARD_ITERATOR &                                   i_iterator,
-          typename std::iterator_traits<FORWARD_ITERATOR>::size_type i_offset,
-          const FORWARD_ITERATOR &                                   i_end,
-          std::input_iterator_tag)
-        {
-            for (; i_offset > 0 && i_iterator != i_end; i_offset--)
-            {
-                i_iterator++;
-            }
-            return i_iterator;
-        }
-
         template <typename TYPE> std::add_lvalue_reference_t<TYPE> declval_value();
 
         template <typename CONTAINER, bool IS_CONTIGUOUS> struct StdContainer;

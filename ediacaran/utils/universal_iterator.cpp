@@ -18,6 +18,7 @@ namespace ediacaran
 
     void universal_iterator::deallocate_iterator(void * i_block, size_t i_size) noexcept
     {
+        #if __cpp_sized_deallocation
         if constexpr (container::iterator_alignment < __STDCPP_DEFAULT_NEW_ALIGNMENT__)
         {
             ::operator delete(i_block, i_size);
@@ -26,6 +27,16 @@ namespace ediacaran
         {
             ::operator delete(i_block, i_size, std::align_val_t(container::iterator_alignment));
         }
+        #else
+        if constexpr (container::iterator_alignment < __STDCPP_DEFAULT_NEW_ALIGNMENT__)
+        {
+            ::operator delete(i_block);
+        }
+        else
+        {
+            ::operator delete(i_block, std::align_val_t(container::iterator_alignment));
+        }
+        #endif
     }
 
     universal_iterator::universal_iterator(raw_ptr i_target)
