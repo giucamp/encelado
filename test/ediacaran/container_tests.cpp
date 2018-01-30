@@ -1,10 +1,10 @@
 
 
 #include "../common.h"
+#include "ediacaran/core/string_builder.h"
 #include "ediacaran/std_refl/string.h"
 #include "ediacaran/std_refl/vector.h"
 #include "ediacaran/utils/universal_iterator.h"
-#include "ediacaran/core/string_builder.h"
 #include <iostream>
 
 namespace ediacaran_test
@@ -21,7 +21,7 @@ namespace ediacaran_test
         std::vector<int> vector = {1, 2, 3, 4, 5, 6};
 
         string_builder str;
-        for (universal_iterator it{&vector}; !it.is_over(); ++it)
+        for (universal_iterator it(&std::as_const(vector)); !it.is_over(); ++it)
         {
             str << *it << '\n';
         }

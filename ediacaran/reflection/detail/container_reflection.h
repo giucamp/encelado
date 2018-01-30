@@ -45,11 +45,9 @@ namespace ediacaran
 
         template <typename TYPE> std::add_lvalue_reference_t<TYPE> declval_value();
 
-        template <typename CONTAINER, bool IS_CONTIGUOUS>
-        struct StdContainer;
+        template <typename CONTAINER, bool IS_CONTIGUOUS> struct StdContainer;
 
-        template <typename CONTAINER>
-          struct StdContainer<CONTAINER, false>
+        template <typename CONTAINER> struct StdContainer<CONTAINER, false>
         {
             using native_iterator = decltype(std::begin(declval_value<CONTAINER>()));
 
@@ -90,13 +88,14 @@ namespace ediacaran
 
                 // construct the iterator
                 auto & container = *static_cast<CONTAINER *>(i_container);
-                auto & iterator = *new (get_iterator_ptr(i_iterator_dest))
-                  Iterator{std::begin(container), std::end(container)};
+                auto & iterator  = *new (get_iterator_ptr(i_iterator_dest))
+                                    Iterator{std::begin(container), std::end(container)};
 
-                if(iterator.m_curr != iterator.m_end)
+                if (iterator.m_curr != iterator.m_end)
                 {
-                    void * const elements = const_cast<std::remove_cv_t<element_type> *>(&*iterator.m_curr);
-                    return container::segment{ get_qualified_type<element_type>(), elements, 1 };
+                    void * const elements =
+                      const_cast<std::remove_cv_t<element_type> *>(&*iterator.m_curr);
+                    return container::segment{get_qualified_type<element_type>(), elements, 1};
                 }
                 else
                 {
@@ -115,8 +114,9 @@ namespace ediacaran
                 ++iterator.m_curr;
                 if (iterator.m_curr != iterator.m_end)
                 {
-                    void * const elements = const_cast<std::remove_cv_t<element_type> *>(&*iterator.m_curr);
-                    return container::segment{ get_qualified_type<element_type>(), elements, 1 };
+                    void * const elements =
+                      const_cast<std::remove_cv_t<element_type> *>(&*iterator.m_curr);
+                    return container::segment{get_qualified_type<element_type>(), elements, 1};
                 }
                 else
                 {

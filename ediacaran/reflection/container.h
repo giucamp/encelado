@@ -43,7 +43,7 @@ namespace ediacaran
 
         using next_segment_function_ptr = segment (*)(void * i_iterator);
 
-        using destroy_iterator_function_ptr = void(*)(void * i_iterator) noexcept;
+        using destroy_iterator_function_ptr = void (*)(void * i_iterator) noexcept;
 
         constexpr container(
           capability                      i_capabilities,

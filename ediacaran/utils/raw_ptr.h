@@ -21,7 +21,7 @@ namespace ediacaran
 
         template <typename TYPE>
         explicit raw_ptr(TYPE * i_ptr)
-            : m_object(i_ptr), m_qualified_type(get_qualified_type<TYPE>())
+            : m_object(detail::ptr_remove_cv(i_ptr)), m_qualified_type(get_qualified_type<TYPE>())
         {
         }
 

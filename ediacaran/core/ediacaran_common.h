@@ -196,4 +196,13 @@ namespace ediacaran
         }
         return end;
     }
+
+    namespace detail
+    {
+        template <typename TYPE>
+            inline void * ptr_remove_cv(TYPE * i_ptr)
+        {
+            return const_cast<std::remove_cv_t<TYPE>*>(i_ptr);
+        }
+    }
 }

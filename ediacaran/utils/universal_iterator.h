@@ -8,34 +8,28 @@ namespace ediacaran
     class universal_iterator
     {
       public:
-         
         universal_iterator(raw_ptr i_target);
-        
-        template <typename TYPE>
-            explicit universal_iterator(TYPE * i_ptr)
-                : universal_iterator(raw_ptr(i_ptr))
-        {
 
+        template <typename TYPE>
+        explicit universal_iterator(TYPE * i_ptr) : universal_iterator(raw_ptr(i_ptr))
+        {
         }
 
 
-        universal_iterator(const universal_iterator&) = delete;
-        universal_iterator & operator = (const universal_iterator&) = delete;
+        universal_iterator(const universal_iterator &) = delete;
+        universal_iterator & operator=(const universal_iterator &) = delete;
 
         universal_iterator & operator++();
 
         ~universal_iterator();
 
-        raw_ptr operator * () const noexcept
+        raw_ptr operator*() const noexcept
         {
             EDIACARAN_ASSERT(!is_over());
             return raw_ptr(m_curr_segment.m_elements, m_curr_segment.element_type);
         }
 
-        bool is_over() const noexcept
-        {
-            return m_curr_segment.m_element_count == 0;
-        }
+        bool is_over() const noexcept { return m_curr_segment.m_element_count == 0; }
 
       private:
         static void * allocate_iterator(size_t i_size);

@@ -42,9 +42,9 @@ namespace ediacaran
                 if (iterator_size <= s_inplace_storage_size)
                 {
                     auto const iterator = &m_iterator_inline_storage;
-                    m_curr_segment = container->construct_iterator()(
-                        iterator, const_cast<void *>(target.object()));
-                    m_iterator = iterator;
+                    m_curr_segment      = container->construct_iterator()(
+                      iterator, const_cast<void *>(target.object()));
+                    m_iterator  = iterator;
                     m_container = container;
                 }
                 else
@@ -53,8 +53,8 @@ namespace ediacaran
                     try
                     {
                         m_curr_segment = container->construct_iterator()(
-                            iterator, const_cast<void *>(target.object()));
-                        m_iterator = iterator;
+                          iterator, const_cast<void *>(target.object()));
+                        m_iterator  = iterator;
                         m_container = container;
                     }
                     catch (...)
@@ -72,7 +72,7 @@ namespace ediacaran
         EDIACARAN_ASSERT(m_curr_segment.m_element_count > 0);
         --m_curr_segment.m_element_count;
         m_curr_segment.m_elements = address_add(
-            m_curr_segment.m_elements, m_curr_segment.element_type.primary_type()->size());
+          m_curr_segment.m_elements, m_curr_segment.element_type.primary_type()->size());
         if (m_curr_segment.m_element_count == 0)
         {
             m_curr_segment = m_container->next_segment()(m_iterator);
