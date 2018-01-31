@@ -36,6 +36,8 @@ namespace ediacaran
         static void   deallocate_iterator(void * i_block, size_t i_size) noexcept;
         void          destroy_iterator() noexcept;
 
+        void bind_container(const container * i_container, void * i_object);
+
       private:
         container::segment m_curr_segment;
 

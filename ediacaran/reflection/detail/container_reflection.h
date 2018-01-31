@@ -5,6 +5,9 @@
 
 namespace ediacaran
 {
+    template <typename CONTAINER>
+        struct is_contogous_container: std::false_type {};
+
     namespace detail
     {
         template <typename CONTAINER, typename = std::void_t<>>
@@ -101,6 +104,39 @@ namespace ediacaran
             }
         };
 
+        template <typename CONTAINER> struct StdContainer<CONTAINER, true>
+        {
+            using native_iterator = decltype(std::begin(declval_value<CONTAINER>()));
+
+            using element_type =
+              std::remove_reference_t<decltype(*std::declval<native_iterator>())>;
+
+            static_assert(
+              !std::is_reference_v<native_iterator>, "begin must return an iterator by value");
+            static_assert(
+              std::is_reference_v<decltype(*std::declval<native_iterator>())>,
+              "a deferenced iterator must yeld a reference");
+
+            static constexpr size_t iterator_storage_size = 1;
+
+            static container::segment construct_iterator(void * i_iterator_dest, void * i_container)
+            {
+                EDIACARAN_ASSERT(i_container != nullptr);
+                EDIACARAN_ASSERT(i_iterator_dest != nullptr);
+
+                auto & container = *static_cast<CONTAINER *>(i_container);
+                return container::segment{
+                  get_qualified_type<element_type>(), &*container.begin(), container.size()};
+            }
+
+            static void destroy_iterator(void * i_iterator_dest) noexcept {}
+
+            static container::segment next_segment(void * i_iterator)
+            {
+                return container::segment{};
+            }
+        };
+
     } //namespace detail
 
     template <
@@ -108,7 +144,7 @@ namespace ediacaran
       typename std::enable_if_t<detail::HasStdContainerInterface<CONTAINER>::value> * = nullptr>
     constexpr container make_container_reflection() noexcept
     {
-        using Cont = detail::StdContainer<CONTAINER, false>;
+        using Cont = detail::StdContainer<CONTAINER, is_contogous_container<CONTAINER>::value>;
         return container{container::capability::none,
                          get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,
