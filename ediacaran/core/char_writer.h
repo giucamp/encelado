@@ -1,6 +1,5 @@
 
-//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
-
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
 
 #pragma once
 #include "ediacaran/core/array.h"
@@ -138,14 +137,14 @@ namespace ediacaran
         char          buffer[buffer_size] = {};
         size_t        length              = 0;
         /* note: if the number is negative, we can't just negate the sign and use the same algorithm,
-			because the unary minus operator is lossy: for example, negating -128 as int8 produces an overflow, as
-			128 can't be represented as int8 */
+            because the unary minus operator is lossy: for example, negating -128 as int8 produces an overflow, as
+            128 can't be represented as int8 */
         if (is_negative)
         {
             do
             {
                 /* note: we do not use the modulo operator %, because it has implementation-defined
-					behavior with non-positive operands. */
+                    behavior with non-positive operands. */
                 SINT_TYPE const new_value = i_source / ten;
                 buffer[length]            = static_cast<char>('0' + new_value * ten - i_source);
                 i_source                  = new_value;

@@ -1,3 +1,6 @@
+
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #pragma once
 
 #define REFL_DATA_PROP(Name, DataMember)                                                           \

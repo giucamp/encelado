@@ -1,4 +1,5 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
 
 #include "../common.h"
 #include "ediacaran/core/remove_noexcept.h"

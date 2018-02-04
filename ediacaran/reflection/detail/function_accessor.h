@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #ifndef EDIACARAN_FUNC_REFL_CV_QUALFICATION
 #error "This is a private header, do not include it"
 #endif

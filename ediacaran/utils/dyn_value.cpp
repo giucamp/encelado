@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #include <ediacaran/utils/dyn_value.h>
 #include <memory>
 #include <utility>

@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
 #include "ediacaran/core/string_builder.h"
@@ -289,9 +291,9 @@ namespace ediacaran_test
           get_qualified_type<const int *>() == get_qualified_type<int const *>());
 
         /* qualified_type_ptr is documented (as implementation note) to be big as two pointers. This static_assert is here
-			to verify the correctness of this note, but if it would ever fail on some compiler, it may safely be removed
-			(together with the implementation note), as no other assumptions on the size of qualified_type_ptr are present
-			in the library. */
+            to verify the correctness of this note, but if it would ever fail on some compiler, it may safely be removed
+            (together with the implementation note), as no other assumptions on the size of qualified_type_ptr are present
+            in the library. */
         static_assert(
           sizeof(qualified_type_ptr) == sizeof(void *) * 2,
           "qualified_type_ptr is not big as two pointers, as documented.");

@@ -1,9 +1,5 @@
 
-//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
-
-
-//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
-
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
 
 #pragma once
 #include "CambrianCommon.h"

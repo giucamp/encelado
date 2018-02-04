@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #include "char_reader.h"
 #include <cstdio>
 #include <inttypes.h>

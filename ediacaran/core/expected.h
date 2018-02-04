@@ -1,3 +1,6 @@
+
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #pragma once
 #include <ediacaran/core/ediacaran_common.h>
 #include <type_traits>
@@ -163,10 +166,10 @@ namespace ediacaran
 
       public:
         using detail::ExpectedBase<
-            VALUE,
-            ERROR,
-            (std::is_trivially_destructible_v<VALUE> ||
-             std::is_void_v<VALUE>)&&std::is_trivially_destructible_v<ERROR>>::ExpectedBase;
+          VALUE,
+          ERROR,
+          (std::is_trivially_destructible_v<VALUE> ||
+           std::is_void_v<VALUE>)&&std::is_trivially_destructible_v<ERROR>>::ExpectedBase;
 
         constexpr bool has_value() const noexcept { return Base::m_has_value; }
 

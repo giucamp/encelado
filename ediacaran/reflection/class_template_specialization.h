@@ -1,3 +1,6 @@
+
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #pragma once
 #include "ediacaran/core/comma_separated_names.h"
 #include "ediacaran/reflection/class_type.h"

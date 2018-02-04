@@ -1,5 +1,5 @@
 
-//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2016-2017.
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
 
 #include "TypeRegistry.h"
 #include "ediacaran/reflection/reflection.h"

@@ -1,3 +1,6 @@
+
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #pragma once
 #include "ediacaran/core/char_writer.h"
 #include <ediacaran/core/array.h>

@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #include <algorithm>
 #include <ediacaran/core/ediacaran_common.h>
 #include <ediacaran/core/string_builder.h>

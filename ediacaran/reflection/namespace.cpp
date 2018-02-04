@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #include "ediacaran/reflection/namespace.h"
 #include "ediacaran/reflection/reflection.h"
 #include <string>

@@ -1,4 +1,6 @@
 
+//   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+
 #include <ediacaran/core/ediacaran_common.h>
 
 #define ENCELADO_TEST_ASSERT(expr)                                                                 \
