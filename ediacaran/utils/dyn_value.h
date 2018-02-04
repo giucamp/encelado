@@ -122,6 +122,7 @@ namespace ediacaran
     }
 
     dyn_value parse_value(const qualified_type_ptr & i_qualified_type, char_reader & i_source);
-    dyn_value parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source);
+    dyn_value
+      parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source);
 
 } // namespace ediacaran

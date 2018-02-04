@@ -161,8 +161,7 @@ namespace ediacaran
             (*m_special_functions.stringizer())(i_source, i_dest);
         }
 
-        expected<void,parse_error> parse(void * i_dest, char_reader & i_source) const
-          noexcept
+        expected<void, parse_error> parse(void * i_dest, char_reader & i_source) const noexcept
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
             auto const parser = m_special_functions.parser();
@@ -175,7 +174,7 @@ namespace ediacaran
         }
 
         expected<void, parse_error> parse(void * i_dest, const string_view & i_source) const
-            noexcept
+          noexcept
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
             auto const parser = m_special_functions.parser();
@@ -186,7 +185,7 @@ namespace ediacaran
             else
             {
                 char_reader source(i_source);
-                auto const result = parser(i_dest, source);
+                auto const  result = parser(i_dest, source);
                 if (source.remaining_chars() != 0)
                 {
                     return parse_error::tailing_chars;

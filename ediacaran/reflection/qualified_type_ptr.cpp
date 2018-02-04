@@ -9,8 +9,7 @@
 
 namespace ediacaran
 {
-    expected<void, parse_error> parse(
-      qualified_type_ptr & o_dest, char_reader & i_source) noexcept
+    expected<void, parse_error> parse(qualified_type_ptr & o_dest, char_reader & i_source) noexcept
     {
         size_t       constness_word = 0, volatileness_word = 0;
         const type * final_type = nullptr;
@@ -71,7 +70,8 @@ namespace ediacaran
         }
         else if (final_type == nullptr)
         {
-            return parse_error::missing_expected_chars;;
+            return parse_error::missing_expected_chars;
+            ;
         }
 
         // commit

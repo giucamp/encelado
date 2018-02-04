@@ -29,19 +29,17 @@ namespace ediacaran
                (i_char >= '0' && i_char <= '9');
     }
 
-    enum class[[nodiscard]] parse_error{
-      unexpected_char,
-      unexpected_token,
-      missing_expected_chars,
-      mismatching_value,
-      overflow,
-      tailing_chars,
-      out_of_memory,
-      internal_limit,
-      unknown_error,
-      unsupported,
-      not_found
-    };
+    enum class[[nodiscard]] parse_error{unexpected_char,
+                                        unexpected_token,
+                                        missing_expected_chars,
+                                        mismatching_value,
+                                        overflow,
+                                        tailing_chars,
+                                        out_of_memory,
+                                        internal_limit,
+                                        unknown_error,
+                                        unsupported,
+                                        not_found};
 
     /** Class used to convert a sequence of chars to typed values. char_reader is a 
         non-owning view of a null-terminated string of characters.
@@ -117,8 +115,8 @@ namespace ediacaran
       accept(const TYPE & i_expected_value, char_reader & i_source) noexcept(
         noexcept(TYPE{}) && noexcept(parse(std::declval<TYPE &>(), std::declval<char_reader &>())))
     {
-        TYPE                         actual_value{};
-        auto                         source = i_source;
+        TYPE                        actual_value{};
+        auto                        source = i_source;
         expected<void, parse_error> result = parse(actual_value, source);
         if (!result)
         {
@@ -134,8 +132,8 @@ namespace ediacaran
 
     // generic parse from string_view
     template <typename TYPE>
-    constexpr expected<TYPE, parse_error> parse(const string_view & i_source)
-        noexcept(noexcept(parse<TYPE>(std::declval<char_reader&>())))
+    constexpr expected<TYPE, parse_error> parse(const string_view & i_source) noexcept(
+      noexcept(parse<TYPE>(std::declval<char_reader &>())))
     {
         char_reader reader(i_source);
         auto        result = parse<TYPE>(reader);
@@ -300,8 +298,7 @@ namespace ediacaran
     template <
       typename UINT_TYPE,
       std::enable_if_t<std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE>> * = nullptr>
-    constexpr expected<void, parse_error>
-      parse(UINT_TYPE & o_dest, char_reader & i_source) noexcept
+    constexpr expected<void, parse_error> parse(UINT_TYPE & o_dest, char_reader & i_source) noexcept
     {
         const char *       curr_digit    = i_source.next_chars();
         const char * const end_of_buffer = curr_digit + i_source.remaining_chars();

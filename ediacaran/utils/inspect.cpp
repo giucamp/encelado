@@ -116,7 +116,8 @@ namespace ediacaran
         if (!property_type.is_pointer())
         {
             m_dyn_value.assign(m_property->qualified_type());
-            auto const parse_result = property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
+            auto const parse_result =
+              property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
             parse_result.on_error_except();
             char        error[512];
             char_writer error_writer(error);
@@ -127,7 +128,7 @@ namespace ediacaran
         }
         else
         {
-            auto const final_value = get_prop_value().full_indirection();
+            auto const final_value  = get_prop_value().full_indirection();
             auto const parse_result = final_value.qualified_type().final_type()->parse(
               const_cast<void *>(m_dyn_value.object()), i_source);
             parse_result.on_error_except();
@@ -496,7 +497,7 @@ namespace ediacaran
     {
         char_reader source(i_function_and_arguments);
         dyn_value   return_value = invoke_function(i_target, source);
-        if(source.remaining_chars() != 0)
+        if (source.remaining_chars() != 0)
             throw parse_error::tailing_chars;
         return return_value;
     }

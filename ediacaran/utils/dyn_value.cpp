@@ -120,7 +120,7 @@ namespace ediacaran
     {
         char_reader source(i_source);
         dyn_value   result = parse_value(i_qualified_type, source);
-        if(source.remaining_chars() != 0)
+        if (source.remaining_chars() != 0)
             throw parse_error::tailing_chars;
         return result;
     }

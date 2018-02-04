@@ -47,7 +47,7 @@ namespace ediacaran
                         {
                             return parse_error::out_of_memory;
                         }
-                        catch(...)
+                        catch (...)
                         {
                             return parse_error::unknown_error;
                         }

@@ -63,7 +63,7 @@ namespace ediacaran
           scalar_move_assigner_function    i_scalar_move_assigner,
           comparer_function                i_comparer,
           to_chars_function                i_to_chars,
-          parse_function               i_parser)
+          parse_function                   i_parser)
             : m_scalar_default_constructor(i_scalar_default_constructor),
               m_scalar_destructor(i_scalar_destructor),
               m_scalar_copy_constructor(i_scalar_copy_constructor),
@@ -292,6 +292,6 @@ namespace ediacaran
         scalar_move_assigner_function    m_scalar_move_assigner       = nullptr;
         comparer_function                m_comparer                   = nullptr;
         to_chars_function                m_stringizer                 = nullptr;
-        parse_function                   m_parser                 = nullptr;
+        parse_function                   m_parser                     = nullptr;
     };
 }
