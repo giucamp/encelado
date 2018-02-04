@@ -130,9 +130,9 @@ namespace ediacaran
                   get_qualified_type<element_type>(), &*container.begin(), container.size()};
             }
 
-            static void destroy_iterator(void * i_iterator_dest) noexcept {}
+            static void destroy_iterator(void * /*i_iterator_dest*/) noexcept {}
 
-            static container::segment next_segment(void * i_iterator)
+            static container::segment next_segment(void * /*i_iterator*/)
             {
                 return container::segment{};
             }

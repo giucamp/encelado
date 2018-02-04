@@ -44,10 +44,8 @@
 		<Unit filename="../core/char_reader.h" />
 		<Unit filename="../core/char_writer.cpp" />
 		<Unit filename="../core/char_writer.h" />
-		<Unit filename="../core/char_writer.h.save" />
 		<Unit filename="../core/constexpr_string.h" />
 		<Unit filename="../core/ediacaran_common.h" />
-		<Unit filename="../core/ediacaran_common.h.save" />
 		<Unit filename="../core/string_builder.cpp" />
 		<Unit filename="../core/string_builder.h" />
 		<Unit filename="../core/type_list.h" />
@@ -67,10 +65,10 @@
 		<Unit filename="../utils/dyn_value.h" />
 		<Unit filename="../utils/inspect.cpp" />
 		<Unit filename="../utils/inspect.h" />
-		<Unit filename="../utils/iterator.cpp" />
-		<Unit filename="../utils/iterator.h" />
 		<Unit filename="../utils/raw_ptr.cpp" />
 		<Unit filename="../utils/raw_ptr.h" />
+		<Unit filename="../utils/universal_iterator.cpp" />
+		<Unit filename="../utils/universal_iterator.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

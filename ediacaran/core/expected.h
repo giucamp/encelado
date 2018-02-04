@@ -19,7 +19,7 @@ namespace ediacaran
     template <typename ERROR> class bad_expected_access : public std::exception
     {
       public:
-        virtual char const * what() const { return "value not present"; }
+        virtual char const * what() const noexcept { return "value not present"; }
 
       private:
         ERROR m_error;
@@ -27,7 +27,7 @@ namespace ediacaran
 
     namespace detail
     {
-        template <typename VALUE, typename ERROR, bool TRIVIAL_DESTRUCTOR> class ExpectedBase;
+        template <typename VALUE, typename ERROR, bool TRIVIAL_DESTRUCTOR> struct ExpectedBase;
 
         template <typename VALUE, typename ERROR> struct ExpectedBase<VALUE, ERROR, false>
         {
@@ -162,36 +162,40 @@ namespace ediacaran
            std::is_void_v<VALUE>)&&std::is_trivially_destructible_v<ERROR>>;
 
       public:
-        using Base::ExpectedBase;
+        using detail::ExpectedBase<
+            VALUE,
+            ERROR,
+            (std::is_trivially_destructible_v<VALUE> ||
+             std::is_void_v<VALUE>)&&std::is_trivially_destructible_v<ERROR>>::ExpectedBase;
 
-        constexpr bool has_value() const noexcept { return m_has_value; }
+        constexpr bool has_value() const noexcept { return Base::m_has_value; }
 
-        constexpr bool has_error() const noexcept { return !m_has_value; }
+        constexpr bool has_error() const noexcept { return !Base::m_has_value; }
 
-        constexpr operator bool() const noexcept { return m_has_value; }
+        constexpr operator bool() const noexcept { return Base::m_has_value; }
 
         template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
         constexpr const VAL & value() const
         {
-            if (m_has_value)
-                return m_value;
+            if (Base::m_has_value)
+                return Base::m_value;
             else
                 throw_error();
         }
 
         constexpr void on_error_except() const
         {
-            if (!m_has_value)
+            if (!Base::m_has_value)
                 throw_error();
         }
 
         constexpr const ERROR & error() const noexcept
         {
-            EDIACARAN_ASSERT(!m_has_value);
-            return m_error;
+            EDIACARAN_ASSERT(!Base::m_has_value);
+            return Base::m_error;
         }
 
       private:
-        [[noreturn]] constexpr void throw_error() const { throw m_error; }
+        [[noreturn]] constexpr void throw_error() const { throw Base::m_error; }
     };
 }

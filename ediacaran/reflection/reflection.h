@@ -92,8 +92,9 @@ namespace ediacaran
     } // namespace detail
 } // namespace ediacaran
 
-#include "ediacaran/reflection/detail/class_reflection.h"
 #include "ediacaran/reflection/detail/container_reflection.h"
+// container_reflection must be included before class_reflection, this comment prevents clang-format from reordering
+#include "ediacaran/reflection/detail/class_reflection.h"
 #include "ediacaran/reflection/detail/enum_reflection.h"
 
 namespace ediacaran

@@ -41,9 +41,9 @@ namespace ediacaran
                                         unsupported,
                                         not_found};
 
-    /** Class used to convert a sequence of chars to typed values. char_reader is a 
+    /** Class used to convert a sequence of chars to typed values. char_reader is a
         non-owning view of a null-terminated string of characters.
-        While values are parsed or accepted, the reader advances in the string. 
+        While values are parsed or accepted, the reader advances in the string.
         Note: the char after the end mujst be readable until a null char is present. In other
         word even if the view is a part of the buffer, the whole buffer must be null-terminated
         */
@@ -120,7 +120,7 @@ namespace ediacaran
         expected<void, parse_error> result = parse(actual_value, source);
         if (!result)
         {
-            return result.error();
+            return result;
         }
         if (actual_value != i_expected_value)
         {
