@@ -5,8 +5,9 @@
 
 namespace ediacaran
 {
-    template <typename CONTAINER>
-        struct is_contogous_container: std::false_type {};
+    template <typename CONTAINER> struct is_contogous_container : std::false_type
+    {
+    };
 
     namespace detail
     {

@@ -116,7 +116,8 @@ namespace ediacaran
         if (!property_type.is_pointer())
         {
             m_dyn_value.assign(m_property->qualified_type());
-            property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
+            auto const parse_result = property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
+            parse_result.on_error_except();
             char        error[512];
             char_writer error_writer(error);
             if (!m_property->set(m_subobject, m_dyn_value.object(), error_writer))
@@ -126,9 +127,10 @@ namespace ediacaran
         }
         else
         {
-            auto final_value = get_prop_value().full_indirection();
-            final_value.qualified_type().final_type()->parse(
+            auto const final_value = get_prop_value().full_indirection();
+            auto const parse_result = final_value.qualified_type().final_type()->parse(
               const_cast<void *>(m_dyn_value.object()), i_source);
+            parse_result.on_error_except();
         }
     }
 
@@ -136,20 +138,23 @@ namespace ediacaran
     {
         char_reader reader(i_source);
         set_prop_value(reader);
-        except_on_tailing(reader);
+        if (reader.remaining_chars() != 0)
+        {
+            throw parse_error::tailing_chars;
+        }
     }
 
     dyn_value get_property_value(const raw_ptr & i_target, char_reader & i_property_name_source)
     {
         if (i_target.empty())
         {
-            except<parse_error>("Missing property target");
+            except<std::logic_error>("Missing property target");
         }
 
         auto const property_name = try_parse_identifier(i_property_name_source);
         if (property_name.empty())
         {
-            except<parse_error>("Missing property name");
+            except<std::logic_error>("Missing property name");
         }
         for (auto const & property : inspect_properties(i_target))
         {
@@ -159,7 +164,7 @@ namespace ediacaran
             }
         }
 
-        except<parse_error>("Property not found: ", property_name);
+        except<std::logic_error>("Property not found: ", property_name);
     }
 
     dyn_value
@@ -167,7 +172,10 @@ namespace ediacaran
     {
         char_reader source(i_property_name_source);
         auto        res = get_property_value(i_target, source);
-        except_on_tailing(source);
+        if (source.remaining_chars() != 0)
+        {
+            throw parse_error::tailing_chars;
+        }
         return res;
     }
 
@@ -220,7 +228,10 @@ namespace ediacaran
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value);
-        except_on_tailing(property_name);
+        if (property_name.remaining_chars() != 0)
+        {
+            throw parse_error::tailing_chars;
+        }
     }
 
     void set_property_value(
@@ -234,7 +245,10 @@ namespace ediacaran
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value_source);
-        except_on_tailing(property_name);
+        if (property_name.remaining_chars() != 0)
+        {
+            throw parse_error::tailing_chars;
+        }
     }
 
     void set_property_value(
@@ -252,7 +266,10 @@ namespace ediacaran
     {
         char_reader property_name(i_property_name);
         set_property_value(i_target, property_name, i_value_source);
-        except_on_tailing(property_name);
+        if (property_name.remaining_chars() != 0)
+        {
+            throw parse_error::tailing_chars;
+        }
     }
 
     function_inspector inspect_functions(const raw_ptr & i_target)
@@ -401,7 +418,7 @@ namespace ediacaran
 
         for (size_t i = 0; i < parameters.size(); i++)
         {
-            try_accept(spaces, i_arguments_source);
+            (void)accept(spaces, i_arguments_source);
 
             auto const & parameter = parameters[i];
             auto &       dyn_value = dyn_arguments.emplace_back(
@@ -413,7 +430,7 @@ namespace ediacaran
                 i_arguments_source >> ',';
             }
         }
-        try_accept(spaces, i_arguments_source);
+        (void)accept(spaces, i_arguments_source);
 
         if (m_function->qualified_return_type() == get_qualified_type<void>())
         {
@@ -435,18 +452,18 @@ namespace ediacaran
         auto const function_name = try_parse_identifier(i_function_and_arguments);
         if (function_name.empty())
         {
-            except<parse_error>("Missing function name");
+            except<std::logic_error>("Missing function name");
         }
 
         if (i_target.empty())
         {
-            except<parse_error>("Missing function target");
+            except<std::logic_error>("Missing function target");
         }
 
-        try_accept(spaces, i_function_and_arguments);
-        if (!try_accept('(', i_function_and_arguments))
+        (void)accept(spaces, i_function_and_arguments);
+        if (!accept('(', i_function_and_arguments))
         {
-            except<parse_error>("Missing '('");
+            except<std::logic_error>("Missing '('");
         }
 
         dyn_value return_value;
@@ -466,9 +483,9 @@ namespace ediacaran
             except<std::runtime_error>("Could not find the function ", function_name);
         }
 
-        if (!try_accept(')', i_function_and_arguments))
+        if (!accept(')', i_function_and_arguments))
         {
-            except<parse_error>("Missing ')'");
+            except<std::logic_error>("Missing ')'");
         }
 
         return return_value;
@@ -479,7 +496,8 @@ namespace ediacaran
     {
         char_reader source(i_function_and_arguments);
         dyn_value   return_value = invoke_function(i_target, source);
-        except_on_tailing(source);
+        if(source.remaining_chars() != 0)
+            throw parse_error::tailing_chars;
         return return_value;
     }
 

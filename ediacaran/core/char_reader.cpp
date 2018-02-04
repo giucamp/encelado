@@ -4,57 +4,72 @@
 #include <inttypes.h>
 #include <stdexcept>
 #include <string>
+#include <system_error>
 
 namespace ediacaran
 {
     namespace detail
     {
-        template <typename FLOAT_TYPE, typename STRTOF>
-        bool try_parse_float(
-          FLOAT_TYPE & o_dest, char_reader & i_source, char_writer &, STRTOF i_strtof) noexcept
+        namespace
         {
-            auto const source = i_source.next_chars();
-
-            char * end_of_number;
-            auto   res = i_strtof(source, &end_of_number);
-
-            if (end_of_number != nullptr && end_of_number != source)
+            template <typename FLOAT_TYPE, typename STRTOF>
+            expected<void, parse_error>
+              parse_float(FLOAT_TYPE & o_dest, char_reader & i_source, STRTOF i_strtof) noexcept
             {
-                EDIACARAN_INTERNAL_ASSERT(end_of_number >= source);
-                auto const read_chars = static_cast<size_t>(end_of_number - source);
+                auto const source = i_source.next_chars();
 
-                if (read_chars <= i_source.remaining_chars())
+                char * end_of_number;
+                auto   res = i_strtof(source, &end_of_number);
+
+                if (end_of_number != nullptr && end_of_number != source)
                 {
-                    o_dest = res;
-                    i_source.skip(read_chars);
-                    return true;
+                    EDIACARAN_INTERNAL_ASSERT(end_of_number >= source);
+                    auto const read_chars = static_cast<size_t>(end_of_number - source);
+
+                    if (read_chars <= i_source.remaining_chars())
+                    {
+                        o_dest = res;
+                        i_source.skip(read_chars);
+                        return {};
+                    }
+                    else
+                    {
+                        // a number was parsed, but some digit was interpreted past the end of the buffer
+                        try
+                        {
+                            std::string s(source, source + i_source.remaining_chars());
+                            res    = i_strtof(source, nullptr);
+                            o_dest = res;
+                            i_source.skip(read_chars);
+                            return {};
+                        }
+                        catch (const std::bad_alloc &)
+                        {
+                            return parse_error::out_of_memory;
+                        }
+                        catch(...)
+                        {
+                            return parse_error::unknown_error;
+                        }
+                    }
                 }
-                else
-                {
-                    std::string s(source, source + i_source.remaining_chars());
-                    res    = i_strtof(source, nullptr);
-                    o_dest = res;
-                    i_source.skip(read_chars);
-                    return true;
-                }
+                return parse_error::unexpected_char;
             }
-            return false;
         }
     }
 
-    bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    expected<void, parse_error> parse(float & o_dest, char_reader & i_source) noexcept
     {
-        return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtof);
+        return detail::parse_float(o_dest, i_source, std::strtof);
     }
 
-    bool try_parse(double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    expected<void, parse_error> parse(double & o_dest, char_reader & i_source) noexcept
     {
-        return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtod);
+        return detail::parse_float(o_dest, i_source, std::strtod);
     }
 
-    bool
-      try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    expected<void, parse_error> parse(long double & o_dest, char_reader & i_source) noexcept
     {
-        return detail::try_parse_float(o_dest, i_source, o_error_dest, std::strtold);
+        return detail::parse_float(o_dest, i_source, std::strtold);
     }
 }

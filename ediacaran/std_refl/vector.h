@@ -7,7 +7,9 @@
 namespace ediacaran
 {
     template <typename... PARAMS>
-        struct is_contogous_container<std::vector<PARAMS...>> : std::true_type {};
+    struct is_contogous_container<std::vector<PARAMS...>> : std::true_type
+    {
+    };
 
     template <typename... PARAMS> struct non_intrusive_reflection<std::vector<PARAMS...>>
     {

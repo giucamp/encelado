@@ -9,8 +9,8 @@
 
 namespace ediacaran
 {
-    bool try_parse(
-      qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    expected<void, parse_error> parse(
+      qualified_type_ptr & o_dest, char_reader & i_source) noexcept
     {
         size_t       constness_word = 0, volatileness_word = 0;
         const type * final_type = nullptr;
@@ -20,17 +20,17 @@ namespace ediacaran
 
         for (;;)
         {
-            try_accept(spaces, source);
+            (void)accept(spaces, source);
 
-            if (try_accept("const", source))
+            if (accept("const", source))
             {
                 constness_word |= 1;
             }
-            else if (try_accept("volatile", source))
+            else if (accept("volatile", source))
             {
                 volatileness_word |= 1;
             }
-            else if (try_accept('*', source))
+            else if (accept('*', source))
             {
                 constness_word <<= 1;
                 volatileness_word <<= 1;
@@ -40,9 +40,9 @@ namespace ediacaran
                     break;
                 }
             }
-            else if (try_accept('&', source))
+            else if (accept('&', source))
             {
-                try_accept('&', source);
+                (void)accept('&', source);
                 constness_word <<= 1;
                 constness_word |= 1;
                 volatileness_word <<= 1;
@@ -54,10 +54,9 @@ namespace ediacaran
               final_type ==
                 nullptr) // only in the last indirection level (that is before any *, & or &&
             {
-                if (!try_parse(&final_type, source, o_error_dest))
+                if (auto res = parse(&final_type, source); !res)
                 {
-                    o_error_dest << "Could not parse the type\n";
-                    return false;
+                    return res.error();
                 }
             }
             else
@@ -68,20 +67,17 @@ namespace ediacaran
 
         if (indirection_levels > qualified_type_ptr::s_max_indirection_levels)
         {
-            o_error_dest << "Exceeded the maximum number of indirection levels ("
-                         << qualified_type_ptr::s_max_indirection_levels << ")";
-            return false;
+            return parse_error::internal_limit;
         }
         else if (final_type == nullptr)
         {
-            o_error_dest << "Missing final type";
-            return false;
+            return parse_error::missing_expected_chars;;
         }
 
         // commit
         i_source = source;
         o_dest =
           qualified_type_ptr(final_type, indirection_levels, constness_word, volatileness_word);
-        return true;
+        return {};
     }
 }

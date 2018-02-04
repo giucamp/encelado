@@ -226,8 +226,7 @@ namespace ediacaran
         return o_dest;
     }
 
-    bool try_parse(
-      qualified_type_ptr & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
+    expected<void, parse_error> parse(qualified_type_ptr & o_dest, char_reader & i_source) noexcept;
 
 } // namespace ediacaran
 

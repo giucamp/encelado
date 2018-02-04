@@ -15,6 +15,28 @@
 #include <utility>
 #include <vector>
 
+namespace another_namespace
+{
+    struct CustomType
+    {
+        int m_a = 1;
+        int m_b = 2;
+    };
+
+    constexpr ediacaran::expected<void, ediacaran::parse_error>
+      parse(CustomType & o_dest, ediacaran::char_reader & i_source) noexcept
+    {
+        auto const a   = ediacaran::parse<int>(i_source);
+        auto const sep = ediacaran::accept(", ", i_source);
+        auto const b   = ediacaran::parse<int>(i_source);
+        if (a.has_error() || sep.has_error() || b.has_error())
+            return ediacaran::parse_error::unexpected_token;
+        o_dest.m_a = a.value();
+        o_dest.m_b = b.value();
+        return {};
+    }
+}
+
 namespace ediacaran_test
 {
     template <typename TYPE, typename PRG, std::enable_if_t<std::is_integral_v<TYPE>> * = nullptr>
@@ -191,7 +213,7 @@ namespace ediacaran_test
     {
         using namespace ediacaran;
 
-        char buff[1024], error_buffer[1024];
+        char buff[1024];
 
         BIG_INT_TYPE const max =
           i_negative ? std::numeric_limits<INT_TYPE>::min() : std::numeric_limits<INT_TYPE>::max();
@@ -200,21 +222,19 @@ namespace ediacaran_test
             char_writer out(buff);
             out << number;
 
-            error_buffer[0]    = 0;
-            INT_TYPE    result = 0;
             char_reader in(buff);
-            char_writer err(error_buffer);
-            bool const  res = try_parse(result, in, err);
 
-            bool const expected_res = i_negative ? (number >= max) : (number <= max);
-            ENCELADO_TEST_ASSERT(res == expected_res);
+            auto const res              = parse<INT_TYPE>(in);
+            bool const expected_success = i_negative ? (number >= max) : (number <= max);
+
+            ENCELADO_TEST_ASSERT(res.has_value() == expected_success);
             if (res)
             {
-                ENCELADO_TEST_ASSERT(result == number);
+                ENCELADO_TEST_ASSERT(res.value() == number);
             }
             else
             {
-                ENCELADO_TEST_ASSERT(strcmp(error_buffer, "integer overflow") == 0);
+                ENCELADO_TEST_ASSERT(res.error() == parse_error::overflow);
             }
         }
     }
@@ -366,50 +386,53 @@ namespace ediacaran_test
 
         using namespace ediacaran;
 
-        static_assert(has_try_accept_v<bool>);
-        static_assert(has_try_parse_v<bool>);
+        constexpr auto custom_obj = parse<another_namespace::CustomType>("4, 5").value();
+        static_assert(custom_obj.m_a == 4 && custom_obj.m_b == 5);
 
-        static_assert(has_try_accept_v<int8_t>);
-        static_assert(has_try_parse_v<int8_t>);
-        static_assert(has_try_accept_v<uint16_t>);
-        static_assert(has_try_parse_v<uint16_t>);
+        static_assert(has_accept_v<bool>);
+        static_assert(has_parse_v<bool>);
 
-        static_assert(has_try_accept_v<int16_t>);
-        static_assert(has_try_parse_v<int16_t>);
-        static_assert(has_try_accept_v<uint16_t>);
-        static_assert(has_try_parse_v<uint16_t>);
+        static_assert(has_accept_v<int8_t>);
+        static_assert(has_parse_v<int8_t>);
+        static_assert(has_accept_v<uint16_t>);
+        static_assert(has_parse_v<uint16_t>);
 
-        static_assert(has_try_accept_v<int32_t>);
-        static_assert(has_try_parse_v<int32_t>);
-        static_assert(has_try_accept_v<uint16_t>);
-        static_assert(has_try_parse_v<uint16_t>);
+        static_assert(has_accept_v<int16_t>);
+        static_assert(has_parse_v<int16_t>);
+        static_assert(has_accept_v<uint16_t>);
+        static_assert(has_parse_v<uint16_t>);
 
-        static_assert(has_try_accept_v<int64_t>);
-        static_assert(has_try_parse_v<int64_t>);
-        static_assert(has_try_accept_v<uint16_t>);
-        static_assert(has_try_parse_v<uint16_t>);
+        static_assert(has_accept_v<int32_t>);
+        static_assert(has_parse_v<int32_t>);
+        static_assert(has_accept_v<uint16_t>);
+        static_assert(has_parse_v<uint16_t>);
 
-        static_assert(has_try_accept_v<float>);
-        static_assert(has_try_parse_v<float>);
+        static_assert(has_accept_v<int64_t>);
+        static_assert(has_parse_v<int64_t>);
+        static_assert(has_accept_v<uint16_t>);
+        static_assert(has_parse_v<uint16_t>);
 
-        static_assert(has_try_accept_v<double>);
-        static_assert(has_try_parse_v<double>);
+        static_assert(has_accept_v<float>);
+        static_assert(has_parse_v<float>);
 
-        static_assert(has_try_accept_v<long double>);
-        static_assert(has_try_parse_v<long double>);
+        static_assert(has_accept_v<double>);
+        static_assert(has_parse_v<double>);
 
-        static_assert(!has_try_parse_v<SpacesTag>);
-        static_assert(has_try_accept_v<SpacesTag>);
+        static_assert(has_accept_v<long double>);
+        static_assert(has_parse_v<long double>);
 
-        static_assert(!has_try_parse_v<std::string>);
-        static_assert(has_try_accept_v<std::string>);
+        static_assert(!has_parse_v<spaces_t>);
+        static_assert(has_accept_v<spaces_t>);
 
-        static_assert(!has_try_accept_v<void>);
-        static_assert(!has_try_parse_v<void>);
+        static_assert(!has_parse_v<std::string>);
+        static_assert(has_accept_v<std::string>);
 
-        static_assert(parse<int>("42") == 42);
-        static_assert(parse<int>("-42") == -42);
-        static_assert(parse<bool>("true"));
-        static_assert(!parse<bool>("false"));
+        static_assert(!has_accept_v<void>);
+        static_assert(!has_parse_v<void>);
+
+        static_assert(parse<int>("42").value() == 42);
+        static_assert(parse<int>("-42").value() == -42);
+        static_assert(parse<bool>("true").value());
+        static_assert(!parse<bool>("false").value());
     }
 }

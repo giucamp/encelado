@@ -53,6 +53,5 @@ namespace ediacaran
         std::unordered_map<std::string, const type *> m_types;
     };
 
-    bool
-      try_parse(const type ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept;
+    expected<void, parse_error> parse(const type ** o_type_ptr, char_reader & i_source) noexcept;
 }

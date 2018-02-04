@@ -106,6 +106,9 @@
     <ClInclude Include="..\utils\universal_iterator.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\expected.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

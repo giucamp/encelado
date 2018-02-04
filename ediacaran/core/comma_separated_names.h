@@ -4,6 +4,7 @@
 #pragma once
 #include "ediacaran/core/char_reader.h"
 #include <iterator>
+#include <stdexcept>
 
 namespace ediacaran
 {
@@ -28,7 +29,7 @@ namespace ediacaran
             constexpr const_iterator(const comma_separated_names & i_parent)
                 : m_reader(i_parent.m_string)
             {
-                try_accept(spaces, m_reader);
+                (void)accept(spaces, m_reader);
                 m_current = try_parse_identifier(m_reader);
                 check_for_end();
             }
@@ -47,10 +48,10 @@ namespace ediacaran
 
             constexpr const_iterator & operator++()
             {
-                try_accept(spaces, m_reader);
-                if (try_accept(',', m_reader))
+                (void)accept(spaces, m_reader);
+                if (accept(',', m_reader))
                 {
-                    try_accept(spaces, m_reader);
+                    (void)accept(spaces, m_reader);
                     m_current = try_parse_identifier(m_reader);
                 }
                 else
@@ -72,7 +73,7 @@ namespace ediacaran
             constexpr void check_for_end() const
             {
                 if (m_current.empty() && m_reader.remaining_chars() != 0)
-                    except<parse_error>("Unrecognized chars in comma separated list");
+                    except<std::logic_error>("Unrecognized chars in comma separated list");
             }
 
           private:

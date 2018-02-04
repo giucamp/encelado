@@ -49,7 +49,7 @@ namespace ediacaran
             return it->second;
     }
 
-    bool try_parse(const type ** o_type_ptr, char_reader & i_source, char_writer & i_error) noexcept
+    expected<void, parse_error> parse(const type ** o_type_ptr, char_reader & i_source) noexcept
     {
         try
         {
@@ -65,8 +65,7 @@ namespace ediacaran
                     curr_char++;
                     if (*curr_char++ != ':')
                     {
-                        i_error << "Expected ':' after ':'\n";
-                        return false;
+                        return parse_error::missing_expected_chars;
                     }
                 }
 
@@ -86,30 +85,22 @@ namespace ediacaran
 
             if (!some_identifier_found)
             {
-                i_error << "No identifiers\n";
-                return false;
+                return parse_error::missing_expected_chars;
             }
 
             string_view const full_name{first_char, static_cast<size_t>(curr_char - first_char)};
             auto const        type_ptr = global_namespace_::get().find_type(full_name);
             if (type_ptr == nullptr)
             {
-                i_error << "Could not find the type " << full_name << '\n';
-                return false;
+                return parse_error::not_found;
             }
             i_source.skip(full_name.size());
             *o_type_ptr = type_ptr;
-            return true;
-        }
-        catch (const std::exception & i_exception)
-        {
-            i_error << "Exception: " << i_exception.what() << '\n';
-            return false;
+            return {};
         }
         catch (...)
         {
-            i_error << "Unknown exception\n";
-            return false;
+            return parse_error::unknown_error;
         }
     }
 }

@@ -49,8 +49,8 @@ namespace ediacaran
 
         using to_chars_function = void (*)(void const * i_source, char_writer & i_dest) noexcept;
 
-        using try_parse_function =
-          bool (*)(void * i_dest, char_reader & i_source, char_writer & i_error_dest) noexcept;
+        using parse_function =
+          expected<void, parse_error> (*)(void * i_dest, char_reader & i_source) noexcept;
 
         constexpr special_functions() noexcept = default;
 
@@ -63,14 +63,14 @@ namespace ediacaran
           scalar_move_assigner_function    i_scalar_move_assigner,
           comparer_function                i_comparer,
           to_chars_function                i_to_chars,
-          try_parse_function               i_try_parser)
+          parse_function               i_parser)
             : m_scalar_default_constructor(i_scalar_default_constructor),
               m_scalar_destructor(i_scalar_destructor),
               m_scalar_copy_constructor(i_scalar_copy_constructor),
               m_scalar_move_constructor(i_scalar_move_constructor),
               m_scalar_copy_assigner(i_scalar_copy_assigner),
               m_scalar_move_assigner(i_scalar_move_assigner), m_comparer(i_comparer),
-              m_stringizer(i_to_chars), m_try_parser(i_try_parser)
+              m_stringizer(i_to_chars), m_parser(i_parser)
         {
         }
 
@@ -85,7 +85,7 @@ namespace ediacaran
               make_move_assigner<TYPE>(),
               make_comparer<TYPE>(),
               make_to_chars<TYPE>(),
-              make_try_parse<TYPE>());
+              make_parse<TYPE>());
         }
 
         constexpr auto scalar_default_constructor() const noexcept
@@ -105,7 +105,7 @@ namespace ediacaran
         constexpr auto scalar_move_assigner() const noexcept { return m_scalar_move_assigner; }
         constexpr auto comparer() const noexcept { return m_comparer; }
         constexpr auto stringizer() const noexcept { return m_stringizer; }
-        constexpr auto try_parser() const noexcept { return m_try_parser; }
+        constexpr auto parser() const noexcept { return m_parser; }
 
       private:
         template <typename TYPE>
@@ -199,10 +199,11 @@ namespace ediacaran
         }
 
         template <typename TYPE>
-        static bool
-          try_parse_impl(void * i_dest, char_reader & i_source, char_writer & i_error_dest) noexcept
+        static expected<void, parse_error>
+          parse_impl(void * i_dest, char_reader & i_source) noexcept
         {
-            return try_parse(*static_cast<TYPE *>(i_dest), i_source, i_error_dest);
+            static_assert(noexcept(parse(*static_cast<TYPE *>(i_dest), i_source)));
+            return parse(*static_cast<TYPE *>(i_dest), i_source);
         }
 
         // function getters
@@ -274,10 +275,10 @@ namespace ediacaran
                 return nullptr;
         }
 
-        template <typename TYPE> constexpr static try_parse_function make_try_parse() noexcept
+        template <typename TYPE> constexpr static parse_function make_parse() noexcept
         {
-            if constexpr (has_try_parse_v<TYPE>)
-                return &try_parse_impl<TYPE>;
+            if constexpr (has_parse_v<TYPE>)
+                return &parse_impl<TYPE>;
             else
                 return nullptr;
         }
@@ -291,6 +292,6 @@ namespace ediacaran
         scalar_move_assigner_function    m_scalar_move_assigner       = nullptr;
         comparer_function                m_comparer                   = nullptr;
         to_chars_function                m_stringizer                 = nullptr;
-        try_parse_function               m_try_parser                 = nullptr;
+        parse_function                   m_parser                 = nullptr;
     };
 }

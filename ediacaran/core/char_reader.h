@@ -5,6 +5,7 @@
 #pragma once
 #include "ediacaran/core/char_writer.h"
 #include "ediacaran/core/ediacaran_common.h"
+#include "ediacaran/core/expected.h"
 #include <algorithm>
 #include <cstddef>
 #include <stdexcept>
@@ -28,12 +29,32 @@ namespace ediacaran
                (i_char >= '0' && i_char <= '9');
     }
 
-    /** Class used to convert a sequence of chars to typed values. char_reader is a non-owning view of a null-terminated string of characters.
-        While values are parsed or accepted, the treader advances in the string. */
+    enum class[[nodiscard]] parse_error{
+      unexpected_char,
+      unexpected_token,
+      missing_expected_chars,
+      mismatching_value,
+      overflow,
+      tailing_chars,
+      out_of_memory,
+      internal_limit,
+      unknown_error,
+      unsupported,
+      not_found
+    };
+
+    /** Class used to convert a sequence of chars to typed values. char_reader is a 
+        non-owning view of a null-terminated string of characters.
+        While values are parsed or accepted, the reader advances in the string. 
+        Note: the char after the end mujst be readable until a null char is present. In other
+        word even if the view is a part of the buffer, the whole buffer must be null-terminated
+        */
     class char_reader
     {
       public:
-        constexpr explicit char_reader(const string_view & i_source) : m_source(i_source) {}
+        constexpr explicit char_reader(const string_view & i_source) noexcept : m_source(i_source)
+        {
+        }
 
         constexpr char_reader(const char_reader &) noexcept = default;
 
@@ -49,147 +70,106 @@ namespace ediacaran
         string_view m_source;
     };
 
-    constexpr void except_on_tailing(const char_reader & i_reader)
-    {
-        if (i_reader.remaining_chars() != 0)
-        {
-            except<parse_error>(
-              i_reader.remaining_chars() > 0 ? "Unexpected tailing chars" : "Expected more chars");
-        }
-    }
-
-    constexpr bool check_tailing(const char_reader & i_reader, char_writer & o_error_dest) noexcept
-    {
-        if (i_reader.remaining_chars() != 0)
-        {
-            o_error_dest
-              << (i_reader.remaining_chars() > 0 ? "Unexpected tailing chars"
-                                                 : "Expected more chars");
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    // trait has_try_parse
-    template <typename, typename = std::void_t<>> struct has_try_parse : std::false_type
+    // trait has_parse
+    template <typename, typename = std::void_t<>> struct has_parse : std::false_type
     {
     };
     template <typename TYPE>
-    struct has_try_parse<
+    struct has_parse<
       TYPE,
-      std::void_t<decltype(try_parse(
-        std::declval<TYPE &>(), std::declval<char_reader &>(), std::declval<char_writer &>()))>>
+      std::void_t<decltype(parse(std::declval<TYPE &>(), std::declval<char_reader &>()))>>
         : std::true_type
     {
     };
-    template <typename TYPE> using has_try_parse_t          = typename has_try_parse<TYPE>::type;
-    template <typename TYPE> constexpr bool has_try_parse_v = has_try_parse<TYPE>::value;
+    template <typename TYPE> using has_parse_t          = typename has_parse<TYPE>::type;
+    template <typename TYPE> constexpr bool has_parse_v = has_parse<TYPE>::value;
 
-    // trait has_try_accept
-    template <typename, typename = std::void_t<>> struct has_try_accept : std::false_type
+    // trait has_accept
+    template <typename, typename = std::void_t<>> struct has_accept : std::false_type
     {
     };
     template <typename TYPE>
-    struct has_try_accept<
+    struct has_accept<
       TYPE,
-      std::void_t<decltype(
-        std::declval<bool &>() = try_accept(
-          std::declval<const TYPE &>(),
-          std::declval<char_reader &>(),
-          std::declval<char_writer &>()))>> : std::true_type
+      std::void_t<decltype(accept(std::declval<const TYPE>(), std::declval<char_reader &>()))>>
+        : std::true_type
     {
     };
-    template <typename TYPE> using has_try_accept_t          = typename has_try_accept<TYPE>::type;
-    template <typename TYPE> constexpr bool has_try_accept_v = has_try_accept<TYPE>::value;
+    template <typename TYPE> using has_accept_t          = typename has_accept<TYPE>::type;
+    template <typename TYPE> constexpr bool has_accept_v = has_accept<TYPE>::value;
 
-    // generic try_accept based on try_parse
+    // generic parse that returns the value
     template <typename TYPE>
-    std::enable_if_t<has_try_parse_v<TYPE>, bool> try_accept(
-      const TYPE & i_expected_value, char_reader & i_source, char_writer & o_error_dest) noexcept
+    constexpr expected<TYPE, parse_error> parse(char_reader & i_source) noexcept(
+      noexcept(TYPE{}) && noexcept(parse(std::declval<TYPE &>(), std::declval<char_reader &>())))
     {
-        TYPE       actual_value;
-        auto const prev_source = i_source;
-        if (!try_parse(actual_value, i_source, o_error_dest))
+        TYPE       value{};
+        auto const result = parse(value, i_source);
+        if (!result)
+            return result.error();
+        else
+            return value;
+    }
+
+    // generic accept based on parse
+    template <typename TYPE, std::enable_if_t<has_parse_v<TYPE>> * = nullptr>
+    expected<void, parse_error>
+      accept(const TYPE & i_expected_value, char_reader & i_source) noexcept(
+        noexcept(TYPE{}) && noexcept(parse(std::declval<TYPE &>(), std::declval<char_reader &>())))
+    {
+        TYPE                         actual_value{};
+        auto                         source = i_source;
+        expected<void, parse_error> result = parse(actual_value, source);
+        if (!result)
         {
-            return false;
+            return result.error();
         }
         if (actual_value != i_expected_value)
         {
-            i_source = prev_source;
-            o_error_dest << "mismatching value";
-            return false;
+            return parse_error::mismatching_value;
         }
-        return true;
+        i_source = source;
+        return {};
     }
 
-    // generic try_accept without error_dest
+    // generic parse from string_view
     template <typename TYPE>
-    constexpr std::enable_if_t<has_try_accept_v<TYPE>, bool>
-      try_accept(const TYPE & i_expected_value, char_reader & i_source) noexcept
-    {
-        char_writer error;
-        return try_accept(i_expected_value, i_source, error);
-    }
-
-    // generic try_parse without error_dest
-    template <typename TYPE>
-    std::enable_if_t<has_try_parse_v<TYPE>, bool>
-      try_parse(TYPE & i_dest, char_reader & i_source) noexcept
-    {
-        char_writer error;
-        return try_parse(i_dest, i_source, error);
-    }
-
-    // parse(char_reader)
-    template <typename TYPE> constexpr TYPE parse(char_reader & i_source)
-    {
-        static_assert(has_try_parse_v<TYPE>);
-        char        error[512]{};
-        char_writer error_writer(error);
-        TYPE        value{};
-        if (!try_parse(value, i_source, error_writer))
-            except<parse_error>(error);
-        return value;
-    }
-
-    // parse(string_view)
-    template <typename TYPE> constexpr TYPE parse(const string_view & i_source)
+    constexpr expected<TYPE, parse_error> parse(const string_view & i_source)
+        noexcept(noexcept(parse<TYPE>(std::declval<char_reader&>())))
     {
         char_reader reader(i_source);
         auto        result = parse<TYPE>(reader);
-        except_on_tailing(reader);
+        if (reader.remaining_chars() != 0)
+        {
+            return parse_error::tailing_chars;
+        }
         return result;
     }
 
-    // generic char_reader >> val, based on try_parse
+    // generic char_reader >> val, based on parse
     template <typename TYPE>
     constexpr char_reader & operator>>(char_reader & i_source, TYPE & o_dest)
     {
-        static_assert(has_try_parse_v<TYPE>);
-        char error[512]{};
-        if (!try_parse(o_dest, i_source, error))
-            except<parse_error>(error);
+        static_assert(has_parse_v<TYPE>);
+        auto const result = parse(o_dest, i_source);
+        if (!result)
+            throw result.error();
         return i_source;
     }
 
-    // generic char_reader >> const val, based on try_accept
+    // generic char_reader >> const val, based on accept
     template <typename TYPE>
     constexpr char_reader & operator>>(char_reader & i_source, const TYPE & i_expected_value)
     {
-        static_assert(has_try_accept_v<TYPE>);
-        char        error[512]{};
-        char_writer error_writer(error);
-        if (!try_accept(i_expected_value, i_source, error_writer))
-            except<parse_error>(error);
+        static_assert(has_accept_v<TYPE>);
+        auto const result = accept(i_expected_value, i_source);
+        if (!result)
+            throw result.error();
         return i_source;
     }
 
-    // try_accept for spaces - they don't have a try_parse
-    constexpr bool
-      try_accept(SpacesTag, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    // accept for spaces - they don't have a parse
+    constexpr expected<void, parse_error> accept(spaces_t, char_reader & i_source) noexcept
     {
         bool some_chars_skipped = false;
         while (is_space(*i_source.next_chars()))
@@ -197,60 +177,61 @@ namespace ediacaran
             i_source.skip(1);
             some_chars_skipped = true;
         }
-        return some_chars_skipped;
+        if (some_chars_skipped)
+            return {};
+        else
+            return parse_error::unexpected_char;
     }
 
-    // try_accept for strings - they don't have a try_parse
-    constexpr bool try_accept(
-      const string_view & i_expected,
-      char_reader &       i_source,
-      char_writer & /*o_error_dest*/) noexcept
+    // accept for strings - they don't have a parse
+    constexpr expected<void, parse_error>
+      accept(const string_view & i_expected, char_reader & i_source) noexcept
     {
         for (size_t index = 0; index < i_expected.size(); index++)
         {
             auto const source_char = i_source.next_chars()[index];
             if (source_char == 0 || i_expected[index] != source_char)
-                return false;
+                return parse_error::unexpected_char;
         }
 
         i_source.skip(i_expected.length());
-        return true;
+        return {};
     }
 
-    // try_accept specialization for chars - optimization
-    constexpr bool
-      try_accept(char i_expected, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    // accept for chars
+    constexpr expected<void, parse_error> accept(char i_expected, char_reader & i_source) noexcept
     {
         if (*i_source.next_chars() == i_expected)
         {
             i_source.skip(1);
-            return true;
+            return {};
         }
         else
         {
-            return false;
+            return parse_error::unexpected_char;
         }
     }
 
-
-    constexpr bool
-      try_parse(char & i_dest, char_reader & i_source, char_writer & /*o_error_dest*/) noexcept
+    // parse for chars
+    constexpr expected<void, parse_error> parse(char & o_dest, char_reader & i_source) noexcept
     {
         if (i_source.remaining_chars() > 0)
         {
-            i_dest = *i_source.next_chars();
+            o_dest = *i_source.next_chars();
             i_source.skip(1);
-            return true;
+            return {};
         }
         else
         {
-            return false;
+            return parse_error::missing_expected_chars;
         }
     }
 
-    template <typename INT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<INT_TYPE> && std::is_signed_v<INT_TYPE>, bool>
-      try_parse(INT_TYPE & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    // parse signed integer
+    template <
+      typename INT_TYPE,
+      std::enable_if_t<std::is_integral_v<INT_TYPE> && std::is_signed_v<INT_TYPE>> * = nullptr>
+    constexpr expected<void, parse_error> parse(INT_TYPE & o_dest, char_reader & i_source) noexcept
     {
         const char *       curr_digit    = i_source.next_chars();
         const char * const end_of_buffer = curr_digit + i_source.remaining_chars();
@@ -267,8 +248,7 @@ namespace ediacaran
                     INT_TYPE const thereshold = (std::numeric_limits<INT_TYPE>::min() + digit) / 10;
                     if (result < thereshold)
                     {
-                        o_error_dest << "integer overflow";
-                        return false;
+                        return parse_error::overflow;
                     }
                     result *= 10;
                     result -= digit;
@@ -290,8 +270,7 @@ namespace ediacaran
                     INT_TYPE const thereshold = (std::numeric_limits<INT_TYPE>::max() - digit) / 10;
                     if (result > thereshold)
                     {
-                        o_error_dest << "integer overflow";
-                        return false;
+                        return parse_error::overflow;
                     }
                     result *= 10;
                     result += digit;
@@ -304,25 +283,25 @@ namespace ediacaran
             }
         }
 
-
         const size_t accepted_digits = curr_digit - i_source.next_chars();
         if (accepted_digits == 0)
         {
-            o_error_dest << "missing digits";
-            return false;
+            return parse_error::missing_expected_chars;
         }
         else
         {
             i_source.skip(accepted_digits);
             o_dest = result;
-            return true;
+            return {};
         }
     }
 
-
-    template <typename UINT_TYPE>
-    constexpr std::enable_if_t<std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE>, bool>
-      try_parse(UINT_TYPE & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    // parse unsigned integer
+    template <
+      typename UINT_TYPE,
+      std::enable_if_t<std::is_integral_v<UINT_TYPE> && !std::is_signed_v<UINT_TYPE>> * = nullptr>
+    constexpr expected<void, parse_error>
+      parse(UINT_TYPE & o_dest, char_reader & i_source) noexcept
     {
         const char *       curr_digit    = i_source.next_chars();
         const char * const end_of_buffer = curr_digit + i_source.remaining_chars();
@@ -336,8 +315,7 @@ namespace ediacaran
                 UINT_TYPE const thereshold = (std::numeric_limits<UINT_TYPE>::max() - digit) / 10;
                 if (result > thereshold)
                 {
-                    o_error_dest << "integer overflow";
-                    return false;
+                    return parse_error::overflow;
                 }
                 result *= 10;
                 result += digit;
@@ -352,34 +330,31 @@ namespace ediacaran
         size_t const accepted_digits = curr_digit - i_source.next_chars();
         if (accepted_digits == 0)
         {
-            o_error_dest << "missing digits";
-            return false;
+            return parse_error::missing_expected_chars;
         }
         else
         {
             i_source.skip(accepted_digits);
             o_dest = result;
-            return true;
+            return {};
         }
     }
 
-    constexpr bool
-      try_parse(bool & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept
+    constexpr expected<void, parse_error> parse(bool & o_dest, char_reader & i_source) noexcept
     {
-        if (try_accept("true", i_source))
+        if (accept("true", i_source))
         {
             o_dest = true;
-            return true;
+            return {};
         }
 
-        if (try_accept("false", i_source))
+        if (accept("false", i_source))
         {
             o_dest = false;
-            return true;
+            return {};
         }
 
-        o_error_dest << "expected true or false";
-        return false;
+        return parse_error::unexpected_token;
     }
 
     constexpr string_view try_parse_identifier(char_reader & i_source) noexcept
@@ -397,8 +372,7 @@ namespace ediacaran
         return {first_char, length};
     }
 
-    bool try_parse(float & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
-    bool try_parse(double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
-    bool
-      try_parse(long double & o_dest, char_reader & i_source, char_writer & o_error_dest) noexcept;
+    expected<void, parse_error> parse(float & o_dest, char_reader & i_source) noexcept;
+    expected<void, parse_error> parse(double & o_dest, char_reader & i_source) noexcept;
+    expected<void, parse_error> parse(long double & o_dest, char_reader & i_source) noexcept;
 }

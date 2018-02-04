@@ -93,7 +93,7 @@ namespace ediacaran
 
         constexpr bool is_parsable() const noexcept
         {
-            return m_special_functions.try_parser() != nullptr;
+            return m_special_functions.parser() != nullptr;
         }
 
 
@@ -161,49 +161,38 @@ namespace ediacaran
             (*m_special_functions.stringizer())(i_source, i_dest);
         }
 
-        bool try_parse(void * i_dest, char_reader & i_source, char_writer & i_error_dest) const
+        expected<void,parse_error> parse(void * i_dest, char_reader & i_source) const
           noexcept
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
-            auto const try_parser = m_special_functions.try_parser();
-            if (try_parser == nullptr)
+            auto const parser = m_special_functions.parser();
+            if (parser == nullptr)
             {
-                i_error_dest << "the type " << name() << " does not support parsing";
-                return false;
+                return parse_error::unsupported;
             }
             else
-                return (*try_parser)(i_dest, i_source, i_error_dest);
+                return parser(i_dest, i_source);
         }
 
-        bool
-          try_parse(void * i_dest, string_view const & i_source, char_writer & i_error_dest) const
-          noexcept
-        {
-            char_reader source(i_source);
-            return try_parse(i_dest, source, i_error_dest) && check_tailing(source, i_error_dest);
-        }
-
-        void parse(void * i_dest, char_reader & i_source) const
+        expected<void, parse_error> parse(void * i_dest, const string_view & i_source) const
+            noexcept
         {
             EDIACARAN_ASSERT(i_dest != nullptr);
-            auto const try_parser = m_special_functions.try_parser();
-            if (try_parser == nullptr)
+            auto const parser = m_special_functions.parser();
+            if (parser == nullptr)
             {
-                except<unsupported_error>("the type ", name(), " does not support parsing");
+                return parse_error::unsupported;
             }
-            char        error[512];
-            char_writer error_writer(error);
-            if (!(*try_parser)(i_dest, i_source, error_writer))
+            else
             {
-                except<parse_error>(error);
+                char_reader source(i_source);
+                auto const result = parser(i_dest, source);
+                if (source.remaining_chars() != 0)
+                {
+                    return parse_error::tailing_chars;
+                }
+                return result;
             }
-        }
-
-        void parse(void * i_dest, string_view const & i_source) const
-        {
-            char_reader source(i_source);
-            parse(i_dest, source);
-            except_on_tailing(source);
         }
 
       private:

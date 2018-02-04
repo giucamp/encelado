@@ -110,8 +110,18 @@ namespace ediacaran
     {
         dyn_value result;
         result.manual_construct(i_qualified_type, [&](void * i_dest) {
-            i_qualified_type.final_type()->parse(i_dest, i_source);
+            auto const result = i_qualified_type.final_type()->parse(i_dest, i_source);
+            result.on_error_except();
         });
+        return result;
+    }
+
+    dyn_value parse_value(const qualified_type_ptr & i_qualified_type, const string_view & i_source)
+    {
+        char_reader source(i_source);
+        dyn_value   result = parse_value(i_qualified_type, source);
+        if(source.remaining_chars() != 0)
+            throw parse_error::tailing_chars;
         return result;
     }
 

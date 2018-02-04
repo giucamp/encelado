@@ -15,12 +15,11 @@
 
 namespace ediacaran
 {
-    struct SpacesTag
+    struct spaces_t
     {
-        constexpr SpacesTag() {}
+        constexpr spaces_t() {}
     };
-
-    constexpr SpacesTag spaces;
+    constexpr spaces_t spaces;
 
     class char_writer
     {
@@ -56,7 +55,7 @@ namespace ediacaran
             return *this;
         }
 
-        constexpr char_writer & operator<<(SpacesTag) noexcept { return operator<<(' '); }
+        constexpr char_writer & operator<<(spaces_t) noexcept { return operator<<(' '); }
 
         constexpr char_writer & operator<<(const string_view & i_string) noexcept
         {
