@@ -13,6 +13,10 @@ namespace edi
 {
     class split
     {
+
+      private:
+        string_view m_source;
+        char        m_separator{};
       public:
         constexpr split() noexcept = default;
 
@@ -104,10 +108,6 @@ namespace edi
         constexpr iterator begin() const noexcept { return iterator(m_source, m_separator); }
 
         constexpr end_marker end() const noexcept { return end_marker{}; }
-
-      private:
-        string_view m_source;
-        char        m_separator{};
     };
 
 } // namespace edi

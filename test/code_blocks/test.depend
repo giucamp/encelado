@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1516517680 source:/home/abc/proj/encelado/test/cambrian.cpp
+1517944610 source:/home/abc/proj/encelado/test/cambrian.cpp
 	"ediacaran/core/char_writer.h"
 	"ediacaran/reflection/reflection.h"
 	<iostream>
 	<string>
 
-1516563215 /home/abc/proj/encelado/ediacaran/core/char_writer.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/char_writer.h
 	"ediacaran/core/array.h"
 	"ediacaran/core/ediacaran_common.h"
 	<algorithm>
@@ -16,7 +16,7 @@
 	<type_traits>
 	<utility>
 
-1516347793 /home/abc/proj/encelado/ediacaran/core/ediacaran_common.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/ediacaran_common.h
 	<assert.h>
 	<cstdint>
 	<stdexcept>
@@ -24,8 +24,9 @@
 	<string_view>
 	<type_traits>
 
-1516563215 /home/abc/proj/encelado/ediacaran/reflection/qualified_type_ptr.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/qualified_type_ptr.h
 	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/reflection/cv_qualification.h"
 	"ediacaran/reflection/type.h"
 	<ediacaran/core/array.h>
 	<limits>
@@ -33,39 +34,40 @@
 	<type_traits>
 	"qualified_type_ptr.inl"
 
-1516422552 /home/abc/proj/encelado/ediacaran/reflection/type.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/type.h
 	"ediacaran/core/constexpr_string.h"
 	"ediacaran/core/ediacaran_common.h"
 	"ediacaran/reflection/special_functions.h"
 	<limits>
 	<type_traits>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/constexpr_string.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/constexpr_string.h
 	"ediacaran/core/char_writer.h"
 	<ediacaran/core/array.h>
 
-1515920097 /home/abc/proj/encelado/ediacaran/reflection/special_functions.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/special_functions.h
 	"ediacaran/core/address.h"
 	"ediacaran/core/char_reader.h"
 	"ediacaran/core/char_writer.h"
 	<algorithm>
 	<memory>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/address.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/address.h
 	<ediacaran/core/ediacaran_common.h>
 
-1516345754 /home/abc/proj/encelado/ediacaran/core/char_reader.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/char_reader.h
 	"ediacaran/core/char_writer.h"
 	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/core/expected.h"
 	<algorithm>
 	<cstddef>
 	<stdexcept>
 	<string_view>
 	<type_traits>
 
-1515920097 /home/abc/proj/encelado/ediacaran/reflection/qualified_type_ptr.inl
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/qualified_type_ptr.inl
 
-1516557183 source:/home/abc/proj/encelado/test/ediacaran/class_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/class_tests.cpp
 	"../common.h"
 	"ediacaran/core/string_builder.h"
 	"ediacaran/reflection/reflection.h"
@@ -77,19 +79,20 @@
 	<new>
 	<string>
 
-1516342848 /home/abc/proj/encelado/test/common.h
+1517944610 /home/abc/proj/encelado/test/common.h
 	<ediacaran/core/ediacaran_common.h>
 
-1516563215 /home/abc/proj/encelado/ediacaran/reflection/class_type.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/class_type.h
 	"ediacaran/core/array_view.h"
 	"ediacaran/core/ediacaran_common.h"
 	"ediacaran/core/type_list.h"
-	"ediacaran/reflection/action.h"
+	"ediacaran/reflection/container.h"
+	"ediacaran/reflection/function.h"
 	"ediacaran/reflection/property.h"
 	"ediacaran/reflection/type.h"
 	<cstddef>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/array_view.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/array_view.h
 	<cstddef>
 	<ediacaran/core/array.h>
 	<ediacaran/core/ediacaran_common.h>
@@ -97,28 +100,28 @@
 	<type_traits>
 	<utility>
 
-1516563215 /home/abc/proj/encelado/ediacaran/core/type_list.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/type_list.h
 	<ediacaran/core/ediacaran_common.h>
 
-1516563215 /home/abc/proj/encelado/ediacaran/reflection/property.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/property.h
 	"ediacaran/core/char_writer.h"
 	"ediacaran/reflection/qualified_type_ptr.h"
 	"ediacaran/reflection/type.h"
 	<cstddef>
 
-1515920097 source:/home/abc/proj/encelado/test/ediacaran/qualified_type_ptr_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/qualified_type_ptr_tests.cpp
 	"../common.h"
 	"ediacaran/core/char_reader.h"
 	"ediacaran/core/string_builder.h"
 	"ediacaran/reflection/reflection.h"
 	<vector>
 
-1516342848 /home/abc/proj/encelado/ediacaran/core/string_builder.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/string_builder.h
 	<ediacaran/core/char_writer.h>
 	<memory>
 	<vector>
 
-1516557524 source:/home/abc/proj/encelado/test/ediacaran/string_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/string_tests.cpp
 	"../common.h"
 	"ediacaran/core/char_reader.h"
 	"ediacaran/core/char_writer.h"
@@ -135,13 +138,13 @@
 	<utility>
 	<vector>
 
-1516557183 source:/home/abc/proj/encelado/test/ediacaran/type_list_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/type_list_tests.cpp
 	"../common.h"
 	"ediacaran/core/type_list.h"
 	<iostream>
 	<string>
 
-1516342812 source:/home/abc/proj/encelado/test/ediacaran/type_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/type_tests.cpp
 	"../common.h"
 	"ediacaran/core/string_builder.h"
 	"ediacaran/reflection/qualified_type_ptr.h"
@@ -149,7 +152,7 @@
 	"ediacaran/reflection/type.h"
 	"ediacaran/utils/raw_ptr.h"
 
-1516342848 source:/home/abc/proj/encelado/test/main.cpp
+1517944610 source:/home/abc/proj/encelado/test/main.cpp
 	"common.h"
 	<iostream>
 	<execinfo.h>
@@ -157,16 +160,19 @@
 	<stdlib.h>
 	<unistd.h>
 
-1516563215 /home/abc/proj/encelado/ediacaran/reflection/reflection.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/reflection.h
 	"ediacaran/core/constexpr_string.h"
 	"ediacaran/core/remove_noexcept.h"
 	"ediacaran/reflection/class_template_specialization.h"
 	"ediacaran/reflection/class_type.h"
+	"ediacaran/reflection/enum_type.h"
 	"ediacaran/reflection/qualified_type_ptr.h"
-	"ediacaran/reflection/type.h"
 	<ediacaran/core/array.h>
+	"ediacaran/reflection/detail/container_reflection.h"
+	"ediacaran/reflection/detail/class_reflection.h"
+	"ediacaran/reflection/detail/enum_reflection.h"
 
-1516563215 /home/abc/proj/encelado/ediacaran/reflection/class_template_specialization.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/class_template_specialization.h
 	"ediacaran/core/comma_separated_names.h"
 	"ediacaran/reflection/class_type.h"
 	<tuple>
@@ -180,51 +186,156 @@
 	<ediacaran/core/array.h>
 	<utility>
 
-1515920097 /home/abc/proj/encelado/ediacaran/reflection/parameter.h
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/parameter.h
 	"ediacaran/core/array_view.h"
 	"ediacaran/reflection/qualified_type_ptr.h"
 	"ediacaran/reflection/type.h"
 	<ediacaran/core/array.h>
 	<utility>
 
-1516342848 /home/abc/proj/encelado/ediacaran/utils/dyn_value.h
-	<ediacaran/reflection/qualified_type_ptr.h>
-	<ediacaran/reflection/type.h>
+1517944610 /home/abc/proj/encelado/ediacaran/utils/dyn_value.h
+	<ediacaran/reflection/reflection.h>
 	<ediacaran/utils/raw_ptr.h>
 	<utility>
 
-1516342848 /home/abc/proj/encelado/ediacaran/utils/raw_ptr.h
+1517944610 /home/abc/proj/encelado/ediacaran/utils/raw_ptr.h
 	<ediacaran/core/char_writer.h>
 	<ediacaran/core/string_builder.h>
-	<ediacaran/reflection/qualified_type_ptr.h>
-	<ediacaran/reflection/type.h>
+	<ediacaran/reflection/reflection.h>
 	<string>
 	<utility>
 
-1515920097 /home/abc/proj/encelado/ediacaran/utils/inspect.h
+1517944610 /home/abc/proj/encelado/ediacaran/utils/inspect.h
 	<ediacaran/reflection/class_type.h>
 	<ediacaran/utils/dyn_value.h>
 	<vector>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/remove_noexcept.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/remove_noexcept.h
 	<ediacaran/core/ediacaran_common.h>
 
-1515920097 source:/home/abc/proj/encelado/test/ediacaran/remove_noexcept_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/remove_noexcept_tests.cpp
 	"../common.h"
 	"ediacaran/core/remove_noexcept.h"
 
-1516563215 /home/abc/proj/encelado/ediacaran/core/array.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/array.h
 	<ediacaran/core/ediacaran_common.h>
 	<iterator>
 	<stdexcept>
 
-1515920097 /home/abc/proj/encelado/ediacaran/core/comma_separated_names.h
+1517944610 /home/abc/proj/encelado/ediacaran/core/comma_separated_names.h
 	"ediacaran/core/char_reader.h"
 	<iterator>
+	<stdexcept>
 
-1516422552 source:/home/abc/proj/encelado/test/ediacaran/class_templates_tests.cpp
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/class_templates_tests.cpp
 	"../common.h"
-	"ediacaran/reflection/reflection.h"
 	"ediacaran/core/string_builder.h"
+	"ediacaran/reflection/reflection.h"
 	"ediacaran/utils/raw_ptr.h"
+	<iostream>
+
+1517944610 /home/abc/proj/encelado/ediacaran/core/expected.h
+	<ediacaran/core/ediacaran_common.h>
+	<type_traits>
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/container.h
+	"ediacaran/reflection/qualified_type_ptr.h"
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/cv_qualification.h
+	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/reflection/type.h"
+	<ediacaran/core/array.h>
+	<limits>
+	<stdexcept>
+	<type_traits>
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/function.h
+	"ediacaran/core/array_view.h"
+	"ediacaran/core/comma_separated_names.h"
+	"ediacaran/reflection/parameter.h"
+	"ediacaran/reflection/qualified_type_ptr.h"
+	"ediacaran/reflection/type.h"
+	<ediacaran/core/array.h>
+	<utility>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+	<ediacaran/reflection/detail/function_accessor.h>
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/detail/function_accessor.h
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/enum_type.h
+	"ediacaran/core/array_view.h"
+	"ediacaran/core/ediacaran_common.h"
+	"ediacaran/reflection/type.h"
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/detail/container_reflection.h
+	<ediacaran/reflection/container.h>
+	<iterator>
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/detail/class_reflection.h
+
+1517944610 /home/abc/proj/encelado/ediacaran/reflection/detail/enum_reflection.h
+
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/animalia.cpp
+	"../common.h"
+	"ediacaran/core/string_builder.h"
+	"ediacaran/std_refl/string.h"
+	"ediacaran/std_refl/vector.h"
+	"ediacaran/utils/dyn_value.h"
+	"ediacaran/utils/inspect.h"
+	<iostream>
+	<string>
+	<vector>
+
+1517944610 /home/abc/proj/encelado/ediacaran/std_refl/string.h
+	"ediacaran/reflection/reflection.h"
+	"ediacaran/std_refl/allocator.h"
+	<string>
+
+1517944610 /home/abc/proj/encelado/ediacaran/std_refl/allocator.h
+	"ediacaran/reflection/reflection.h"
+	<memory>
+
+1517944610 /home/abc/proj/encelado/ediacaran/std_refl/vector.h
+	"ediacaran/reflection/reflection.h"
+	"ediacaran/std_refl/allocator.h"
+	<vector>
+
+1517944610 source:/home/abc/proj/encelado/test/ediacaran/container_tests.cpp
+	"../common.h"
+	"ediacaran/core/string_builder.h"
+	"ediacaran/std_refl/string.h"
+	"ediacaran/std_refl/vector.h"
+	"ediacaran/utils/universal_iterator.h"
+	<iostream>
+
+1517944610 /home/abc/proj/encelado/ediacaran/utils/universal_iterator.h
+	<ediacaran/reflection/container.h>
+	<ediacaran/utils/raw_ptr.h>
+	<type_traits>
+
+1517944610 source:/home/abc/proj/encelado/test/cambrian/hash_tests.cpp
+	"../common.h"
+	"cambrian/data/path.h"
+	"ediacaran/core/string_utils.h"
+	"iliade.h"
+	<iostream>
+
+1517944609 /home/abc/proj/encelado/cambrian/data/path.h
+	"cambrian/cambrian_common.h"
+
+1517944609 /home/abc/proj/encelado/cambrian/cambrian_common.h
+	"ediacaran/core/ediacaran_common.h"
+
+1517944779 /home/abc/proj/encelado/ediacaran/core/string_utils.h
+	"ediacaran/core/char_reader.h"
+	<iterator>
+	<stdexcept>
+
+1517944610 /home/abc/proj/encelado/test/cambrian/iliade.h
 

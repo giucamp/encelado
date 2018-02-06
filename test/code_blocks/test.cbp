@@ -38,6 +38,7 @@
 			<Add directory="../../../encelado" />
 		</Compiler>
 		<Unit filename="../cambrian.cpp" />
+		<Unit filename="../cambrian/hash_tests.cpp" />
 		<Unit filename="../common.h" />
 		<Unit filename="../ediacaran/animalia.cpp" />
 		<Unit filename="../ediacaran/class_templates_tests.cpp" />
