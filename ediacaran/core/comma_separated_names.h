@@ -1,12 +1,15 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 #include "ediacaran/core/char_reader.h"
 #include <iterator>
 #include <stdexcept>
 
-namespace ediacaran
+namespace edi
 {
     class comma_separated_names
     {
@@ -99,4 +102,4 @@ namespace ediacaran
         const char * m_string;
     };
 
-} // namespace ediacaran
+} // namespace edi

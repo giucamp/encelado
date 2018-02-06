@@ -2,9 +2,41 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\TypeRegistry.h" />
-    <ClInclude Include="..\CambrianCommon.h" />
+    <ClInclude Include="..\storage\storage_device.h">
+      <Filter>storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\storage\memory_device.h">
+      <Filter>storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\data\directory.h">
+      <Filter>data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\data\path.h">
+      <Filter>data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cambrian_common.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TypeRegistry.cpp" />
+    <ClCompile Include="..\storage\storage_device.cpp">
+      <Filter>storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\storage\memory_device.cpp">
+      <Filter>storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\data\directory.cpp">
+      <Filter>data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\data\path.cpp">
+      <Filter>data</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="storage">
+      <UniqueIdentifier>{59b4e676-9ac3-4ac3-8932-c3b3c57fba57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{781c2763-df37-4796-89fe-9131399f8e21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

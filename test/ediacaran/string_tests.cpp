@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "../common.h"
 #include "ediacaran/core/char_reader.h"
@@ -25,14 +28,14 @@ namespace another_namespace
         int m_b = 2;
     };
 
-    constexpr ediacaran::expected<void, ediacaran::parse_error>
-      parse(CustomType & o_dest, ediacaran::char_reader & i_source) noexcept
+    constexpr edi::expected<void, edi::parse_error>
+      parse(CustomType & o_dest, edi::char_reader & i_source) noexcept
     {
-        auto const a   = ediacaran::parse<int>(i_source);
-        auto const sep = ediacaran::accept(", ", i_source);
-        auto const b   = ediacaran::parse<int>(i_source);
+        auto const a   = edi::parse<int>(i_source);
+        auto const sep = edi::accept(", ", i_source);
+        auto const b   = edi::parse<int>(i_source);
         if (a.has_error() || sep.has_error() || b.has_error())
-            return ediacaran::parse_error::unexpected_token;
+            return edi::parse_error::unexpected_token;
         o_dest.m_a = a.value();
         o_dest.m_b = b.value();
         return {};
@@ -74,9 +77,9 @@ namespace ediacaran_test
         class Test
         {
           public:
-            virtual void to_chars(ediacaran::char_writer & o_dest) const = 0;
-            virtual void parse(ediacaran::char_reader & i_source) const  = 0;
-            virtual ~Test()                                              = default;
+            virtual void to_chars(edi::char_writer & o_dest) const = 0;
+            virtual void parse(edi::char_reader & i_source) const  = 0;
+            virtual ~Test()                                        = default;
         };
 
         template <typename TYPE> class TypedTest : public Test
@@ -84,9 +87,9 @@ namespace ediacaran_test
           public:
             TypedTest(std::mt19937_64 & io_rand) : m_value{uniform_rand<TYPE>(io_rand)} {}
 
-            void to_chars(ediacaran::char_writer & o_dest) const override { o_dest << m_value; }
+            void to_chars(edi::char_writer & o_dest) const override { o_dest << m_value; }
 
-            void parse(ediacaran::char_reader & i_source) const override
+            void parse(edi::char_reader & i_source) const override
             {
                 i_source >> m_value;
 
@@ -120,9 +123,9 @@ namespace ediacaran_test
             {
             }
 
-            void to_chars(ediacaran::char_writer & o_dest) const override { o_dest << m_value; }
+            void to_chars(edi::char_writer & o_dest) const override { o_dest << m_value; }
 
-            void parse(ediacaran::char_reader & i_source) const override { i_source >> m_value; }
+            void parse(edi::char_reader & i_source) const override { i_source >> m_value; }
 
           private:
             char const m_value;
@@ -138,9 +141,9 @@ namespace ediacaran_test
             {
             }
 
-            void to_chars(ediacaran::char_writer & o_dest) const override { o_dest << m_value; }
+            void to_chars(edi::char_writer & o_dest) const override { o_dest << m_value; }
 
-            void parse(ediacaran::char_reader & i_source) const override { i_source >> m_value; }
+            void parse(edi::char_reader & i_source) const override { i_source >> m_value; }
 
           private:
             std::string const m_value;
@@ -171,12 +174,12 @@ namespace ediacaran_test
 
         void run()
         {
-            using namespace ediacaran;
+            using namespace edi;
 
             size_t const buffer_size = 1024 * 1024;
             auto const   buff        = std::make_unique<char[]>(buffer_size);
             memset(buff.get(), 7, buffer_size);
-            ediacaran::char_writer out(buff.get(), buffer_size);
+            edi::char_writer out(buff.get(), buffer_size);
 
             auto const      seed = std::random_device{}();
             std::mt19937_64 rand{seed};
@@ -213,7 +216,7 @@ namespace ediacaran_test
     template <typename INT_TYPE, typename BIG_INT_TYPE>
     void typed_string_overflow_tests(bool i_negative = false)
     {
-        using namespace ediacaran;
+        using namespace edi;
 
         char buff[1024];
 
@@ -256,7 +259,7 @@ namespace ediacaran_test
 
     void string_builder_tests()
     {
-        using namespace ediacaran;
+        using namespace edi;
 
         string_builder builder;
         size_t const   test_size = 5'000;
@@ -278,7 +281,7 @@ namespace ediacaran_test
 
     void string_basic_tests()
     {
-        using namespace ediacaran;
+        using namespace edi;
 
         string_view const target("123 456 abc");
         auto              str = to_string(123, ' ', 456, " abc");
@@ -336,7 +339,7 @@ namespace ediacaran_test
 
     void string_comma_separated_names_tests()
     {
-        using namespace ediacaran;
+        using namespace edi;
 
         {
             constexpr comma_separated_names names("");
@@ -386,7 +389,7 @@ namespace ediacaran_test
         string_overflow_tests();
         string_comma_separated_names_tests();
 
-        using namespace ediacaran;
+        using namespace edi;
 
         constexpr auto custom_obj = parse<another_namespace::CustomType>("4, 5").value();
         static_assert(custom_obj.m_a == 4 && custom_obj.m_b == 5);
@@ -432,6 +435,15 @@ namespace ediacaran_test
         static_assert(!has_accept_v<void>);
         static_assert(!has_parse_v<void>);
 
+        if constexpr (parse<uint16_t>("42"))
+        {
+        }
+        if constexpr (!parse<uint16_t>("42"))
+        {
+        }
+        static_assert(parse<uint16_t>("42"));
+
+        static_assert(parse<uint8_t>("42").value() == 42);
         static_assert(parse<int>("42").value() == 42);
         static_assert(parse<int>("-42").value() == -42);
         static_assert(parse<bool>("true").value());

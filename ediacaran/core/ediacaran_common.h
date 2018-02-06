@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -76,7 +79,7 @@
 #define EDIACARAN_NO_INLINE
 #endif
 
-namespace ediacaran
+namespace edi
 {
     class unsupported_error : public std::runtime_error
     {
@@ -156,7 +159,7 @@ namespace ediacaran
       public:
         using basic_string_view<char, constexpr_char_traits>::basic_string_view;
 
-        constexpr string_view() {}
+        constexpr string_view() noexcept {}
 
         string_view(const std::string & i_source) noexcept
             : string_view(i_source.c_str(), i_source.size())

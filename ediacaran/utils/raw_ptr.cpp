@@ -1,9 +1,12 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <ediacaran/utils/raw_ptr.h>
 
-namespace ediacaran
+namespace edi
 {
     raw_ptr raw_ptr::full_indirection() const
     {
@@ -103,4 +106,4 @@ namespace ediacaran
         o_dest.resize(o_dest.size() - static_cast<size_t>(writer.remaining_size()));
     }
 
-} // namespace ediacaran
+} // namespace edi

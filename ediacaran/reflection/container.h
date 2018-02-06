@@ -1,11 +1,14 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
 #include "ediacaran/reflection/qualified_type_ptr.h"
 
-namespace ediacaran
+namespace edi
 {
     class container
     {
@@ -88,4 +91,4 @@ namespace ediacaran
         destroy_iterator_function_ptr const   m_destroy_iterator_function{};
     };
 
-} // namespace ediacaran
+} // namespace edi

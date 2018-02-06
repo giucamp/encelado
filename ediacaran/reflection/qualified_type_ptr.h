@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 #include "ediacaran/core/ediacaran_common.h"
@@ -10,7 +13,7 @@
 #include <stdexcept>
 #include <type_traits>
 
-namespace ediacaran
+namespace edi
 {
     class qualified_type_ptr;
     class char_writer;
@@ -99,9 +102,9 @@ namespace ediacaran
           set_qualification(size_t i_indirection_level, cv_qualification i_cv) noexcept
         {
             auto const mask             = uintptr_t(1) << i_indirection_level;
-            auto const constness_add    = ediacaran::is_const(i_cv) ? mask : uintptr_t(0);
+            auto const constness_add    = edi::is_const(i_cv) ? mask : uintptr_t(0);
             m_constness_word            = (m_constness_word & ~mask) | constness_add;
-            auto const volatileness_add = ediacaran::is_volatile(i_cv) ? mask : uintptr_t(0);
+            auto const volatileness_add = edi::is_volatile(i_cv) ? mask : uintptr_t(0);
             m_volatileness_word         = (m_volatileness_word & ~mask) | volatileness_add;
             return *this;
         }
@@ -228,6 +231,6 @@ namespace ediacaran
 
     expected<void, parse_error> parse(qualified_type_ptr & o_dest, char_reader & i_source) noexcept;
 
-} // namespace ediacaran
+} // namespace edi
 
 #include "qualified_type_ptr.inl"

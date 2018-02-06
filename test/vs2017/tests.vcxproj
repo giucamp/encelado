@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cambrian.cpp" />
+    <ClCompile Include="..\cambrian\hash_tests.cpp" />
     <ClCompile Include="..\ediacaran\animalia.cpp" />
     <ClCompile Include="..\ediacaran\class_templates_tests.cpp" />
     <ClCompile Include="..\ediacaran\class_tests.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\cambrian\iliade.h" />
     <ClInclude Include="..\common.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

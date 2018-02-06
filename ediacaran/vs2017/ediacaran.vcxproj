@@ -30,6 +30,7 @@
     <ClInclude Include="..\core\expected.h" />
     <ClInclude Include="..\core\remove_noexcept.h" />
     <ClInclude Include="..\core\string_builder.h" />
+    <ClInclude Include="..\core\string_utils.h" />
     <ClInclude Include="..\core\type_list.h" />
     <ClInclude Include="..\reflection\container.h" />
     <ClInclude Include="..\reflection\cv_qualification.h" />

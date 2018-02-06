@@ -1,12 +1,15 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 #include <ediacaran/reflection/class_type.h>
 #include <ediacaran/utils/dyn_value.h>
 #include <vector>
 
-namespace ediacaran
+namespace edi
 {
     class property_inspector;
     class function_inspector;
@@ -279,4 +282,4 @@ namespace ediacaran
         raw_ptr const m_target;
     };
 
-} // namespace ediacaran
+} // namespace edi

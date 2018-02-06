@@ -1,5 +1,5 @@
 
-namespace ediacaran
+namespace edi
 {
 	namespace detail
 	{

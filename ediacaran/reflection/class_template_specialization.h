@@ -1,12 +1,15 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 #include "ediacaran/core/comma_separated_names.h"
 #include "ediacaran/reflection/class_type.h"
 #include <tuple>
 
-namespace ediacaran
+namespace edi
 {
     class class_template_specialization : public class_type
     {
@@ -97,4 +100,4 @@ namespace ediacaran
 
     constexpr auto make_template_arguments() { return template_arguments<>(""); }
 
-} // namespace ediacaran
+} // namespace edi

@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "../common.h"
 #include "ediacaran/core/string_builder.h"
@@ -24,7 +27,7 @@ namespace ediacaran_test
     constexpr auto reflect(Enum_1 ** i_ptr)
     {
         using this_enum = std::remove_reference_t<decltype(**i_ptr)>;
-        using namespace ediacaran;
+        using namespace edi;
         return make_enum<this_enum>(
           "Enum_1",
           make_array(
@@ -44,7 +47,7 @@ namespace ediacaran_test
     {
         char const class_name[] = "TestBase_3_1";
 
-        using namespace ediacaran;
+        using namespace edi;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
         return make_class<this_class>(class_name);
@@ -66,7 +69,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_3_2 ** i_ptr)
     {
-        using namespace ediacaran;
+        using namespace edi;
         char const class_name[] = "TestBase_3_2";
         using bases             = type_list<>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
@@ -88,11 +91,11 @@ namespace ediacaran_test
     constexpr auto reflect(TestBase_2_1 ** i_ptr)
     {
         char const class_name[] = "TestBase_2_1";
-        using bases             = ediacaran::type_list<>;
+        using bases             = edi::type_list<>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1));
-        return ediacaran::make_class<this_class, bases>(class_name, properties);
+        auto const properties = edi::make_array(REFL_DATA_PROP("m_char_2_1_1", m_char_2_1_1));
+        return edi::make_class<this_class, bases>(class_name, properties);
     }
 
     struct TestBase_2_2 : TestBase_3_1
@@ -104,12 +107,12 @@ namespace ediacaran_test
     constexpr auto reflect(TestBase_2_2 ** i_ptr)
     {
         char const class_name[] = "TestBase_2_2";
-        using bases             = ediacaran::type_list<TestBase_3_1>;
+        using bases             = edi::type_list<TestBase_3_1>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(
+        auto const properties = edi::make_array(
           REFL_DATA_PROP("m_int2_2_1", m_int2_2_1), REFL_DATA_PROP("m_int2_2_2", m_int2_2_2));
-        return ediacaran::make_class<this_class, bases>(class_name, properties);
+        return edi::make_class<this_class, bases>(class_name, properties);
     }
 
     struct TestBase_2_3 : TestBase_3_2
@@ -120,12 +123,11 @@ namespace ediacaran_test
     constexpr auto reflect(TestBase_2_3 ** i_ptr)
     {
         char const class_name[] = "TestBase_2_3";
-        using bases             = ediacaran::type_list<TestBase_3_2>;
+        using bases             = edi::type_list<TestBase_3_2>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties =
-          ediacaran::make_array(REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1));
-        return ediacaran::make_class<this_class, bases>(class_name, properties);
+        auto const properties = edi::make_array(REFL_DATA_PROP("m_float_2_3_1", m_float_2_3_1));
+        return edi::make_class<this_class, bases>(class_name, properties);
     }
 
     struct TestBase_2_4
@@ -156,7 +158,7 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestBase_2_4 ** i_ptr)
     {
-        using namespace ediacaran;
+        using namespace edi;
         char const class_name[] = "TestBase_2_4";
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
@@ -165,22 +167,22 @@ namespace ediacaran_test
           REFL_DATA_PROP("m_double_2_4_2", m_double_2_4_2));
 
         auto const functions = make_array(
-          make_function<EDI_FUNC(this_class, f_1)>("f_1"),
-          make_function<EDI_FUNC(this_class, f_2)>("f_2"),
-          make_function<EDI_FUNC(this_class, f_3)>("f_3"),
-          make_function<EDI_FUNC(this_class, f_4)>("f_4"),
-          make_function<EDI_FUNC(this_class, f_5)>("f_5"),
-          make_function<EDI_FUNC(this_class, f_6)>("f_6"),
-          make_function<EDI_FUNC(this_class, f_7)>("f_7"),
-          make_function<EDI_FUNC(this_class, f_8)>("f_8"),
-          make_function<EDI_FUNC(this_class, f_9)>("f_9"),
-          make_function<EDI_FUNC(this_class, f_10)>("f_10"),
-          make_function<EDI_FUNC(this_class, f_11)>("f_11"),
-          make_function<EDI_FUNC(this_class, f_12)>("f_12"),
-          make_function<EDI_FUNC(this_class, f_13)>("f_13"),
-          make_function<EDI_FUNC(this_class, f_14)>("f_14"),
-          make_function<EDI_FUNC(this_class, f_15)>("f_15"),
-          make_function<EDI_FUNC(this_class, f_16)>("f_16"));
+          make_function<EDI_FUNC(f_1)>("f_1"),
+          make_function<EDI_FUNC(f_2)>("f_2"),
+          make_function<EDI_FUNC(f_3)>("f_3"),
+          make_function<EDI_FUNC(f_4)>("f_4"),
+          make_function<EDI_FUNC(f_5)>("f_5"),
+          make_function<EDI_FUNC(f_6)>("f_6"),
+          make_function<EDI_FUNC(f_7)>("f_7"),
+          make_function<EDI_FUNC(f_8)>("f_8"),
+          make_function<EDI_FUNC(f_9)>("f_9"),
+          make_function<EDI_FUNC(f_10)>("f_10"),
+          make_function<EDI_FUNC(f_11)>("f_11"),
+          make_function<EDI_FUNC(f_12)>("f_12"),
+          make_function<EDI_FUNC(f_13)>("f_13"),
+          make_function<EDI_FUNC(f_14)>("f_14"),
+          make_function<EDI_FUNC(f_15)>("f_15"),
+          make_function<EDI_FUNC(f_16)>("f_16"));
 
         return make_class<this_class>(class_name, properties, functions);
     }
@@ -211,16 +213,16 @@ namespace ediacaran_test
     constexpr auto reflect(TestBase_2_Base ** i_ptr)
     {
         char const class_name[] = "TestBase_2_Base";
-        using bases             = ediacaran::type_list<>;
+        using bases             = edi::type_list<>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(
+        auto const properties = edi::make_array(
           REFL_DATA_PROP("m_int8_2_1", m_int8_2_1),
           REFL_DATA_PROP("m_int8_2_2", m_int8_2_2),
           REFL_DATA_PROP("m_int8_2_3", m_int8_2_3));
-        auto const functions = ediacaran::make_array(
+        auto const functions = edi::make_array(
           REFL_FUNCTION("set_all", set_all, "i_value"), REFL_FUNCTION("clear_all", clear_all, ""));
-        return ediacaran::make_class<this_class, bases>(class_name, properties, functions);
+        return edi::make_class<this_class, bases>(class_name, properties, functions);
     }
 
     // layer 1
@@ -233,11 +235,11 @@ namespace ediacaran_test
     constexpr auto reflect(TestBase_1_1 ** i_ptr)
     {
         char const class_name[] = "TestBase_1_1";
-        using bases             = ediacaran::type_list<TestBase_2_1, TestBase_2_2, TestBase_2_Base>;
+        using bases             = edi::type_list<TestBase_2_1, TestBase_2_2, TestBase_2_Base>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(REFL_DATA_PROP("m_string_1", m_string_1));
-        return ediacaran::make_class<this_class, bases>(class_name, properties);
+        auto const properties = edi::make_array(REFL_DATA_PROP("m_string_1", m_string_1));
+        return edi::make_class<this_class, bases>(class_name, properties);
     }
 
     struct TestBase_1_2 : TestBase_2_3, TestBase_2_4, virtual TestBase_2_Base
@@ -250,14 +252,14 @@ namespace ediacaran_test
     constexpr auto reflect(TestBase_1_2 ** i_ptr)
     {
         char const class_name[] = "TestBase_1_2";
-        using bases             = ediacaran::type_list<TestBase_2_3, TestBase_2_4, TestBase_2_Base>;
+        using bases             = edi::type_list<TestBase_2_3, TestBase_2_4, TestBase_2_Base>;
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
-        auto const properties = ediacaran::make_array(
+        auto const properties = edi::make_array(
           REFL_DATA_PROP("m_string_2_1", m_string_2_1),
           REFL_DATA_PROP("m_string_2_2", m_string_2_2),
           REFL_DATA_PROP("m_string_2_3", m_string_2_3));
-        return ediacaran::make_class<this_class, bases>(class_name, properties);
+        return edi::make_class<this_class, bases>(class_name, properties);
     }
 
     // layer 0
@@ -292,14 +294,13 @@ namespace ediacaran_test
 
     constexpr auto reflect(TestClass ** i_ptr)
     {
-        using namespace ediacaran;
+        using namespace edi;
         constexpr char class_name[] = "TestClass";
         using bases                 = type_list<TestBase_1_1, TestBase_1_2>;
         using this_class            = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
-          make_property<EDI_DATA(this_class, m_integer)>("integer"),
-          make_property<EDI_DATA(this_class, m_float)>("float"));
+          make_property<EDI_DATA(m_integer)>("integer"), make_property<EDI_DATA(m_float)>("float"));
 
         auto const functions = make_array(
           REFL_FUNCTION("add", add, "i_int_par, i_flt_par, i_invert"),
@@ -308,9 +309,9 @@ namespace ediacaran_test
         return make_class<this_class, bases>(class_name, properties, functions);
     }
 
-    void class_tests_print_props(ediacaran::raw_ptr i_source)
+    void class_tests_print_props(edi::raw_ptr i_source)
     {
-        using namespace ediacaran;
+        using namespace edi;
 
         std::string string;
         for (auto const & prop : inspect_properties(i_source))
@@ -330,7 +331,7 @@ namespace ediacaran_test
 
     void class_tests()
     {
-        using namespace ediacaran;
+        using namespace edi;
 
         auto const & te = get_type<Enum_1>();
 

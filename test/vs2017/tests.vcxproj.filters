@@ -30,13 +30,22 @@
     <ClCompile Include="..\ediacaran\container_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
+    <ClCompile Include="..\cambrian\hash_tests.cpp">
+      <Filter>cambrian</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ediacaran">
       <UniqueIdentifier>{70dd5627-960a-499e-abf3-edaa899b33fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cambrian">
+      <UniqueIdentifier>{50ec1c9e-5aec-4b04-bf3b-21fa0cb16f79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common.h" />
+    <ClInclude Include="..\cambrian\iliade.h">
+      <Filter>cambrian</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

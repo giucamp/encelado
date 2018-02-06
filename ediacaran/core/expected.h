@@ -1,11 +1,14 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 #include <ediacaran/core/ediacaran_common.h>
 #include <type_traits>
 
-namespace ediacaran
+namespace edi
 {
     struct suceess_t
     {
@@ -171,11 +174,17 @@ namespace ediacaran
           (std::is_trivially_destructible_v<VALUE> ||
            std::is_void_v<VALUE>)&&std::is_trivially_destructible_v<ERROR>>::ExpectedBase;
 
+        constexpr expected(const expected &) = default;
+        constexpr expected(expected &&)      = default;
+
+        constexpr expected & operator=(const expected &) = default;
+        constexpr expected & operator=(expected &&) = default;
+
         constexpr bool has_value() const noexcept { return Base::m_has_value; }
 
         constexpr bool has_error() const noexcept { return !Base::m_has_value; }
 
-        constexpr operator bool() const noexcept { return Base::m_has_value; }
+        constexpr explicit operator bool() const noexcept { return Base::m_has_value; }
 
         template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
         constexpr const VAL & value() const

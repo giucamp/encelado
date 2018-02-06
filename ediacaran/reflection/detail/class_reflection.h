@@ -1,33 +1,34 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
 #define REFL_DATA_PROP(Name, DataMember)                                                           \
-    ediacaran::make_property<decltype(this_class::DataMember), offsetof(this_class, DataMember)>(  \
-      Name)
+    edi::make_property<decltype(this_class::DataMember), offsetof(this_class, DataMember)>(Name)
 
 #define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                   \
-    ediacaran::make_property<                                                                      \
+    edi::make_property<                                                                            \
       decltype(&this_class::Getter),                                                               \
       &this_class::Getter,                                                                         \
       decltype(&this_class::Setter),                                                               \
       &this_class::Setter>(Name)
 
 #define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                        \
-    ediacaran::                                                                                    \
+    edi::                                                                                          \
       make_property<decltype(&this_class::Getter), &this_class::Getter, std::nullptr_t, nullptr>(  \
         Name)
 
 #define REFL_FUNCTION(Name, Method, ParameterNames)                                                \
-    ediacaran::make_function<decltype(&this_class::Method), &this_class::Method>(                  \
-      Name, ParameterNames)
+    edi::make_function<decltype(&this_class::Method), &this_class::Method>(Name, ParameterNames)
 
-#define EDI_DATA(Class, DataMember) decltype(Class::DataMember), offsetof(Class, DataMember)
+#define EDI_DATA(DataMember) decltype(this_class::DataMember), offsetof(this_class, DataMember)
 
-#define EDI_FUNC(Class, Method) decltype(&Class::Method), &Class::Method
+#define EDI_FUNC(Method) decltype(&this_class::Method), &this_class::Method
 
-namespace ediacaran
+namespace edi
 {
     template <typename UDT> struct non_intrusive_reflection;
 
@@ -45,7 +46,6 @@ namespace ediacaran
           HasNonintrusiveReflection, non_intrusive_reflection<TYPE>::reflect());
         EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT(
           HasAdlReflection, reflect(static_cast<TYPE **>(nullptr)));
-        EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT(HasIntrusiveReflection, TYPE::reflect());
 
 #undef EDIACARAN_CLS_REFL_DEFINE_EXPRESSION_TRAIT
 
@@ -55,8 +55,6 @@ namespace ediacaran
                 return non_intrusive_reflection<UDT>::reflect();
             else if constexpr (HasAdlReflection<UDT>::value)
                 return reflect(static_cast<UDT **>(nullptr));
-            else if constexpr (HasIntrusiveReflection<UDT>::value)
-                return UDT::reflect();
             else
             {
                 struct UnreflectedType
@@ -486,8 +484,8 @@ namespace ediacaran
       make_property(const char * i_name)
     {
         using accessor = detail::PropertyAccessor<
-          ediacaran::remove_noexcept_t<GETTER_TYPE>,
-          ediacaran::remove_noexcept_t<SETTER_TYPE>,
+          edi::remove_noexcept_t<GETTER_TYPE>,
+          edi::remove_noexcept_t<SETTER_TYPE>,
           GETTER,
           SETTER>;
 
@@ -498,4 +496,4 @@ namespace ediacaran
           &accessor::func);
     }
 
-} // namespace ediacaran
+} // namespace edi

@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 
@@ -11,7 +14,7 @@
 #include "ediacaran/reflection/qualified_type_ptr.h"
 #include <ediacaran/core/array.h>
 
-namespace ediacaran
+namespace edi
 {
     namespace detail
     {
@@ -93,14 +96,14 @@ namespace ediacaran
         };
 
     } // namespace detail
-} // namespace ediacaran
+} // namespace edi
 
 #include "ediacaran/reflection/detail/container_reflection.h"
 // container_reflection must be included before class_reflection, this comment prevents clang-format from reordering
 #include "ediacaran/reflection/detail/class_reflection.h"
 #include "ediacaran/reflection/detail/enum_reflection.h"
 
-namespace ediacaran
+namespace edi
 {
     template <typename TYPE> constexpr const auto & get_type() noexcept
     {
@@ -142,10 +145,10 @@ namespace ediacaran
 
     constexpr auto reflect(string_view ** i_ptr)
     {
-        char const class_name[] = "ediacaran::string_view";
+        char const class_name[] = "edi::string_view";
         using bases             = type_list<>;
 
-        using namespace ediacaran;
+        using namespace edi;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(REFL_ACCESSOR_RO_PROP("size", size));
@@ -155,9 +158,9 @@ namespace ediacaran
 
     constexpr auto reflect(type ** i_ptr)
     {
-        char const class_name[] = "ediacaran::type";
+        char const class_name[] = "edi::type";
 
-        using namespace ediacaran;
+        using namespace edi;
         using this_class = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
@@ -178,7 +181,7 @@ namespace ediacaran
 
     constexpr auto reflect(qualified_type_ptr ** i_ptr)
     {
-        char const class_name[] = "ediacaran::qualified_type_ptr";
+        char const class_name[] = "edi::qualified_type_ptr";
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
         return make_class<this_class>(class_name);
     }
@@ -187,7 +190,7 @@ namespace ediacaran
     {
         using this_enum = std::remove_reference_t<decltype(**i_ptr)>;
         return make_enum<this_enum>(
-          "ediacaran::cv_qualification",
+          "edi::cv_qualification",
           make_array(
             make_enum_member("const", this_enum::const_q),
             make_enum_member("volatile", this_enum::volatile_q)));

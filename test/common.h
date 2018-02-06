@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <ediacaran/core/ediacaran_common.h>
 
@@ -12,10 +15,6 @@
 void assert_failed(
   const char * i_source_file, const char * i_function, int i_line, const char * i_expr);
 
-namespace ediacaran
-{
-}
-
 namespace ediacaran_test
 {
     void remove_noexcept_tests();
@@ -27,4 +26,9 @@ namespace ediacaran_test
     void class_templates_tests();
     void container_tests();
     void animalia_tests();
+}
+
+namespace cambrian_test
+{
+    void hash_tests();
 }

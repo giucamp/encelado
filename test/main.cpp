@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "common.h"
 #include <iostream>
@@ -49,14 +52,23 @@ int main()
     signal(SIGSEGV, seg_fault_handler);
 #endif
 
-    using namespace ediacaran_test;
-    container_tests();
-    animalia_tests();
-    class_templates_tests();
-    remove_noexcept_tests();
-    type_list_tests();
-    class_tests();
-    type_tests();
-    qualified_type_ptr_tests();
-    string_tests();
+    {
+        using namespace cambrian_test;
+        hash_tests();
+    }
+
+    {
+        using namespace ediacaran_test;
+        container_tests();
+        animalia_tests();
+        class_templates_tests();
+        remove_noexcept_tests();
+        type_list_tests();
+        class_tests();
+        type_tests();
+        qualified_type_ptr_tests();
+        string_tests();
+    }
+
+
 }

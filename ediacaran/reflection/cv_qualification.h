@@ -1,5 +1,8 @@
 
 //   Copyright Giuseppe Campana (giu.campana@gmail.com) 2017-2018.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
 #include "ediacaran/core/ediacaran_common.h"
@@ -9,7 +12,7 @@
 #include <stdexcept>
 #include <type_traits>
 
-namespace ediacaran
+namespace edi
 {
     /** Scoped enum that stores a combination of cv-qualifiers. cv_qualification can be combined and subtracted with the overloaded bitwise operators | and &. */
     enum class cv_qualification
@@ -45,4 +48,4 @@ namespace ediacaran
         return (i_qualification & cv_qualification::volatile_q) != cv_qualification::no_q;
     }
 
-} // namespace ediacaran
+} // namespace edi
