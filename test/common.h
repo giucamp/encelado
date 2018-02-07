@@ -30,5 +30,5 @@ namespace ediacaran_test
 
 namespace cambrian_test
 {
-    void hash_tests();
+    void common_tests();
 }

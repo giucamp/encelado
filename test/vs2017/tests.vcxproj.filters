@@ -30,7 +30,7 @@
     <ClCompile Include="..\ediacaran\container_tests.cpp">
       <Filter>ediacaran</Filter>
     </ClCompile>
-    <ClCompile Include="..\cambrian\hash_tests.cpp">
+    <ClCompile Include="..\cambrian\common_tests.cpp">
       <Filter>cambrian</Filter>
     </ClCompile>
   </ItemGroup>

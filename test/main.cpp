@@ -54,7 +54,7 @@ int main()
 
     {
         using namespace cambrian_test;
-        hash_tests();
+        common_tests();
     }
 
     {

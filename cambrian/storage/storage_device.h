@@ -11,9 +11,10 @@
 
 namespace cambrian
 {
-    using page_address                          = uint64_t;
-    using page_size                             = uint32_t;
-    constexpr page_address invalid_page_address = std::numeric_limits<page_address>::max();
+    using page_address = uint64_t;
+    using page_size    = uint32_t;
+    constexpr bit_index page_address_user_bits = 2;
+    constexpr page_address invalid_page_address = ~uint_mask_rev<page_address>(0, page_address_user_bits);
 
     class storage_device
     {
@@ -29,7 +30,9 @@ namespace cambrian
 
         enum class access_flags
         {
-
+            read       = 1 << 0,
+            write      = 1 << 1,
+            read_write = read | write
         };
 
         struct new_page
@@ -40,7 +43,7 @@ namespace cambrian
 
         struct info
         {
-            page_size m_page_size;
+            page_size    m_page_size;
             page_address m_root_page;
         };
 
@@ -58,5 +61,20 @@ namespace cambrian
         virtual ~storage_device() = default;
     };
 
+    constexpr storage_device::access_flags
+      operator|(storage_device::access_flags i_first, storage_device::access_flags i_second)
+    {
+        return static_cast<storage_device::access_flags>(
+          static_cast<std::underlying_type_t<storage_device::access_flags>>(i_first) |
+          static_cast<std::underlying_type_t<storage_device::access_flags>>(i_second));
+    }
+
+    constexpr storage_device::access_flags
+      operator&(storage_device::access_flags i_first, storage_device::access_flags i_second)
+    {
+        return static_cast<storage_device::access_flags>(
+          static_cast<std::underlying_type_t<storage_device::access_flags>>(i_first) &
+          static_cast<std::underlying_type_t<storage_device::access_flags>>(i_second));
+    }
 
 } // namespace cambrian

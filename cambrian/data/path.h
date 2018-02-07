@@ -9,18 +9,7 @@
 
 namespace cambrian
 {
-    using hash_t = uint32_t;
 
-    constexpr hash_t hash(const string_view & i_source) noexcept
-    {
-        // http://www.cse.yorku.ca/~oz/hash.html - djb2
-        uint32_t hash = 5381;
-        for (char c : i_source)
-        {
-            hash = hash * 33 + c;
-        }
-        return hash;
-    }
 
     class path
     {

@@ -10,6 +10,8 @@
 
 namespace cambrian
 {
+    constexpr page_address dictionary_page_mask = uint_mask_rev<page_address>(0);
+    static_assert(page_address_user_bits >= 0 && invalid_page_address < dictionary_page_mask);
 
     class directory_iterator
     {
@@ -19,9 +21,10 @@ namespace cambrian
       private:
         void open_page(const string_view & i_path);
 
+
       private:
         storage_device * m_device;
-        string_view     m_path;
+        string_view      m_path;
     };
 
 

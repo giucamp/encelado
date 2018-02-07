@@ -165,7 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cambrian.cpp" />
-    <ClCompile Include="..\cambrian\hash_tests.cpp" />
+    <ClCompile Include="..\cambrian\common_tests.cpp" />
     <ClCompile Include="..\ediacaran\animalia.cpp" />
     <ClCompile Include="..\ediacaran\class_templates_tests.cpp" />
     <ClCompile Include="..\ediacaran\class_tests.cpp" />
