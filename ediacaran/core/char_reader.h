@@ -105,7 +105,7 @@ namespace edi
     {
         TYPE       value{};
         auto const result = parse(value, i_source);
-        if (!result)
+        if (!result.has_value())
             return result.error();
         else
             return value;
@@ -120,7 +120,7 @@ namespace edi
         TYPE                        actual_value{};
         auto                        source = i_source;
         expected<void, parse_error> result = parse(actual_value, source);
-        if (!result)
+        if (!result.has_value())
         {
             return result;
         }
@@ -163,7 +163,7 @@ namespace edi
     {
         static_assert(has_accept_v<TYPE>);
         auto const result = accept(i_expected_value, i_source);
-        if (!result)
+        if (!result.has_value())
             throw result.error();
         return i_source;
     }
@@ -341,13 +341,13 @@ namespace edi
 
     constexpr expected<void, parse_error> parse(bool & o_dest, char_reader & i_source) noexcept
     {
-        if (accept("true", i_source))
+        if (accept("true", i_source).has_value())
         {
             o_dest = true;
             return {};
         }
 
-        if (accept("false", i_source))
+        if (accept("false", i_source).has_value())
         {
             o_dest = false;
             return {};

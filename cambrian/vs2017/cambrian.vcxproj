@@ -22,6 +22,7 @@
     <ClInclude Include="..\cambrian_common.h" />
     <ClInclude Include="..\data\directory.h" />
     <ClInclude Include="..\data\path.h" />
+    <ClInclude Include="..\storage\file_device.h" />
     <ClInclude Include="..\storage\memory_device.h" />
     <ClInclude Include="..\storage\storage_device.h" />
     <ClInclude Include="..\TypeRegistry.h" />
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ClCompile Include="..\data\directory.cpp" />
     <ClCompile Include="..\data\path.cpp" />
+    <ClCompile Include="..\storage\file_device.cpp" />
     <ClCompile Include="..\storage\memory_device.cpp" />
     <ClCompile Include="..\storage\storage_device.cpp" />
     <ClCompile Include="..\TypeRegistry.cpp" />

@@ -69,6 +69,4 @@ int main()
         qualified_type_ptr_tests();
         string_tests();
     }
-
-
 }

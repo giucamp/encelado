@@ -26,6 +26,6 @@ namespace cambrian_test
             std::cout << "* " << std::string(token) << "\n";
         }
 
-        std::cout <<std::endl;
+        std::cout << std::endl;
     }
 }

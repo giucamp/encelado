@@ -36,8 +36,8 @@ namespace another_namespace
         auto const b   = edi::parse<int>(i_source);
         if (a.has_error() || sep.has_error() || b.has_error())
             return edi::parse_error::unexpected_token;
-        o_dest.m_a = a.value();
-        o_dest.m_b = b.value();
+        o_dest.m_a = a;
+        o_dest.m_b = b;
         return {};
     }
 }
@@ -233,9 +233,9 @@ namespace ediacaran_test
             bool const expected_success = i_negative ? (number >= max) : (number <= max);
 
             ENCELADO_TEST_ASSERT(res.has_value() == expected_success);
-            if (res)
+            if (res.has_value())
             {
-                ENCELADO_TEST_ASSERT(res.value() == number);
+                ENCELADO_TEST_ASSERT(res == number);
             }
             else
             {
@@ -435,13 +435,7 @@ namespace ediacaran_test
         static_assert(!has_accept_v<void>);
         static_assert(!has_parse_v<void>);
 
-        if constexpr (parse<uint16_t>("42"))
-        {
-        }
-        if constexpr (!parse<uint16_t>("42"))
-        {
-        }
-        static_assert(parse<uint16_t>("42"));
+        static_assert(parse<uint16_t>("42").has_value());
 
         static_assert(parse<uint8_t>("42").value() == 42);
         static_assert(parse<int>("42").value() == 42);

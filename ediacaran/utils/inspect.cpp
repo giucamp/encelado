@@ -467,7 +467,7 @@ namespace edi
         }
 
         (void)accept(spaces, i_function_and_arguments);
-        if (!accept('(', i_function_and_arguments))
+        if (!accept('(', i_function_and_arguments).has_value())
         {
             except<std::logic_error>("Missing '('");
         }
@@ -489,7 +489,7 @@ namespace edi
             except<std::runtime_error>("Could not find the function ", function_name);
         }
 
-        if (!accept(')', i_function_and_arguments))
+        if (!accept(')', i_function_and_arguments).has_value())
         {
             except<std::logic_error>("Missing ')'");
         }

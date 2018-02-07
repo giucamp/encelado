@@ -52,7 +52,7 @@ namespace edi
             constexpr const_iterator & operator++()
             {
                 (void)accept(spaces, m_reader);
-                if (accept(',', m_reader))
+                if (accept(',', m_reader).has_value())
                 {
                     (void)accept(spaces, m_reader);
                     m_current = try_parse_identifier(m_reader);

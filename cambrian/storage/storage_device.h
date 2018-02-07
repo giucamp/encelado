@@ -12,11 +12,16 @@
 namespace cambrian
 {
     using page_address                          = uint64_t;
+    using page_size                             = uint32_t;
     constexpr page_address invalid_page_address = std::numeric_limits<page_address>::max();
 
     class storage_device
     {
       public:
+        storage_device() noexcept              = default;
+        storage_device(const storage_device &) = delete;
+        storage_device & operator=(const storage_device &) = delete;
+
         enum class error
         {
 
@@ -26,6 +31,24 @@ namespace cambrian
         {
 
         };
+
+        struct new_page
+        {
+            void *       m_memory;
+            page_address m_address;
+        };
+
+        struct info
+        {
+            page_size m_page_size;
+            page_address m_root_page;
+        };
+
+        virtual info get_info() noexcept = 0;
+
+        virtual expected<new_page, error> allocate_page() noexcept = 0;
+
+        virtual void deallocate_page(page_address i_address) noexcept = 0;
 
         virtual expected<void *, error>
           begin_access_page(page_address i_address, access_flags i_flags) noexcept = 0;

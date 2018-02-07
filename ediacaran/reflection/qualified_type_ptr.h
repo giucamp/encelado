@@ -174,12 +174,26 @@ namespace edi
         // comparison
 
         /** Returns true whether two QualifiedTypePtrs are indistinguishable */
-        constexpr bool operator==(const qualified_type_ptr & i_source) const;
+        constexpr friend bool operator==(
+          const qualified_type_ptr & i_first, const qualified_type_ptr & i_second) noexcept
+        {
+            if (i_first.m_final_type == nullptr)
+            {
+                return i_second.m_final_type == nullptr;
+            }
+
+            return i_second.m_final_type != nullptr &&
+                   i_first.m_final_type->name() == i_second.m_final_type->name() &&
+                   i_first.m_indirection_levels == i_second.m_indirection_levels &&
+                   i_first.m_constness_word == i_second.m_constness_word &&
+                   i_first.m_volatileness_word == i_second.m_volatileness_word;
+        }
 
         /** Returns false whether two QualifiedTypePtrs are indistinguishable */
-        constexpr bool operator!=(const qualified_type_ptr & i_source) const
+        constexpr friend bool operator!=(
+          const qualified_type_ptr & i_first, const qualified_type_ptr & i_second) noexcept
         {
-            return !operator==(i_source);
+            return !(i_first == i_second);
         }
 
       private:

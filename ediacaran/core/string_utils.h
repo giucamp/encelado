@@ -17,6 +17,7 @@ namespace edi
       private:
         string_view m_source;
         char        m_separator{};
+
       public:
         constexpr split() noexcept = default;
 
@@ -40,7 +41,7 @@ namespace edi
           public:
             using iterator_category = std::input_iterator_tag;
 
-            constexpr const_iterator() noexcept                       = default;
+            constexpr const_iterator() noexcept = default;
 
             constexpr const_iterator(const string_view & i_source, char i_separator)
                 : m_end_of_string(i_source.data() + i_source.size()), m_separator(i_separator)

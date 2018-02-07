@@ -16,7 +16,7 @@ namespace cambrian
         static_assert(sizeof(page_address) >= sizeof(void *));
 
         expected<void *, error>
-          begin_access_page(page_address i_address, access_flags i_flags) noexcept override
+          begin_access_page(page_address i_address, access_flags /*i_flags*/) noexcept override
         {
             return reinterpret_cast<void *>(i_address);
         }

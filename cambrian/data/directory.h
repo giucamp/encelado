@@ -6,12 +6,22 @@
 
 #pragma once
 #include "cambrian/cambrian_common.h"
+#include "cambrian/storage/storage_device.h"
 
 namespace cambrian
 {
-    class directory
+
+    class directory_iterator
     {
       public:
+        directory_iterator(storage_device * i_device, const string_view & i_path);
+
+      private:
+        void open_page(const string_view & i_path);
+
+      private:
+        storage_device * m_device;
+        string_view     m_path;
     };
 
 

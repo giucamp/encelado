@@ -15,6 +15,9 @@
       <Filter>data</Filter>
     </ClInclude>
     <ClInclude Include="..\cambrian_common.h" />
+    <ClInclude Include="..\storage\file_device.h">
+      <Filter>storage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TypeRegistry.cpp" />
@@ -29,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="..\data\path.cpp">
       <Filter>data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\storage\file_device.cpp">
+      <Filter>storage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

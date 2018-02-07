@@ -170,20 +170,6 @@ namespace edi
                                   m_volatileness_word == volatileness_word);
     }
 
-    constexpr bool qualified_type_ptr::operator==(const qualified_type_ptr & i_source) const
-    {
-        if (m_final_type == nullptr)
-        {
-            return i_source.m_final_type == nullptr;
-        }
-
-        return i_source.m_final_type != nullptr &&
-               m_final_type->name() == i_source.m_final_type->name() &&
-               m_indirection_levels == i_source.m_indirection_levels &&
-               m_constness_word == i_source.m_constness_word &&
-               m_volatileness_word == i_source.m_volatileness_word;
-    }
-
     // forward
     constexpr const type & get_ptr_type() noexcept;
 

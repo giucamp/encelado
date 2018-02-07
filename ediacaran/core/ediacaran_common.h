@@ -166,7 +166,7 @@ namespace edi
         {
         }
 
-        operator std::string() { return std::string(data(), size()); }
+        operator std::string() const { return std::string(data(), size()); }
     };
 
     inline std::string operator+(const std::string & i_first, const string_view & i_second)

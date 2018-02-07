@@ -113,10 +113,10 @@ namespace ediacaran_test
         using namespace edi;
 
         auto const qual_type = get_qualified_type<TYPE>();
-        ENCELADO_TEST_ASSERT(qual_type == parse<qualified_type_ptr>(i_type_str).value());
+        ENCELADO_TEST_ASSERT(qual_type == parse<qualified_type_ptr>(i_type_str));
 
         auto const stringfied = to_string(qual_type);
-        auto const parsed     = parse<qualified_type_ptr>(stringfied).value();
+        auto const parsed     = parse<qualified_type_ptr>(stringfied);
         ENCELADO_TEST_ASSERT(parsed == qual_type);
     }
 
