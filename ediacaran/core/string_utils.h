@@ -32,10 +32,6 @@ namespace edi
         constexpr split & operator=(const split &) noexcept = default;
         constexpr split & operator=(split &&) noexcept = default;
 
-        struct end_marker
-        {
-        };
-
         class const_iterator
         {
           public:
@@ -70,9 +66,9 @@ namespace edi
                 return copy;
             }
 
-            constexpr bool operator==(end_marker) noexcept { return is_over(); }
+            constexpr bool operator==(end_marker_t) noexcept { return is_over(); }
 
-            constexpr bool operator!=(end_marker) noexcept { return !is_over(); }
+            constexpr bool operator!=(end_marker_t) noexcept { return !is_over(); }
 
           private:
             constexpr string_view get_next(const char * i_from) noexcept
@@ -104,11 +100,11 @@ namespace edi
             return const_iterator(m_source, m_separator);
         }
 
-        constexpr end_marker cend() const noexcept { return end_marker{}; }
+        constexpr end_marker_t cend() const noexcept { return end_marker; }
 
         constexpr iterator begin() const noexcept { return iterator(m_source, m_separator); }
 
-        constexpr end_marker end() const noexcept { return end_marker{}; }
+        constexpr end_marker_t end() const noexcept { return end_marker; }
     };
 
 } // namespace edi

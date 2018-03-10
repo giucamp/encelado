@@ -94,10 +94,6 @@ namespace edi
             class iterator & m_parent;
         };
 
-        class end_marker
-        {
-        };
-
         class iterator
         {
           public:
@@ -122,9 +118,9 @@ namespace edi
                 return result;
             }
 
-            bool operator==(const end_marker &) const noexcept { return m_property == nullptr; }
+            bool operator==(const end_marker_t &) const noexcept { return m_property == nullptr; }
 
-            bool operator!=(const end_marker &) const noexcept { return m_property != nullptr; }
+            bool operator!=(const end_marker_t &) const noexcept { return m_property != nullptr; }
 
             bool operator==(const iterator & i_source) const noexcept
             {
@@ -155,7 +151,7 @@ namespace edi
 
         iterator begin() const noexcept { return iterator(m_target); }
 
-        end_marker end() const noexcept { return end_marker{}; }
+        end_marker_t end() const noexcept { return end_marker; }
 
       private:
         raw_ptr const m_target;
@@ -214,10 +210,6 @@ namespace edi
             class iterator & m_parent;
         };
 
-        class end_marker
-        {
-        };
-
         class iterator
         {
           public:
@@ -242,9 +234,9 @@ namespace edi
                 return result;
             }
 
-            bool operator==(const end_marker &) const noexcept { return m_function == nullptr; }
+            bool operator==(const end_marker_t &) const noexcept { return m_function == nullptr; }
 
-            bool operator!=(const end_marker &) const noexcept { return m_function != nullptr; }
+            bool operator!=(const end_marker_t &) const noexcept { return m_function != nullptr; }
 
             bool operator==(const iterator & i_source) const noexcept
             {
@@ -276,7 +268,7 @@ namespace edi
 
         iterator begin() const noexcept { return iterator(m_target); }
 
-        end_marker end() const noexcept { return end_marker{}; }
+        end_marker_t end() const noexcept { return end_marker; }
 
       private:
         raw_ptr const m_target;

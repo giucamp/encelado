@@ -110,6 +110,12 @@ namespace edi
         throw EXCEPTION_TYPE(i_message);
     }
 
+    struct end_marker_t
+    {
+    };
+
+    constexpr end_marker_t end_marker;
+
     // workaround for P0426R0 not implemented
     class constexpr_char_traits : public std::char_traits<char>
     {
