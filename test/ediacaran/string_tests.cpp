@@ -235,7 +235,7 @@ namespace ediacaran_test
             ENCELADO_TEST_ASSERT(res.has_value() == expected_success);
             if (res.has_value())
             {
-                ENCELADO_TEST_ASSERT(res == number);
+                ENCELADO_TEST_ASSERT(res.value() == number);
             }
             else
             {

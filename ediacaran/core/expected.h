@@ -7,6 +7,7 @@
 #pragma once
 #include <ediacaran/core/ediacaran_common.h>
 #include <type_traits>
+#include <memory>
 
 namespace edi
 {
@@ -185,7 +186,7 @@ namespace edi
         constexpr bool has_error() const noexcept { return !Base::m_has_value; }
 
         template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
-        constexpr operator VALUE() const noexcept
+        constexpr operator VAL() const noexcept
         {
             if (Base::m_has_value)
                 return Base::m_value;
