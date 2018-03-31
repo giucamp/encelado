@@ -132,4 +132,4 @@ namespace edi
     {
     };
     template <typename TYPE> constexpr bool is_type_list_v = is_type_list<TYPE>::value;
-}
+} // namespace edi

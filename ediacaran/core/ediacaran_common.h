@@ -206,5 +206,5 @@ namespace edi
         {
             return const_cast<std::remove_cv_t<TYPE> *>(i_ptr);
         }
-    }
-}
+    } // namespace detail
+} // namespace edi

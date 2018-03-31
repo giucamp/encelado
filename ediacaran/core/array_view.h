@@ -71,4 +71,4 @@ namespace edi
         TYPE * m_objects;
         size_t m_size;
     };
-}
+} // namespace edi

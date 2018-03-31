@@ -40,7 +40,7 @@ namespace another_namespace
         o_dest.m_b = b;
         return {};
     }
-}
+} // namespace another_namespace
 
 namespace ediacaran_test
 {
@@ -443,4 +443,4 @@ namespace ediacaran_test
         static_assert(parse<bool>("true").value());
         static_assert(!parse<bool>("false").value());
     }
-}
+} // namespace ediacaran_test

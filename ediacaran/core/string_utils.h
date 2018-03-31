@@ -13,7 +13,6 @@ namespace edi
 {
     class split
     {
-
       private:
         string_view m_source;
         char        m_separator{};
@@ -59,7 +58,7 @@ namespace edi
                 return *this;
             }
 
-            constexpr const_iterator operator++(int)noexcept
+            constexpr const_iterator operator++(int) noexcept
             {
                 auto const copy{*this};
                 m_token = get_next(m_token.data() + m_token.size() + 1);

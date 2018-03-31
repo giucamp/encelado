@@ -98,4 +98,4 @@ namespace ediacaran_test
         static_assert(is_type_list_v<D4> && is_type_list_v<D3>);
         static_assert(!is_type_list_v<int> && !is_type_list_v<D3 *>);
     }
-}
+} // namespace ediacaran_test

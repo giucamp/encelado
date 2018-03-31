@@ -56,4 +56,4 @@ namespace ediacaran_test
 
 #undef REMOVE_NOEXCEPT_TESTS
     }
-}
+} // namespace ediacaran_test

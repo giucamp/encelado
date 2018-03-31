@@ -137,4 +137,4 @@ namespace edi
         return array<std::common_type_t<ARG_TYPES...>, sizeof...(ARG_TYPES)>{
           {std::forward<ARG_TYPES>(i_elements)...}};
     }
-}
+} // namespace edi

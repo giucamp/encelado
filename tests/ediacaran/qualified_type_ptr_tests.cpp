@@ -358,4 +358,4 @@ namespace ediacaran_test
 
 #undef CHECK_TYPE
     }
-}
+} // namespace ediacaran_test

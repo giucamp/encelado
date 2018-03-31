@@ -23,4 +23,4 @@ namespace cambrian
       private:
         std::vector<const type *> m_types;
     };
-}
+} // namespace cambrian

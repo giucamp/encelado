@@ -250,4 +250,4 @@ namespace edi
 
         return address;
     }
-}
+} // namespace edi

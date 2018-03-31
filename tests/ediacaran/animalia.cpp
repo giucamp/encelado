@@ -149,4 +149,4 @@ namespace ediacaran_test
           find_named(get_type<Animal>().functions(), "make_sound")->qualification() ==
           cv_qualification::const_q);
     }
-}
+} // namespace ediacaran_test

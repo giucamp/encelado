@@ -60,8 +60,8 @@ namespace edi
                 }
                 return parse_error::unexpected_char;
             }
-        }
-    }
+        } // namespace
+    }     // namespace detail
 
     expected<void, parse_error> parse(float & o_dest, char_reader & i_source) noexcept
     {
@@ -77,4 +77,4 @@ namespace edi
     {
         return detail::parse_float(o_dest, i_source, std::strtold);
     }
-}
+} // namespace edi

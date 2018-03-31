@@ -203,4 +203,4 @@ namespace edi
         type_kind const         m_kind;
         special_functions const m_special_functions;
     };
-}
+} // namespace edi

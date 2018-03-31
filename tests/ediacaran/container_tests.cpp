@@ -35,4 +35,4 @@ namespace ediacaran_test
     }
 
     void container_tests() { vector_tests(); }
-}
+} // namespace ediacaran_test

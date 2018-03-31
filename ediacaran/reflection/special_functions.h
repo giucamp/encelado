@@ -297,4 +297,4 @@ namespace edi
         to_chars_function                m_stringizer                 = nullptr;
         parse_function                   m_parser                     = nullptr;
     };
-}
+} // namespace edi

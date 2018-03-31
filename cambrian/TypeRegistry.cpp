@@ -27,4 +27,4 @@ namespace cambrian
         m_types.push_back(i_type);
         return Id;
     }
-}
+} // namespace cambrian

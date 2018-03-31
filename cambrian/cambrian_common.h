@@ -65,4 +65,4 @@ namespace cambrian
         }
         return hash;
     }
-}
+} // namespace cambrian

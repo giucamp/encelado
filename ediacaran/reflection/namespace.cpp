@@ -108,4 +108,4 @@ namespace edi
             return parse_error::unknown_error;
         }
     }
-}
+} // namespace edi

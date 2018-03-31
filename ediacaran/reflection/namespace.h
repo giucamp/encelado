@@ -60,4 +60,4 @@ namespace edi
     };
 
     expected<void, parse_error> parse(const type ** o_type_ptr, char_reader & i_source) noexcept;
-}
+} // namespace edi

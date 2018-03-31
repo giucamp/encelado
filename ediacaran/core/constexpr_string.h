@@ -32,4 +32,4 @@ namespace edi
 
         constexpr static array<char, length + 1> string = get_string();
     };
-}
+} // namespace edi

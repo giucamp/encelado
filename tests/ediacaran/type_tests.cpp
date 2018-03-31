@@ -46,4 +46,4 @@ namespace ediacaran_test
         auto final_type_name = to_string(indirect.qualified_type());
         ENCELADO_TEST_ASSERT(final_type_name == "float const");
     }
-}
+} // namespace ediacaran_test

@@ -233,7 +233,7 @@ namespace edi
                                                  : (o_dest << std::get<INDICES>(i_source))),
              ...);
         }
-    }
+    } // namespace detail
 
     template <typename TUPLE, typename = decltype(std::tuple_size<TUPLE>::value)>
     constexpr char_writer & operator<<(char_writer & o_dest, const TUPLE & i_tuple)
@@ -298,4 +298,4 @@ namespace edi
         (writer << ... << i_other_parameters);
         except<EXCEPTION_TYPE>(message);
     }
-}
+} // namespace edi

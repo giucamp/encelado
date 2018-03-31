@@ -205,4 +205,4 @@ namespace ediacaran_test
                      "a4: edi::qualified_type_ptr const = int32 * const *, "
                      "a5: edi::qualified_type_ptr const = int32 * * * * *");
     }
-}
+} // namespace ediacaran_test

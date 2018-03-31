@@ -42,4 +42,4 @@ namespace edi
         i_dest << temp;
         return i_dest;
     }
-}
+} // namespace edi

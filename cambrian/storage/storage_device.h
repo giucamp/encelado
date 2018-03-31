@@ -11,10 +11,11 @@
 
 namespace cambrian
 {
-    using page_address = uint64_t;
-    using page_size    = uint32_t;
-    constexpr bit_index page_address_user_bits = 2;
-    constexpr page_address invalid_page_address = ~uint_mask_rev<page_address>(0, page_address_user_bits);
+    using page_address                            = uint64_t;
+    using page_size                               = uint32_t;
+    constexpr bit_index    page_address_user_bits = 2;
+    constexpr page_address invalid_page_address =
+      ~uint_mask_rev<page_address>(0, page_address_user_bits);
 
     class storage_device
     {

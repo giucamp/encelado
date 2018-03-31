@@ -480,4 +480,4 @@ namespace ediacaran_test
           find_named(get_type<TestBase_2_4>().functions(), "f_16")->qualification() ==
           cv_qualification::volatile_q);
     }
-}
+} // namespace ediacaran_test

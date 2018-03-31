@@ -26,7 +26,7 @@ namespace ediacaran_test
     void class_templates_tests();
     void container_tests();
     void animalia_tests();
-}
+} // namespace ediacaran_test
 
 namespace cambrian_test
 {

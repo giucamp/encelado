@@ -6,8 +6,8 @@
 
 #pragma once
 #include <ediacaran/core/ediacaran_common.h>
-#include <type_traits>
 #include <memory>
+#include <type_traits>
 
 namespace edi
 {
@@ -49,7 +49,8 @@ namespace edi
             {
                 static_assert(
                   !std::is_constructible_v<ERROR, FIRST_PARAM, PARAMS...>,
-                  "ambiguous construction: ERROR is constructible with the same arguments");
+                  "ambiguous construction: ERROR is constructible with the "
+                  "same arguments");
             }
 
             template <
@@ -63,7 +64,8 @@ namespace edi
             {
                 static_assert(
                   !std::is_constructible_v<VALUE, FIRST_PARAM, PARAMS...>,
-                  "ambiguous construction: VALUE is constructible with the same arguments");
+                  "ambiguous construction: VALUE is constructible with the "
+                  "same arguments");
             }
 
             template <typename VAL = VALUE, std::enable_if_t<std::is_void_v<VAL>> * = nullptr>
@@ -111,7 +113,8 @@ namespace edi
             {
                 static_assert(
                   !std::is_constructible_v<ERROR, FIRST_PARAM, PARAMS...>,
-                  "ambiguous construction: ERROR is constructible with the same arguments");
+                  "ambiguous construction: ERROR is constructible with the "
+                  "same arguments");
             }
 
             template <
@@ -125,7 +128,8 @@ namespace edi
             {
                 static_assert(
                   !std::is_constructible_v<VALUE, FIRST_PARAM, PARAMS...>,
-                  "ambiguous construction: VALUE is constructible with the same arguments");
+                  "ambiguous construction: VALUE is constructible with the "
+                  "same arguments");
             }
 
             template <typename VAL = VALUE, std::enable_if_t<std::is_void_v<VAL>> * = nullptr>
@@ -218,4 +222,4 @@ namespace edi
       private:
         [[noreturn]] constexpr void throw_error() const { throw Base::m_error; }
     };
-}
+} // namespace edi

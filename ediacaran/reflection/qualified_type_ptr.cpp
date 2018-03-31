@@ -82,4 +82,4 @@ namespace edi
           qualified_type_ptr(final_type, indirection_levels, constness_word, volatileness_word);
         return {};
     }
-}
+} // namespace edi

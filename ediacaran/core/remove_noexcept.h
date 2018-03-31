@@ -71,4 +71,4 @@ namespace edi
 #undef IMPLEMENT_REMOVE_NOEXCEPT_MEM_NOTHING
 
     template <typename FUNC> using remove_noexcept_t = typename remove_noexcept<FUNC>::type;
-}
+} // namespace edi

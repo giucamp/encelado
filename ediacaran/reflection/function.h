@@ -148,7 +148,7 @@ namespace edi
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-    }
+    } // namespace detail
 
     template <typename METHOD_TYPE, METHOD_TYPE METHOD>
     constexpr function make_function(const char * i_name, const char * i_parameter_names = "")

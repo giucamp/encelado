@@ -195,4 +195,4 @@ namespace edi
             make_enum_member("const", this_enum::const_q),
             make_enum_member("volatile", this_enum::volatile_q)));
     }
-}
+} // namespace edi

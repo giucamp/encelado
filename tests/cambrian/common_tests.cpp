@@ -47,4 +47,4 @@ namespace cambrian_test
 
         std::cout << std::endl;
     }
-}
+} // namespace cambrian_test
