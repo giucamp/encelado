@@ -27,14 +27,11 @@ namespace vulkaninc
                                                    array_size_u32(instance_extensions),
                                                    instance_extensions};
         m_instance = vk::createInstance(instance_info);
+    }
 
-        // create the devices
-        auto const devices = m_instance->enumeratePhysicalDevices();
-        m_devices.reserve(devices.size());
-        for (auto & device : devices)
-        {
-            m_devices.emplace_back(m_instance, device);
-        }
+    std::vector<vk::PhysicalDevice> Instance::physical_devices() const
+    {
+        return m_instance->enumeratePhysicalDevices();
     }
 
 } // namespace vulkaninc
@@ -45,9 +42,9 @@ namespace vulkaninc
 
 void f()
 {
-    const char           title[] = "abc";
-    vulkaninc::Instance  instance("test", 1);
-    vulkaninc::Surface   surface(instance.handle(), "test");
-    auto const &         device = instance.devices()[0];
+    const char          title[] = "abc";
+    vulkaninc::Instance instance("test", 1);
+    vulkaninc::Surface  surface(instance.handle(), "test");
+    vulkaninc::Device   device(instance.handle(), instance.physical_devices()[0], surface.handle());
     vulkaninc::Swapchain swap_chain(surface.handle(), device.physical_device(), device.handle());
 }

@@ -5,8 +5,6 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
-
-#include "vulkanic/device.h"
 #include "vulkanic/vulkanic.h"
 #include <utility>
 #include <vector>
@@ -32,11 +30,10 @@ namespace vulkaninc
 
         vk::Instance handle() const noexcept { return m_instance; }
 
-        const std::vector<Device> & devices() const noexcept { return m_devices; }
+        std::vector<vk::PhysicalDevice> physical_devices() const;
 
       private:
-        InstanceHandle      m_instance;
-        std::vector<Device> m_devices;
+        InstanceHandle m_instance;
     };
 
 } // namespace vulkaninc

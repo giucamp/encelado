@@ -15,7 +15,7 @@ namespace vulkaninc
     class CommandQueue
     {
       public:
-        CommandQueue(vk::Device i_device, uint32_t i_queue_index);
+        CommandQueue(vk::Device i_device, uint32_t i_family_index);
 
       private:
         CommandPoolHandle                m_commnand_pool;
@@ -25,7 +25,10 @@ namespace vulkaninc
     class Device
     {
       public:
-        Device(vk::Instance i_vk_instance, const vk::PhysicalDevice & i_physical_device);
+        Device(
+          vk::Instance               i_vk_instance,
+          const vk::PhysicalDevice & i_physical_device,
+          vk::SurfaceKHR             i_surface);
 
         vk::PhysicalDevice const physical_device() const noexcept { return m_physical_device; }
 
@@ -34,11 +37,16 @@ namespace vulkaninc
         vk::Device handle() const noexcept { return m_device; }
 
       private:
-        DeviceHandle              m_device;
-        std::vector<CommandQueue> m_command_queues;
-        uint32_t                  m_present_queue_index = 0;
-        vk::PhysicalDevice const  m_physical_device;
-        vk::Instance const        m_vk_instance;
+        std::vector<vk::Bool32> get_surface_suppports(vk::SurfaceKHR i_surface) const;
+
+      private:
+        DeviceHandle                           m_device;
+        std::vector<CommandQueue>              m_command_queues;
+        uint32_t                               m_render_queue_family_index  = 0;
+        uint32_t                               m_present_queue_family_index = 0;
+        vk::PhysicalDevice const               m_physical_device;
+        vk::Instance const                     m_vk_instance;
+        std::vector<vk::QueueFamilyProperties> m_queue_families;
     };
 
 } // namespace vulkaninc
