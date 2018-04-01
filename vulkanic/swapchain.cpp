@@ -11,14 +11,17 @@
 
 namespace vulkaninc
 {
-    Swapchain::Swapchain(
-      vk::SurfaceKHR i_surface, vk::PhysicalDevice i_physical_device, vk::Device i_logical_device)
+    Swapchain::Swapchain(Surface * i_surface, Device * i_device)
     {
-        auto const capabilities = i_physical_device.getSurfaceCapabilitiesKHR(i_surface);
-        //auto const present_modes = i_physical_device.getSurfacePresentModesKHR(i_surface);
+        auto const surface_handle  = i_surface->handle();
+        auto const physical_device = i_device->physical_device();
+        auto const logical_device  = i_device->handle();
+
+        auto const capabilities = physical_device.getSurfaceCapabilitiesKHR(surface_handle);
+        //auto const present_modes = physical_device.getSurfacePresentModesKHR(surface_handle);
 
         // choose the format
-        auto const formats = i_physical_device.getSurfaceFormatsKHR(i_surface);
+        auto const formats = physical_device.getSurfaceFormatsKHR(surface_handle);
         auto const format_it =
           std::find_if(formats.begin(), formats.end(), [](const vk::SurfaceFormatKHR & i_format) {
               return i_format.format == vk::Format::eB8G8R8A8Unorm;
@@ -27,7 +30,7 @@ namespace vulkaninc
 
         vk::SwapchainCreateInfoKHR swapchain_info;
         swapchain_info.minImageCount    = capabilities.minImageCount;
-        swapchain_info.surface          = i_surface;
+        swapchain_info.surface          = surface_handle;
         swapchain_info.imageFormat      = format_it->format;
         swapchain_info.imageColorSpace  = format_it->colorSpace;
         swapchain_info.presentMode      = vk::PresentModeKHR::eFifo;
@@ -37,6 +40,16 @@ namespace vulkaninc
         swapchain_info.imageSharingMode = vk::SharingMode::eExclusive;
         swapchain_info.preTransform     = capabilities.currentTransform;
         swapchain_info.compositeAlpha   = vk::CompositeAlphaFlagBitsKHR::eOpaque;
+
+        uint32_t queue_indices[2] = {i_device->render_queue_family_index(),
+                                     i_device->present_queue_family_index()};
+        if (queue_indices[0] != queue_indices[1])
+        {
+            swapchain_info.queueFamilyIndexCount = 2;
+            swapchain_info.pQueueFamilyIndices   = queue_indices;
+            swapchain_info.imageSharingMode      = vk::SharingMode::eConcurrent;
+        }
+
         if (capabilities.currentExtent.width == 0xFFFFFFFF)
         {
             swapchain_info.imageExtent.width = clamp(
@@ -52,7 +65,28 @@ namespace vulkaninc
         }
 
         m_swapchain =
-          SwapchainHandle{i_logical_device.createSwapchainKHR(swapchain_info), {i_logical_device}};
+          SwapchainHandle{logical_device.createSwapchainKHR(swapchain_info), {logical_device}};
+
+        m_images = logical_device.getSwapchainImagesKHR(m_swapchain);
+        m_image_views.reserve(m_images.size());
+        for (auto & image : m_images)
+        {
+            vk::ImageViewCreateInfo image_view_info;
+            image_view_info.image                           = image;
+            image_view_info.viewType                        = vk::ImageViewType::e2D;
+            image_view_info.format                          = swapchain_info.imageFormat;
+            image_view_info.components.r                    = vk::ComponentSwizzle::eR;
+            image_view_info.components.g                    = vk::ComponentSwizzle::eG;
+            image_view_info.components.b                    = vk::ComponentSwizzle::eB;
+            image_view_info.components.a                    = vk::ComponentSwizzle::eA;
+            image_view_info.subresourceRange.aspectMask     = vk::ImageAspectFlagBits::eColor;
+            image_view_info.subresourceRange.baseMipLevel   = 0;
+            image_view_info.subresourceRange.levelCount     = 1;
+            image_view_info.subresourceRange.baseArrayLayer = 0;
+            image_view_info.subresourceRange.layerCount     = 1;
+            m_image_views.push_back(
+              ImageViewHandle{logical_device.createImageView(image_view_info), {logical_device}});
+        }
     }
 
 } // namespace vulkaninc

@@ -5,6 +5,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
+#include "vulkanic/device.h"
+#include "vulkanic/surface.h"
 #include "vulkanic/vulkanic.h"
 #include <memory>
 
@@ -14,13 +16,12 @@ namespace vulkaninc
     class Swapchain
     {
       public:
-        Swapchain(
-          vk::SurfaceKHR     i_surface,
-          vk::PhysicalDevice i_physical_device,
-          vk::Device         i_logical_device);
+        Swapchain(Surface * i_surface, Device * i_device);
 
       private:
-        SwapchainHandle m_swapchain;
+        SwapchainHandle              m_swapchain;
+        std::vector<vk::Image>       m_images;
+        std::vector<ImageViewHandle> m_image_views;
     };
 
 } // namespace vulkaninc

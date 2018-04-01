@@ -5,7 +5,6 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
-
 #include "vulkanic/vulkanic.h"
 #include <utility>
 #include <vector>
@@ -36,8 +35,15 @@ namespace vulkaninc
 
         vk::Device handle() const noexcept { return m_device; }
 
+        uint32_t render_queue_family_index() const noexcept { return m_render_queue_family_index; }
+
+        uint32_t present_queue_family_index() const noexcept
+        {
+            return m_present_queue_family_index;
+        }
+
       private:
-        std::vector<vk::Bool32> get_surface_suppports(vk::SurfaceKHR i_surface) const;
+        std::vector<bool> get_surface_suppports(vk::SurfaceKHR i_surface) const;
 
       private:
         DeviceHandle                           m_device;

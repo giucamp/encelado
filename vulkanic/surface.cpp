@@ -113,8 +113,6 @@ namespace vulkaninc
           i_instance.createWin32SurfaceKHR(surface_info),
           handle_deleters::SurfaceDeleter{i_instance});
 #endif
-
-        // file:///C:/VulkanSDK/1.1.70.1/Documentation/Tutorial/html/05-init_swapchain.html
     }
 
     Surface::~Surface() = default;

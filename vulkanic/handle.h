@@ -34,7 +34,7 @@ namespace vulkaninc
         }
 
         Handle(Handle && i_source) noexcept
-            : DELETER(std::move(*static_cast<DELETER *>(this))), m_handle(i_source.m_handle)
+            : DELETER(std::move(static_cast<DELETER &>(i_source))), m_handle(i_source.m_handle)
         {
             i_source.m_handle = nullptr;
         }

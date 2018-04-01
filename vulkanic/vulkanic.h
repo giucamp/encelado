@@ -61,6 +61,13 @@ namespace vulkaninc
             void operator()(vk::SwapchainKHR & i_obj) { m_device.destroySwapchainKHR(i_obj); }
         };
 
+        struct ImageViewDeleter
+        {
+            vk::Device m_device;
+
+            void operator()(vk::ImageView & i_obj) { m_device.destroyImageView(i_obj); }
+        };
+
     } // namespace handle_deleters
 
     using InstanceHandle = Handle<vk::Instance, handle_deleters::InstanceDeleter>;
@@ -74,6 +81,8 @@ namespace vulkaninc
     using SurfaceHandle = Handle<vk::SurfaceKHR, handle_deleters::SurfaceDeleter>;
 
     using SwapchainHandle = Handle<vk::SwapchainKHR, handle_deleters::SwapchainDeleter>;
+
+    using ImageViewHandle = Handle<vk::ImageView, handle_deleters::ImageViewDeleter>;
 
     template <typename TYPE, size_t COUNT> constexpr size_t array_size(TYPE (&)[COUNT])
     {

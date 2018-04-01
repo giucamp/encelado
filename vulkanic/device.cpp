@@ -9,16 +9,17 @@
 
 namespace vulkaninc
 {
-    std::vector<vk::Bool32> Device::get_surface_suppports(vk::SurfaceKHR i_surface) const
+    std::vector<bool> Device::get_surface_suppports(vk::SurfaceKHR i_surface) const
     {
         auto const queue_properties_size = static_cast<uint32_t>(m_queue_families.size());
 
-        std::vector<vk::Bool32> surface_suppports;
+        std::vector<bool> surface_suppports;
         surface_suppports.reserve(m_queue_families.size());
         for (uint32_t queue_index = 0; queue_index < queue_properties_size; queue_index++)
         {
-            surface_suppports.push_back(m_physical_device.getSurfaceSupportKHR(
-              static_cast<uint32_t>(queue_index), i_surface));
+            surface_suppports.push_back(
+              m_physical_device.getSurfaceSupportKHR(
+                static_cast<uint32_t>(queue_index), i_surface) == VK_TRUE);
         }
         return surface_suppports;
     }
