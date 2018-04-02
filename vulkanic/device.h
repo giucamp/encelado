@@ -5,6 +5,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
+#include "vulkanic/gpu_allocator.h"
 #include "vulkanic/vulkanic.h"
 #include <utility>
 #include <vector>
@@ -47,6 +48,7 @@ namespace vulkaninc
 
       private:
         DeviceHandle                           m_device;
+        GpuAllocator                           m_allocator;
         std::vector<CommandQueue>              m_command_queues;
         uint32_t                               m_render_queue_family_index  = 0;
         uint32_t                               m_present_queue_family_index = 0;

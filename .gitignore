@@ -21,3 +21,4 @@ tests/vs2017/Debug/
 silurian/vs2017/.vs/
 tests/vulkanic/vulkanic_test/x64/
 vulkanic/vs2017/x64/
+vulkanic/VulkanMemoryAllocator/

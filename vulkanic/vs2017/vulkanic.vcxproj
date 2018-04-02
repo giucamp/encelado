@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\device.h" />
+    <ClInclude Include="..\gpu_allocator.h" />
     <ClInclude Include="..\handle.h" />
     <ClInclude Include="..\surface.h" />
     <ClInclude Include="..\swapchain.h" />
@@ -28,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\device.cpp" />
+    <ClCompile Include="..\gpu_allocator.cpp" />
     <ClCompile Include="..\instance.cpp" />
     <ClCompile Include="..\surface.cpp" />
     <ClCompile Include="..\swapchain.cpp" />

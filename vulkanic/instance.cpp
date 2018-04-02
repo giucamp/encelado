@@ -46,5 +46,6 @@ void f()
     vulkaninc::Instance instance("test", 1);
     vulkaninc::Surface  surface(instance.handle(), "test");
     vulkaninc::Device   device(instance.handle(), instance.physical_devices()[0], surface.handle());
+
     vulkaninc::Swapchain swap_chain(&surface, &device);
 }

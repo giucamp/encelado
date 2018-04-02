@@ -7,6 +7,7 @@
 #pragma once
 #ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
+#define NOMINMAX
 #endif
 
 //#define VULKAN_HPP_TYPESAFE_CONVERSION 1, for 32-bits, see https://github.com/KhronosGroup/Vulkan-Hpp
@@ -61,11 +62,32 @@ namespace vulkaninc
             void operator()(vk::SwapchainKHR & i_obj) { m_device.destroySwapchainKHR(i_obj); }
         };
 
+        struct ImageDeleter
+        {
+            vk::Device m_device;
+
+            void operator()(vk::Image & i_obj) { m_device.destroyImage(i_obj); }
+        };
+
         struct ImageViewDeleter
         {
             vk::Device m_device;
 
             void operator()(vk::ImageView & i_obj) { m_device.destroyImageView(i_obj); }
+        };
+
+        struct BufferDeleter
+        {
+            vk::Device m_device;
+
+            void operator()(vk::Buffer & i_obj) { m_device.destroyBuffer(i_obj); }
+        };
+
+        struct BufferViewDeleter
+        {
+            vk::Device m_device;
+
+            void operator()(vk::BufferView & i_obj) { m_device.destroyBufferView(i_obj); }
         };
 
     } // namespace handle_deleters
@@ -82,7 +104,13 @@ namespace vulkaninc
 
     using SwapchainHandle = Handle<vk::SwapchainKHR, handle_deleters::SwapchainDeleter>;
 
+    using ImageHandle = Handle<vk::Image, handle_deleters::ImageDeleter>;
+
     using ImageViewHandle = Handle<vk::ImageView, handle_deleters::ImageViewDeleter>;
+
+    using BufferHandle = Handle<vk::Buffer, handle_deleters::BufferDeleter>;
+
+    using BufferViewHandle = Handle<vk::BufferView, handle_deleters::BufferViewDeleter>;
 
     template <typename TYPE, size_t COUNT> constexpr size_t array_size(TYPE (&)[COUNT])
     {
@@ -97,6 +125,12 @@ namespace vulkaninc
     inline void check(bool i_value, const char * i_message)
     {
         if (!i_value)
+            throw std::runtime_error(i_message);
+    }
+
+    inline void check(VkResult i_value, const char * i_message)
+    {
+        if (i_value != VK_SUCCESS)
             throw std::runtime_error(i_message);
     }
 

@@ -4,7 +4,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include "device.h"
+#include "vulkanic/device.h"
 #include <limits>
 
 namespace vulkaninc
@@ -99,6 +99,9 @@ namespace vulkaninc
         device_info.setPpEnabledExtensionNames(device_extensions);
         device_info.setEnabledExtensionCount(array_size_u32(device_extensions));
         m_device = i_physical_device.createDevice(device_info);
+
+        m_allocator.init(i_physical_device, m_device);
+
         m_command_queues.emplace_back(m_device, m_render_queue_family_index);
     }
 

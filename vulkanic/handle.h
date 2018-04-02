@@ -13,7 +13,7 @@ namespace vulkaninc
     template <typename TYPE, typename DELETER> class Handle : private DELETER
     {
       public:
-        Handle() noexcept {}
+        Handle() noexcept : m_handle{} {}
 
         Handle(const Handle &) = delete;
 
@@ -46,6 +46,10 @@ namespace vulkaninc
             i_source.m_handle             = nullptr;
             return *this;
         }
+
+        DELETER const & deleter() const noexcept { return *this; }
+
+        DELETER & deleter() noexcept { return *this; }
 
         ~Handle()
         {
