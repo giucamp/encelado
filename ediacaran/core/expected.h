@@ -189,14 +189,14 @@ namespace edi
 
         constexpr bool has_error() const noexcept { return !Base::m_has_value; }
 
-        template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
+        /*template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
         constexpr operator VAL() const noexcept
         {
             if (Base::m_has_value)
                 return Base::m_value;
             else
                 throw_error();
-        }
+        }*/
 
         template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
         constexpr const VAL & value() const
@@ -205,7 +205,7 @@ namespace edi
                 return Base::m_value;
             else
                 throw_error();
-        }
+        } 
 
         constexpr void on_error_except() const
         {

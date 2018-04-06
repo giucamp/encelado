@@ -36,8 +36,8 @@ namespace another_namespace
         auto const b   = edi::parse<int>(i_source);
         if (a.has_error() || sep.has_error() || b.has_error())
             return edi::parse_error::unexpected_token;
-        o_dest.m_a = a;
-        o_dest.m_b = b;
+        o_dest.m_a = a.value();
+        o_dest.m_b = b.value();
         return {};
     }
 } // namespace another_namespace
