@@ -276,6 +276,9 @@ namespace ediacaran_test
                 reader >> std::as_const(i) >> ' ';
                 reader >> std::as_const(i) >> ' ';
             }
+
+            auto char_array = builder.to_unique_chars();
+            ENCELADO_TEST_ASSERT(string.compare(char_array.get()) == 0);
         }
     }
 

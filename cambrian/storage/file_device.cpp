@@ -36,19 +36,19 @@ namespace cambrian
 
     file_device::~file_device() { fclose(m_file); }
 
-    expected<storage_device::new_page, storage_device::error> file_device::allocate_page() noexcept
+    expected<mapped_page, storage_device::error> file_device::allocate_page() noexcept
     {
-        return new_page{};
+        return mapped_page{};
     }
 
     void file_device::deallocate_page(page_address i_address) noexcept {}
 
-    expected<void *, storage_device::error>
-      file_device::begin_access_page(page_address i_address, access_flags i_flags) noexcept
+    expected<mapped_page, storage_device::error>
+      file_device::map_page(page_address i_address, access_flags i_flags) noexcept
     {
-        return nullptr;
+        return mapped_page{};
     }
 
-    void file_device::end_access_page(void * i_page) noexcept {}
+    void file_device::unmap_page(const mapped_page & i_page) noexcept {}
 
 } // namespace cambrian

@@ -15,13 +15,13 @@ namespace cambrian
       public:
         static_assert(sizeof(page_address) >= sizeof(void *));
 
-        expected<void *, error>
-          begin_access_page(page_address i_address, access_flags /*i_flags*/) noexcept override
+        expected<mapped_page, error>
+          map_page(page_address i_address, access_flags /*i_flags*/) noexcept override
         {
-            return reinterpret_cast<void *>(i_address);
+            return mapped_page(i_address, reinterpret_cast<void *>(i_address));
         }
 
-        void end_access_page(void * /*i_page*/) noexcept override {}
+        void unmap_page(const mapped_page & /*i_page*/) noexcept override {}
     };
 
 

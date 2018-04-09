@@ -9,25 +9,60 @@
 
 namespace cambrian
 {
+    obj_ref::obj_ref(storage_device * i_device, const string_view & i_path) : m_device(i_device)
+    {
+        auto const device_info = m_device->get_info();
+        auto const slot_count  = device_info.m_page_size / sizeof(page_address);
+
+        auto page = device_info.m_root_page;
+
+        for (auto & token : split(i_path, '/'))
+        {
+            auto mapping =
+              i_device->map_page(page, storage_device::access_flags::read_write).value();
+            m_mapped_pages.push_back(std::move(mapping));
+        }
+    }
+
     directory_iterator::directory_iterator(storage_device * i_device, const string_view & i_path)
         : m_device(i_device), m_path(i_path)
     {
     }
 
-    void directory_iterator::open_page(const string_view & i_path)
+    void directory_iterator::lookup(const string_view & i_path)
     {
-        auto const device_info = m_device->get_info();
+        /*auto const device_info = m_device->get_info();
         auto const slot_count  = device_info.m_page_size / sizeof(page_address);
 
-        void * current_page = m_device->begin_access_page(
-          device_info.m_root_page, storage_device::access_flags::read_write);
+        void * current_content =
+          m_device
+            ->begin_access_page(device_info.m_root_page, storage_device::access_flags::read_write)
+            .value();
 
-        for (auto const & token : split(i_path, '/'))
+        for (auto & token : split(i_path, '/'))
         {
-            auto const token_hash = hash(token);
-            auto const slot_index = token_hash % slot_count;
-            auto const next_page  = static_cast<page_address *>(current_page)[slot_index];
+            auto const slot_index = hash(token) % slot_count;
+            auto const next_page  = static_cast<page_address *>(current_content)[slot_index];
+            auto       is_dictionary_page = (next_page & dictionary_page_mask) != 0;
+            void *     next_content =
+              m_device
+                ->begin_access_page(
+                  next_page & ~dictionary_page_mask, storage_device::access_flags::read_write)
+                .value();
+            ;
+            if (is_dictionary_page)
+            {
+            }
+            m_device->end_access_page(current_content);
+            current_content = next_content;
         }
+
+        auto token_it = split(i_path, '/').begin();
+        bool is_dictionary_page;
+        do
+        {
+
+        } while (token_it != end_marker);*/
     }
 
 } // namespace cambrian

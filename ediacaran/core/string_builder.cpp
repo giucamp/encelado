@@ -55,7 +55,38 @@ namespace edi
         return result;
     }
 
-    EDIACARAN_NO_INLINE void string_builder::new_chunk()
+    std::unique_ptr<char[]> string_builder::to_unique_chars() const
+    {
+        auto const              string_size = size();
+        std::unique_ptr<char[]> result(new char[string_size + 1]);
+        char_writer             writer(result.get(), string_size + 1);
+
+        if (m_chunks.size() > 0)
+        {
+            writer << string_view(m_inplace_space, m_inplace_size);
+            for (size_t chunk_index = 0; chunk_index < m_chunks.size() - 1; chunk_index++)
+            {
+                auto const & chunk = m_chunks[chunk_index];
+                writer << string_view(chunk.m_chars.get(), chunk.m_size);
+            }
+            EDIACARAN_INTERNAL_ASSERT(m_writer.remaining_size() >= 0);
+
+            auto const & last_chunk = m_chunks.back();
+            auto const   last_written_size =
+              (last_chunk.m_size - 1) - static_cast<size_t>(m_writer.remaining_size());
+            writer << string_view(last_chunk.m_chars.get(), last_written_size);
+        }
+        else
+        {
+            auto const size = (std::extent_v<decltype(m_inplace_space)> - 1) -
+                              static_cast<size_t>(m_writer.remaining_size());
+            writer << string_view(m_inplace_space, size);
+        }
+        EDIACARAN_INTERNAL_ASSERT(writer.remaining_size() == 0);
+        return result;
+    }
+
+    void string_builder::new_chunk()
     {
         auto const remaining_size = m_writer.remaining_size();
         EDIACARAN_INTERNAL_ASSERT(remaining_size >= 0);

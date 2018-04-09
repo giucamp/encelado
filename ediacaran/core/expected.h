@@ -199,13 +199,22 @@ namespace edi
         }*/
 
         template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
-        constexpr const VAL & value() const
+        constexpr const VAL & value() const &
         {
             if (Base::m_has_value)
                 return Base::m_value;
             else
                 throw_error();
         } 
+
+        template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
+        constexpr VAL && value() &&
+        {
+            if (Base::m_has_value)
+                return std::move(Base::m_value);
+            else
+                throw_error();
+        }
 
         constexpr void on_error_except() const
         {

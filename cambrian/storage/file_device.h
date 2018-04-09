@@ -18,14 +18,14 @@ namespace cambrian
 
         ~file_device();
 
-        expected<new_page, error> allocate_page() noexcept override;
+        expected<mapped_page, error> allocate_page() noexcept override;
 
         void deallocate_page(page_address i_address) noexcept override;
 
-        expected<void *, error>
-          begin_access_page(page_address i_address, access_flags i_flags) noexcept override;
+        expected<mapped_page, error>
+          map_page(page_address i_address, access_flags i_flags) noexcept override;
 
-        void end_access_page(void * i_page) noexcept override;
+        void unmap_page(const mapped_page & i_page) noexcept override;
 
       private:
         FILE * m_file;

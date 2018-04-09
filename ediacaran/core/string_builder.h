@@ -20,6 +20,8 @@ namespace edi
 
         std::string to_string() const;
 
+        std::unique_ptr<char[]> to_unique_chars() const;
+
         template <typename WRITER_FUNC> void custom_write(const WRITER_FUNC & i_function)
         {
             for (;;)
@@ -56,7 +58,7 @@ namespace edi
         }
 
       private:
-        EDIACARAN_NO_INLINE void new_chunk();
+        void new_chunk();
 
         struct Chunk
         {
