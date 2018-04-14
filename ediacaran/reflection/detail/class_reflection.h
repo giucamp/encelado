@@ -321,30 +321,26 @@ namespace edi
               std::is_same_v<property_type, std::decay_t<SETTER_PARAM_TYPE>>,
               "inconsistent types between getter and setter");
 
-            static bool func(
-              property::operation i_operation,
-              void *              i_object,
-              void *              i_value,
-              char_writer & /*o_error*/)
+            static void
+              getter_impl(property const &, const void * i_source_object, void * o_value_dest)
             {
-                EDIACARAN_ASSERT(i_object != nullptr);
-                EDIACARAN_ASSERT(i_value != nullptr);
-                auto const object = static_cast<CLASS *>(i_object);
-                switch (i_operation)
-                {
-                case property::operation::get:
-                    new (i_value) property_type((object->*GETTER)());
-                    return true;
-
-                case property::operation::set:
-                    (object->*SETTER)(*static_cast<property_type *>(i_value));
-                    return true;
-
-                default:
-                    EDIACARAN_ASSERT(false);
-                    return false;
-                }
+                EDIACARAN_ASSERT(i_source_object != nullptr);
+                EDIACARAN_ASSERT(o_value_dest != nullptr);
+                auto const object = static_cast<const CLASS *>(i_source_object);
+                new (o_value_dest) property_type((object->*GETTER)());
             }
+
+            static void
+              setter_impl(property const &, void * i_dest_object, const void * i_value_source)
+            {
+                EDIACARAN_ASSERT(i_dest_object != nullptr);
+                EDIACARAN_ASSERT(i_value_source != nullptr);
+                auto const dest_object = static_cast<CLASS *>(i_dest_object);
+                (dest_object->*SETTER)(*static_cast<const property_type *>(i_value_source));
+            }
+
+            constexpr static property::getter getter() { return &getter_impl; }
+            constexpr static property::setter setter() { return &setter_impl; }
         };
 
         template <
@@ -360,27 +356,17 @@ namespace edi
             using owner_class   = CLASS;
             using property_type = std::decay_t<GETTER_RETURN_TYPE>;
 
-            static bool func(
-              property::operation i_operation,
-              void *              i_object,
-              void *              i_value,
-              char_writer & /*o_error*/)
+            static void
+              getter_impl(property const &, const void * i_source_object, void * o_value_dest)
             {
-                EDIACARAN_ASSERT(i_object != nullptr);
-                EDIACARAN_ASSERT(i_value != nullptr);
-                auto const object = static_cast<CLASS *>(i_object);
-                switch (i_operation)
-                {
-                case property::operation::get:
-                    new (i_value) property_type((object->*GETTER)());
-                    return true;
-
-                case property::operation::set:
-                default:
-                    EDIACARAN_ASSERT(false);
-                    return false;
-                }
+                EDIACARAN_ASSERT(i_source_object != nullptr);
+                EDIACARAN_ASSERT(o_value_dest != nullptr);
+                auto const object = static_cast<const CLASS *>(i_source_object);
+                new (o_value_dest) property_type((object->*GETTER)());
             }
+
+            constexpr static property::getter getter() { return &getter_impl; }
+            constexpr static property::setter setter() { return nullptr; }
         };
 
     } //namespace detail
@@ -472,7 +458,7 @@ namespace edi
     template <typename PROP_TYPE, size_t OFFSET>
     constexpr property make_property(const char * i_name)
     {
-        return property(property::offset_tag{}, i_name, get_qualified_type<PROP_TYPE>(), OFFSET);
+        return property(i_name, get_qualified_type<PROP_TYPE>(), OFFSET);
     }
 
     template <
@@ -489,11 +475,17 @@ namespace edi
           GETTER,
           SETTER>;
 
+        using property_type = std::conditional_t<
+          SETTER != nullptr,
+          typename accessor::property_type,
+          std::add_const_t<typename accessor::property_type>>;
+
         return property(
-          property::accessor_tag{},
           i_name,
-          get_qualified_type<typename accessor::property_type>(),
-          &accessor::func);
+          get_qualified_type<property_type>(),
+          accessor::getter(),
+          accessor::getter(),
+          accessor::setter());
     }
 
 } // namespace edi

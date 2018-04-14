@@ -13,62 +13,32 @@
 
 namespace edi
 {
-    enum class property_flags
-    {
-        none    = 0,
-        inplace = 1 << 0,
-    };
-
-    constexpr property_flags operator|(property_flags i_first, property_flags i_second)
-    {
-        return static_cast<property_flags>(
-          static_cast<std::underlying_type_t<property_flags>>(i_first) |
-          static_cast<std::underlying_type_t<property_flags>>(i_second));
-    }
-
-    constexpr property_flags operator&(property_flags i_first, property_flags i_second)
-    {
-        return static_cast<property_flags>(
-          static_cast<std::underlying_type_t<property_flags>>(i_first) &
-          static_cast<std::underlying_type_t<property_flags>>(i_second));
-    }
-
     class property
     {
       public:
-        enum class operation
-        {
-            get,
-            set,
-        };
-
-        enum class accessor_tag
-        {
-        };
-
-        enum class offset_tag
-        {
-        };
-
-        using accessor =
-          bool (*)(operation i_operation, void * i_object, void * i_value, char_writer & o_error);
+        using getter =
+          void (*)(property const & i_property, const void * i_source_object, void * i_value_dest);
+        using setter =
+          void (*)(property const & i_property, void * i_dest_object, const void * i_value_source);
 
         constexpr property(
-          accessor_tag,
           const char *               i_name,
           const qualified_type_ptr & i_qualified_type,
-          accessor                   i_accessor)
-            : m_name(i_name), m_flags(property_flags::none), m_qualified_type(i_qualified_type),
-              m_accessor(i_accessor)
+          const void *               i_user_object,
+          getter                     i_getter,
+          setter                     i_setter)
+            : m_name(i_name), m_user_object(i_user_object),
+              m_qualified_type(i_qualified_type), m_accessors{i_getter, i_setter}
         {
+            EDIACARAN_ASSERT(i_user_object != nullptr);
+            EDIACARAN_ASSERT(i_getter != nullptr);
         }
 
         constexpr property(
-          offset_tag,
           const char *               i_name,
           const qualified_type_ptr & i_qualified_type,
           size_t                     i_offset) noexcept
-            : m_name(i_name), m_flags(property_flags::inplace), m_qualified_type(i_qualified_type),
+            : m_name(i_name), m_user_object(nullptr), m_qualified_type(i_qualified_type),
               m_offset(i_offset)
         {
         }
@@ -84,17 +54,13 @@ namespace edi
             return m_qualified_type;
         }
 
-        constexpr bool is_gettable() const noexcept { return true; }
-
         constexpr bool is_settable() const noexcept { return !m_qualified_type.is_const(0); }
 
-        constexpr bool is_inplace() const noexcept
-        {
-            return (m_flags & property_flags::inplace) == property_flags::inplace;
-        }
+        constexpr bool is_inplace() const noexcept { return m_user_object == nullptr; }
 
-        const void * get_inplace(const void * i_source_object) const noexcept
+        const void * get_inplace(void const * i_source_object) const noexcept
         {
+            EDIACARAN_ASSERT(i_source_object != nullptr);
             if (!is_inplace())
             {
                 return nullptr;
@@ -107,7 +73,9 @@ namespace edi
 
         void * edit_inplace(void * i_source_object) const noexcept
         {
-            if (!is_inplace() || !is_settable())
+            EDIACARAN_ASSERT(i_source_object != nullptr);
+            EDIACARAN_ASSERT(is_settable());
+            if (!is_inplace())
             {
                 return nullptr;
             }
@@ -117,47 +85,47 @@ namespace edi
             }
         }
 
-        bool get(const void * i_source_object, void * o_dest_value, char_writer & o_error) const
+        void get(void const * i_source_object, void * o_value_dest) const
         {
+            EDIACARAN_ASSERT(i_source_object != nullptr);
             if (!is_inplace())
             {
-                return (*m_accessor)(
-                  operation::get, const_cast<void *>(i_source_object), o_dest_value, o_error);
+                (*m_accessors.m_getter)(*this, i_source_object, o_value_dest);
             }
             else
             {
                 auto const data = address_add(i_source_object, m_offset);
-                m_qualified_type.primary_type()->copy_construct(o_dest_value, data);
-                return true;
+                m_qualified_type.primary_type()->copy_construct(o_value_dest, data);
             }
         }
 
-        bool set(void * i_dest_object, const void * i_source_value, char_writer & o_error) const
+        void set(void * i_dest_object, const void * i_value_source) const
         {
-            if (!is_settable())
-            {
-                return false;
-            }
+            EDIACARAN_ASSERT(i_dest_object != nullptr);
+            EDIACARAN_ASSERT(is_settable());
             if (!is_inplace())
             {
-                return (*m_accessor)(
-                  operation::set, i_dest_object, const_cast<void *>(i_source_value), o_error);
+                (*m_accessors.m_setter)(*this, i_dest_object, i_value_source);
             }
             else
             {
                 auto const data = address_add(i_dest_object, m_offset);
-                m_qualified_type.primary_type()->copy_assign(data, i_source_value);
-                return true;
+                m_qualified_type.primary_type()->copy_assign(data, i_value_source);
             }
         }
 
       private:
         const char * const       m_name;
-        property_flags const     m_flags;
+        const void * const       m_user_object;
         qualified_type_ptr const m_qualified_type;
+        struct accessors
+        {
+            getter m_getter;
+            setter m_setter;
+        };
         union {
-            size_t   m_offset;
-            accessor m_accessor;
+            size_t    m_offset;
+            accessors m_accessors;
         };
     };
 

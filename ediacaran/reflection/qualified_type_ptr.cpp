@@ -73,7 +73,6 @@ namespace edi
         else if (final_type == nullptr)
         {
             return parse_error::missing_expected_chars;
-            ;
         }
 
         // commit

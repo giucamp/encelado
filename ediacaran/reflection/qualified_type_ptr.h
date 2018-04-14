@@ -132,7 +132,6 @@ namespace edi
 
         constexpr size_t volatileness_word() const noexcept { return m_volatileness_word; }
 
-
         // special functions
 
         constexpr qualified_type_ptr(

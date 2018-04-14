@@ -76,14 +76,8 @@ namespace edi
         auto         value         = const_cast<void *>(m_property->get_inplace(m_subobject));
         if (value == nullptr)
         {
-            value = m_dyn_value.manual_construct(property_type, [&](void * i_dest) {
-                char        error_msg[512];
-                char_writer error_writer(error_msg);
-                if (!m_property->get(m_subobject, i_dest, error_writer))
-                {
-                    except<std::runtime_error>(error_msg);
-                }
-            });
+            value = m_dyn_value.manual_construct(
+              property_type, [&](void * i_dest) { m_property->get(m_subobject, i_dest); });
         }
         return raw_ptr(value, property_type);
     }
@@ -107,12 +101,11 @@ namespace edi
               " was provided");
         }
 
-        char        error[512];
-        char_writer err_writer(error);
-        if (!m_property->set(m_subobject, i_value.object(), err_writer))
+        if (!m_property->is_settable())
         {
-            except<std::runtime_error>(error);
+            except<std::runtime_error>("Property is not settable");
         }
+        m_property->set(m_subobject, i_value.object());
     }
 
     void property_inspector::iterator::set_prop_value(char_reader & i_source)
@@ -124,12 +117,11 @@ namespace edi
             auto const parse_result =
               property_type.final_type()->parse(const_cast<void *>(m_dyn_value.object()), i_source);
             parse_result.on_error_except();
-            char        error[512];
-            char_writer error_writer(error);
-            if (!m_property->set(m_subobject, m_dyn_value.object(), error_writer))
+            if (!m_property->is_settable())
             {
-                except<std::runtime_error>(error);
+                except<std::runtime_error>("Property is not settable");
             }
+            m_property->set(m_subobject, m_dyn_value.object());
         }
         else
         {

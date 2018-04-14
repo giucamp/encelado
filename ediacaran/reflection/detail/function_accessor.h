@@ -14,6 +14,7 @@ struct MethodTraits<RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...)
 {
     constexpr static size_t           parameter_count = sizeof...(PARAMETER_TYPE);
     constexpr static cv_qualification qualification   = EDIACARAN_FUNC_REFL_CV_QUALFICATION_V;
+    using return_type                                 = RETURN_TYPE;
 };
 
 template <
@@ -26,6 +27,7 @@ template <
 struct FunctionInvoker<
   RETURN_TYPE (OWNING_CLASS::*)(PARAMETER_TYPE...)
     EDIACARAN_FUNC_REFL_CV_QUALFICATION EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC,
+  std::enable_if_t<!std::is_void_v<RETURN_TYPE>, RETURN_TYPE>,
   METHOD,
   std::index_sequence<INDEX...>>
 {
@@ -52,6 +54,7 @@ template <
 struct FunctionInvoker<
   void (OWNING_CLASS::*)(PARAMETER_TYPE...)
     EDIACARAN_FUNC_REFL_CV_QUALFICATION EDIACARAN_FUNC_REFL_NOEXCEPT_SPEC,
+  void,
   METHOD,
   std::index_sequence<INDEX...>>
 {

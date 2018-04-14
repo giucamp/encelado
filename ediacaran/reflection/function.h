@@ -97,7 +97,11 @@ namespace edi
     {
         template <typename METHOD_TYPE> struct MethodTraits;
 
-        template <typename METHOD_TYPE, METHOD_TYPE METHOD, typename INDEX_SEQUENCE>
+        template <
+          typename METHOD_TYPE,
+          typename METHOD_RETURN_TYPE,
+          METHOD_TYPE METHOD,
+          typename INDEX_SEQUENCE>
         struct FunctionInvoker;
 
 #ifdef __clang__
@@ -155,6 +159,7 @@ namespace edi
     {
         using function_invoker = detail::FunctionInvoker<
           METHOD_TYPE,
+          detail::MethodTraits<METHOD_TYPE>::return_type,
           METHOD,
           std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
         return function(

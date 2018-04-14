@@ -340,9 +340,8 @@ namespace ediacaran_test
 
         try
         {
-            property props[2] = {
-              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2),
-              property(property::offset_tag{}, "prop", get_qualified_type<int>(), 2)};
+            property   props[2] = {property("prop", get_qualified_type<int>(), 2),
+                                 property("prop", get_qualified_type<int>(), 2)};
             class_type CC(
               "abc",
               1,
