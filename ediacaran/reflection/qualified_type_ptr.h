@@ -246,4 +246,4 @@ namespace edi
 
 } // namespace edi
 
-#include "qualified_type_ptr.inl"
+#include "ediacaran/reflection/qualified_type_ptr.inl"

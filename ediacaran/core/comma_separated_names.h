@@ -16,10 +16,6 @@ namespace edi
       public:
         constexpr comma_separated_names(const char * i_string) noexcept : m_string(i_string) {}
 
-        class const_iterator_end_marker
-        {
-        };
-
         class const_iterator
         {
           public:
@@ -39,12 +35,9 @@ namespace edi
 
             constexpr const string_view & operator*() const noexcept { return m_current; }
 
-            constexpr bool operator==(const_iterator_end_marker) const noexcept
-            {
-                return m_current.empty();
-            }
+            constexpr bool operator==(end_marker_t) const noexcept { return m_current.empty(); }
 
-            constexpr bool operator!=(const_iterator_end_marker i_marker) const noexcept
+            constexpr bool operator!=(end_marker_t i_marker) const noexcept
             {
                 return !operator==(i_marker);
             }
@@ -86,17 +79,11 @@ namespace edi
 
         constexpr const_iterator begin() const { return const_iterator(*this); }
 
-        constexpr const_iterator_end_marker end() const noexcept
-        {
-            return const_iterator_end_marker{};
-        }
+        constexpr end_marker_t end() const noexcept { return end_marker; }
 
         constexpr const_iterator cbegin() const { return const_iterator(*this); }
 
-        constexpr const_iterator_end_marker cend() const noexcept
-        {
-            return const_iterator_end_marker{};
-        }
+        constexpr end_marker_t cend() const noexcept { return end_marker; }
 
       private:
         const char * m_string;

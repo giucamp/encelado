@@ -112,6 +112,12 @@
     <ClInclude Include="..\core\string_utils.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\byte_writer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\byte_reader.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">
@@ -140,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="..\utils\universal_iterator.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\byte_writer.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\byte_reader.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

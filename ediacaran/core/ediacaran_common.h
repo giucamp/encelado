@@ -105,6 +105,11 @@ namespace edi
         using std::runtime_error::runtime_error;
     };
 
+    template <typename TYPE> using is_trivially_serializable = std::bool_constant<std::is_fundamental_v<TYPE> || std::is_enum_v<TYPE>>;
+
+    template <typename TYPE>
+    constexpr bool is_trivially_serializable_v = is_trivially_serializable<TYPE>::value;
+
     template <typename EXCEPTION_TYPE>[[noreturn]] constexpr void except(const char * i_message)
     {
         throw EXCEPTION_TYPE(i_message);
@@ -113,7 +118,6 @@ namespace edi
     struct end_marker_t
     {
     };
-
     constexpr end_marker_t end_marker;
 
     // workaround for P0426R0 not implemented

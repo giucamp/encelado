@@ -205,7 +205,7 @@ namespace edi
                 return Base::m_value;
             else
                 throw_error();
-        } 
+        }
 
         template <typename VAL = VALUE, std::enable_if_t<!std::is_void_v<VAL>> * = nullptr>
         constexpr VAL && value() &&
