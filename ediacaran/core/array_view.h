@@ -31,9 +31,23 @@ namespace edi
         {
         }
 
-        template <typename SOURCE_TYPE, size_t SIZE>
+        /*template <typename SOURCE_TYPE, size_t SIZE>
         constexpr array_view(const array<SOURCE_TYPE, SIZE> & i_objects) noexcept
             : m_objects(i_objects.data()), m_size(SIZE)
+        {
+        }*/
+
+        template <
+          typename CONTAINER,
+          std::enable_if_t<
+
+            is_contiguous_container_v<CONTAINER> &&
+            std::is_convertible_v<typename CONTAINER::value_type *, TYPE *> &&
+            std::is_same_v<std::remove_cv_t<typename CONTAINER::value_type>, std::remove_cv_t<TYPE>>
+
+            > * = nullptr>
+        constexpr array_view(const CONTAINER & i_container) noexcept
+            : m_objects(i_container.data()), m_size(i_container.size())
         {
         }
 

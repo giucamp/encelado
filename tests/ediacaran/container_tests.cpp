@@ -16,6 +16,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -33,6 +34,20 @@ namespace ediacaran_test
     void vector_tests()
     {
         using namespace edi;
+
+        // check array_view constructiblity
+
+        static_assert(std::is_constructible_v<array_view<int>, std::array<int, 3>>);
+        static_assert(std::is_constructible_v<array_view<int>, std::vector<int>>);
+        static_assert(std::is_constructible_v<array_view<char>, std::string>);
+        static_assert(!std::is_constructible_v<array_view<int>, std::list<int>>);
+
+        static_assert(std::is_constructible_v<array_view<const type>, std::array<const type, 6>>);
+        static_assert(std::is_constructible_v<array_view<const type>, std::array<type, 6>>);
+        static_assert(!std::is_constructible_v<array_view<type>, std::array<const type, 6>>);
+        static_assert(
+          !std::is_constructible_v<array_view<const type>, std::array<const class_type, 6>>);
+        static_assert(!std::is_constructible_v<array_view<const type>, std::array<class_type, 6>>);
 
         static_assert(!is_contiguous_container_v<int>);
         static_assert(!is_contiguous_container_v<int **>);

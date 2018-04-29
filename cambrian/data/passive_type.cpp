@@ -61,7 +61,7 @@ namespace cambrian
 
     } // namespace detail
 
-    /*passive_class::passive_class(type_registry * i_type_registry, const class_type & i_source_class)
+    passive_class::passive_class(type_registry * i_type_registry, const class_type & i_source_class)
         : detail::passive_class_data(i_type_registry, i_source_class),
           class_type(
             detail::passive_class_data::m_name.c_str(),
@@ -73,6 +73,6 @@ namespace cambrian
             detail::passive_class_data::m_functions,
             nullptr)
     {
-    }*/
+    }
 
 } // namespace cambrian
