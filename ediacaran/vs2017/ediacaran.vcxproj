@@ -52,6 +52,7 @@
     <ClInclude Include="..\reflection\special_functions.h" />
     <ClInclude Include="..\reflection\type.h" />
     <ClInclude Include="..\std_refl\allocator.h" />
+    <ClInclude Include="..\std_refl\list.h" />
     <ClInclude Include="..\std_refl\string.h" />
     <ClInclude Include="..\std_refl\vector.h" />
     <ClInclude Include="..\utils\dyn_value.h" />

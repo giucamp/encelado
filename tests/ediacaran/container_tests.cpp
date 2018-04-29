@@ -6,6 +6,7 @@
 
 #include "../common.h"
 #include "ediacaran/core/string_builder.h"
+#include "ediacaran/std_refl/list.h"
 #include "ediacaran/std_refl/string.h"
 #include "ediacaran/std_refl/vector.h"
 #include "ediacaran/utils/universal_iterator.h"
@@ -51,16 +52,25 @@ namespace ediacaran_test
 
         auto & vector_t = get_class_type<std::vector<int>>();
 
-        std::vector<int> vector = {1, 2, 3, 4, 5, 6};
 
-        string_builder str;
+        string_builder str_builder;
+
+        std::vector<int> vector = {1, 2, 3, 4, 5, 6};
         for (universal_iterator it(&std::as_const(vector)); !it.is_over(); ++it)
         {
-            str << *it << '\n';
+            str_builder << *it << ", ";
         }
+        auto str = str_builder.to_string();
+        ENCELADO_TEST_ASSERT(str == "1, 2, 3, 4, 5, 6, ");
 
-        std::cout << str.to_string();
-        std::cout << std::endl;
+        str_builder         = {};
+        std::list<int> list = {1, 2, 3, 4, 5, 6};
+        for (universal_iterator it(&std::as_const(list)); !it.is_over(); ++it)
+        {
+            str_builder << *it << ", ";
+        }
+        str = str_builder.to_string();
+        ENCELADO_TEST_ASSERT(str == "1, 2, 3, 4, 5, 6, ");
     }
 
     void container_tests() { vector_tests(); }

@@ -11,10 +11,6 @@
 
 namespace edi
 {
-    template <typename CONTAINER> struct is_contiguous_container : std::false_type
-    {
-    };
-
     namespace detail
     {
         template <typename CONTAINER, typename = std::void_t<>>
@@ -133,7 +129,9 @@ namespace edi
 
                 auto & container = *static_cast<CONTAINER *>(i_container);
                 return container::segment{
-                  get_qualified_type<element_type>(), &*container.begin(), container.size()};
+                  get_qualified_type<element_type>(),
+                  const_cast<typename CONTAINER::value_type *>(container.data()),
+                  container.size()};
             }
 
             static void destroy_iterator(void * /*i_iterator_dest*/) noexcept {}
@@ -151,7 +149,7 @@ namespace edi
       typename std::enable_if_t<detail::HasStdContainerInterface<CONTAINER>::value> * = nullptr>
     constexpr container make_container_reflection() noexcept
     {
-        using Cont = detail::StdContainer<CONTAINER, is_contiguous_container<CONTAINER>::value>;
+        using Cont = detail::StdContainer<CONTAINER, is_contigous_container_v<CONTAINER>>;
         return container{container::capability::none,
                          get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,

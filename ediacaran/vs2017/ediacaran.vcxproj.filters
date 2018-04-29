@@ -118,6 +118,9 @@
     <ClInclude Include="..\core\byte_reader.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\std_refl\list.h">
+      <Filter>std_refl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\core\char_writer.cpp">

@@ -45,6 +45,15 @@ namespace edi
 
         constexpr char_writer & operator=(const char_writer &) noexcept = default;
 
+        constexpr static char_writer
+          from_ptr_and_remaining_size(char * i_next_char, ptrdiff_t i_remaining_size) noexcept
+        {
+            char_writer result;
+            result.m_curr_char      = i_next_char;
+            result.m_remaining_size = i_remaining_size;
+            return result;
+        }
+
         constexpr ptrdiff_t remaining_size() const noexcept { return m_remaining_size; }
 
         constexpr char_writer & operator<<(char i_char) noexcept

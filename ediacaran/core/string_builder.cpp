@@ -19,8 +19,7 @@ namespace edi
         else
         {
             EDIACARAN_INTERNAL_ASSERT(m_size == 0);
-            return (std::extent_v<decltype(m_inplace_space)> - 1) -
-                   static_cast<size_t>(m_writer.remaining_size());
+            return m_inplace_space.size() - 1 - static_cast<size_t>(m_writer.remaining_size());
         }
     }
 
@@ -32,7 +31,7 @@ namespace edi
 
         if (m_chunks.size() > 0)
         {
-            result.append(m_inplace_space, m_inplace_size);
+            result.append(m_inplace_space.data(), m_inplace_size);
             for (size_t chunk_index = 0; chunk_index < m_chunks.size() - 1; chunk_index++)
             {
                 auto const & chunk = m_chunks[chunk_index];
@@ -47,9 +46,9 @@ namespace edi
         }
         else
         {
-            auto const size = (std::extent_v<decltype(m_inplace_space)> - 1) -
-                              static_cast<size_t>(m_writer.remaining_size());
-            result.append(m_inplace_space, size);
+            auto const size =
+              m_inplace_space.size() - 1 - static_cast<size_t>(m_writer.remaining_size());
+            result.append(m_inplace_space.data(), size);
         }
         EDIACARAN_INTERNAL_ASSERT(result.size() == string_size);
         return result;
@@ -63,7 +62,7 @@ namespace edi
 
         if (m_chunks.size() > 0)
         {
-            writer << string_view(m_inplace_space, m_inplace_size);
+            writer << string_view(m_inplace_space.data(), m_inplace_size);
             for (size_t chunk_index = 0; chunk_index < m_chunks.size() - 1; chunk_index++)
             {
                 auto const & chunk = m_chunks[chunk_index];
@@ -78,9 +77,9 @@ namespace edi
         }
         else
         {
-            auto const size = (std::extent_v<decltype(m_inplace_space)> - 1) -
-                              static_cast<size_t>(m_writer.remaining_size());
-            writer << string_view(m_inplace_space, size);
+            auto const size =
+              m_inplace_space.size() - 1 - static_cast<size_t>(m_writer.remaining_size());
+            writer << string_view(m_inplace_space.data(), size);
         }
         EDIACARAN_INTERNAL_ASSERT(writer.remaining_size() == 0);
         return result;
@@ -93,7 +92,7 @@ namespace edi
         size_t prev_chunk_size;
         if (m_chunks.size() == 0)
         {
-            prev_chunk_size = std::extent_v<decltype(m_inplace_space)>;
+            prev_chunk_size = m_inplace_space.size();
             m_inplace_size  = (prev_chunk_size - 1) - static_cast<size_t>(remaining_size);
             EDIACARAN_INTERNAL_ASSERT(m_size == 0);
             m_size = m_inplace_size;

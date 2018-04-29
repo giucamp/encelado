@@ -5,8 +5,10 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #pragma once
+#include <array>
 #include <ediacaran/core/char_writer.h>
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace edi
@@ -14,7 +16,43 @@ namespace edi
     class string_builder
     {
       public:
-        string_builder() noexcept { m_writer = char_writer(m_inplace_space); }
+        string_builder() noexcept
+        {
+            m_writer = char_writer(m_inplace_space.data(), m_inplace_space.size());
+        }
+
+        string_builder(string_builder && i_source)
+            : m_chunks(std::move(i_source.m_chunks)), m_inplace_space(i_source.m_inplace_space),
+              m_size(i_source.m_size), m_inplace_size(i_source.m_inplace_size)
+        {
+            m_writer = char_writer(m_inplace_space.data(), m_inplace_space.size());
+        }
+
+        friend void swap(string_builder & i_first, string_builder & i_second) noexcept
+        {
+            auto const first_offset = i_first.m_writer.next_dest() - i_first.m_inplace_space.data();
+            auto const first_remaining_size = i_first.m_writer.remaining_size();
+
+            auto const second_offset =
+              i_second.m_writer.next_dest() - i_second.m_inplace_space.data();
+            auto const second_remaining_size = i_second.m_writer.remaining_size();
+
+            std::swap(i_first.m_chunks, i_second.m_chunks);
+            std::swap(i_first.m_inplace_space, i_second.m_inplace_space);
+            std::swap(i_first.m_size, i_second.m_size);
+            std::swap(i_first.m_inplace_size, i_second.m_inplace_size);
+
+            i_first.m_writer = char_writer::from_ptr_and_remaining_size(
+              i_first.m_inplace_space.data() + second_offset, second_remaining_size);
+            i_second.m_writer = char_writer::from_ptr_and_remaining_size(
+              i_second.m_inplace_space.data() + first_offset, first_remaining_size);
+        }
+
+        string_builder & operator=(string_builder && i_source) noexcept
+        {
+            swap(*this, i_source);
+            return *this;
+        }
 
         size_t size() const noexcept;
 
@@ -71,11 +109,11 @@ namespace edi
         };
 
       private:
-        char_writer        m_writer;
-        std::vector<Chunk> m_chunks;
-        char               m_inplace_space[32];
-        size_t             m_size         = 0;
-        size_t             m_inplace_size = 0;
+        char_writer          m_writer;
+        std::vector<Chunk>   m_chunks;
+        std::array<char, 32> m_inplace_space;
+        size_t               m_size         = 0;
+        size_t               m_inplace_size = 0;
     };
 
     template <typename... TYPE> std::string to_string(const TYPE &... i_objects)
