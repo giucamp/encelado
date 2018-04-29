@@ -17,7 +17,7 @@ namespace edi
         {
             none          = 0,
             heterogeneous = 1 << 0,
-            contigous     = 1 << 1,
+            contiguous    = 1 << 1,
         };
 
         constexpr friend capability operator|(capability i_first, capability i_seconds) noexcept
@@ -69,15 +69,16 @@ namespace edi
             EDIACARAN_ASSERT(i_destroy_iterator_function != nullptr);
         }
 
-        capability                      capabilities() const noexcept { return m_capabilities; }
-        qualified_type_ptr              elements_type() const noexcept { return m_elements_type; }
-        size_t                          iterator_size() const noexcept { return m_iterator_size; }
-        construct_iterator_function_ptr construct_iterator() const noexcept
+        constexpr capability         capabilities() const noexcept { return m_capabilities; }
+        constexpr qualified_type_ptr elements_type() const noexcept { return m_elements_type; }
+        constexpr size_t             iterator_size() const noexcept { return m_iterator_size; }
+
+        constexpr construct_iterator_function_ptr construct_iterator() const noexcept
         {
             return m_construct_iterator;
         }
-        next_segment_function_ptr     next_segment() const noexcept { return m_next_segment; }
-        destroy_iterator_function_ptr destroy_iterator_function() const noexcept
+        constexpr next_segment_function_ptr next_segment() const noexcept { return m_next_segment; }
+        constexpr destroy_iterator_function_ptr destroy_iterator_function() const noexcept
         {
             return m_destroy_iterator_function;
         }

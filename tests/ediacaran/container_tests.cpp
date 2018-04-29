@@ -34,24 +34,27 @@ namespace ediacaran_test
     {
         using namespace edi;
 
-        static_assert(!is_contigous_container_v<int>);
-        static_assert(!is_contigous_container_v<int **>);
-        static_assert(!is_contigous_container_v<NotAContigousContainer>);
+        static_assert(!is_contiguous_container_v<int>);
+        static_assert(!is_contiguous_container_v<int **>);
+        static_assert(!is_contiguous_container_v<NotAContigousContainer>);
 
-        static_assert(is_contigous_container_v<array_view<int>>);
-        static_assert(is_contigous_container_v<std::vector<int>>);
-        static_assert(is_contigous_container_v<std::array<int, 10>>);
-        static_assert(is_contigous_container_v<std::string>);
-        static_assert(!is_contigous_container_v<std::list<int>>);
-        static_assert(!is_contigous_container_v<std::map<int, int>>);
-        static_assert(!is_contigous_container_v<std::unordered_map<int, int>>);
-        static_assert(!is_contigous_container_v<std::set<int, int>>);
-        static_assert(!is_contigous_container_v<std::unordered_set<int, int>>);
+        static_assert(is_contiguous_container_v<array_view<int>>);
+        static_assert(is_contiguous_container_v<std::vector<int>>);
+        static_assert(is_contiguous_container_v<std::array<int, 10>>);
+        static_assert(is_contiguous_container_v<std::string>);
+        static_assert(!is_contiguous_container_v<std::list<int>>);
+        static_assert(!is_contiguous_container_v<std::map<int, int>>);
+        static_assert(!is_contiguous_container_v<std::unordered_map<int, int>>);
+        static_assert(!is_contiguous_container_v<std::set<int, int>>);
+        static_assert(!is_contiguous_container_v<std::unordered_set<int, int>>);
 
-        static_assert(get_class_type<std::vector<int>>().container() != nullptr);
+        constexpr auto & vector_t = get_class_type<std::vector<int>>();
+        static_assert(vector_t.container() != nullptr);
+        static_assert(vector_t.container()->capabilities() == container::capability::contiguous);
 
-        auto & vector_t = get_class_type<std::vector<int>>();
-
+        constexpr auto & list_t = get_class_type<std::list<int>>();
+        static_assert(list_t.container() != nullptr);
+        static_assert(list_t.container()->capabilities() == container::capability::none);
 
         string_builder str_builder;
 

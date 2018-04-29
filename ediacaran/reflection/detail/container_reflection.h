@@ -149,8 +149,9 @@ namespace edi
       typename std::enable_if_t<detail::HasStdContainerInterface<CONTAINER>::value> * = nullptr>
     constexpr container make_container_reflection() noexcept
     {
-        using Cont = detail::StdContainer<CONTAINER, is_contigous_container_v<CONTAINER>>;
-        return container{container::capability::none,
+        using Cont = detail::StdContainer<CONTAINER, is_contiguous_container_v<CONTAINER>>;
+        return container{is_contiguous_container_v<CONTAINER> ? container::capability::contiguous
+                                                              : container::capability::none,
                          get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,
                          &Cont::construct_iterator,

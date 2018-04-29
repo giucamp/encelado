@@ -121,12 +121,12 @@ namespace edi
     }
 
     template <typename TYPE, typename = std::void_t<>>
-    struct is_contigous_container : std::false_type
+    struct is_contiguous_container : std::false_type
     {
     };
 
     template <typename TYPE>
-    struct is_contigous_container<
+    struct is_contiguous_container<
       TYPE,
       std::void_t<decltype(
 
@@ -141,7 +141,7 @@ namespace edi
     };
 
     template <typename TYPE>
-    constexpr bool is_contigous_container_v = is_contigous_container<TYPE>::value;
+    constexpr bool is_contiguous_container_v = is_contiguous_container<TYPE>::value;
 
     struct end_marker_t
     {
