@@ -6,21 +6,25 @@
 
 #pragma once
 #include "cambrian/cambrian_common.h"
-#include "ediacaran/reflection/type.h"
+#include "ediacaran/reflection/class_type.h"
+#include <memory>
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace cambrian
 {
-    using TypeId = uint64_t;
-
-    class TypeRegistry
+    class type_registry
     {
       public:
-        TypeRegistry();
-
-        TypeId add_type(const type * i_type);
+        const type & get_passive_type(const type & i_source_type);
 
       private:
-        std::vector<const type *> m_types;
+        struct PassiveClassData;
+        struct PassiveClass;
+
+      private:
+        std::unordered_map<const class_type *, std::unique_ptr<const PassiveClass>> m_classes;
     };
+
 } // namespace cambrian

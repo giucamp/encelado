@@ -47,7 +47,7 @@ namespace edi
 
             > * = nullptr>
         constexpr array_view(const CONTAINER & i_container) noexcept
-            : m_objects(i_container.data()), m_size(i_container.size())
+            : m_objects{i_container.data()}, m_size{i_container.size()}
         {
         }
 
