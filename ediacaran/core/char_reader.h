@@ -31,10 +31,20 @@ namespace edi
                (i_char >= '0' && i_char <= '9');
     }
 
-    enum class [[nodiscard]] parse_error
+
+    enum class EDI_NODISCARD parse_error
     {
-        unexpected_char, unexpected_token, missing_expected_chars, mismatching_value, overflow,
-          tailing_chars, out_of_memory, internal_limit, unknown_error, unsupported, not_found
+        unexpected_char,
+        unexpected_token,
+        missing_expected_chars,
+        mismatching_value,
+        overflow,
+        tailing_chars,
+        out_of_memory,
+        internal_limit,
+        unknown_error,
+        unsupported,
+        not_found
     };
 
     /** Class used to convert a sequence of chars to typed values. char_reader is a

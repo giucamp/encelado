@@ -79,6 +79,9 @@
 #define EDIACARAN_NO_INLINE
 #endif
 
+#define EDI_NODISCARD <:<:nodiscard:>:>
+#define EDI_NORETURN <:<:noreturn:>:>
+
 namespace edi
 {
     class unsupported_error : public std::runtime_error
@@ -105,15 +108,40 @@ namespace edi
         using std::runtime_error::runtime_error;
     };
 
-    template <typename TYPE> using is_trivially_serializable = std::bool_constant<std::is_fundamental_v<TYPE> || std::is_enum_v<TYPE>>;
+    template <typename TYPE>
+    using is_trivially_serializable =
+      std::bool_constant<std::is_fundamental_v<TYPE> || std::is_enum_v<TYPE>>;
 
     template <typename TYPE>
     constexpr bool is_trivially_serializable_v = is_trivially_serializable<TYPE>::value;
 
-    template <typename EXCEPTION_TYPE>[[noreturn]] constexpr void except(const char * i_message)
+    template <typename EXCEPTION_TYPE> EDI_NORETURN constexpr void except(const char * i_message)
     {
         throw EXCEPTION_TYPE(i_message);
     }
+
+    template <typename TYPE, typename = std::void_t<>>
+    struct is_contigous_container : std::false_type
+    {
+    };
+
+    template <typename TYPE>
+    struct is_contigous_container<
+      TYPE,
+      std::void_t<decltype(
+
+        // TYPE must have a member function data() returning a pointer to the TYPE::element_type
+        std::declval<typename TYPE::value_type const *&>() = std::declval<const TYPE>().data(),
+
+        // TYPE must have a member function size() returning a value assignable to a size_t
+        std::declval<size_t &>() = std::declval<const TYPE>().size()
+
+          )>> : std::true_type
+    {
+    };
+
+    template <typename TYPE>
+    constexpr bool is_contigous_container_v = is_contigous_container<TYPE>::value;
 
     struct end_marker_t
     {

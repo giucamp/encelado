@@ -91,30 +91,30 @@ namespace edi
         using reverse_iterator       = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-        [[noreturn]] constexpr reference at(size_type)
+        EDI_NORETURN constexpr reference at(size_type)
         {
             throw std::out_of_range{"array: out of range"};
         }
 
-        [[noreturn]] constexpr const_reference at(size_type) const
+        EDI_NORETURN constexpr const_reference at(size_type) const
         {
             throw std::out_of_range{"array: out of range"};
         }
 
-        [[noreturn]] constexpr reference operator[](size_type) noexcept { EDIACARAN_ASSERT(false); }
+        EDI_NORETURN constexpr reference operator[](size_type) noexcept { EDIACARAN_ASSERT(false); }
 
-        [[noreturn]] constexpr const_reference operator[](size_type) const noexcept
+        EDI_NORETURN constexpr const_reference operator[](size_type) const noexcept
         {
             EDIACARAN_ASSERT(false);
         }
 
-        [[noreturn]] constexpr reference front() noexcept { EDIACARAN_ASSERT(false); }
+        EDI_NORETURN constexpr reference front() noexcept { EDIACARAN_ASSERT(false); }
 
-        [[noreturn]] constexpr const_reference front() const noexcept { EDIACARAN_ASSERT(false); }
+        EDI_NORETURN constexpr const_reference front() const noexcept { EDIACARAN_ASSERT(false); }
 
-        [[noreturn]] constexpr reference back() noexcept { EDIACARAN_ASSERT(false); }
+        EDI_NORETURN constexpr reference back() noexcept { EDIACARAN_ASSERT(false); }
 
-        [[noreturn]] constexpr const_reference back() const noexcept { EDIACARAN_ASSERT(false); }
+        EDI_NORETURN constexpr const_reference back() const noexcept { EDIACARAN_ASSERT(false); }
 
         constexpr pointer data() noexcept { return nullptr; }
 

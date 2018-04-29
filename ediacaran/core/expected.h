@@ -159,7 +159,7 @@ namespace edi
     } // namespace detail
 
     template <typename VALUE, typename ERROR>
-    class[[nodiscard]] expected
+    class EDI_NODISCARD expected
         : private detail::ExpectedBase<
             VALUE,
             ERROR,
@@ -229,6 +229,6 @@ namespace edi
         }
 
       private:
-        [[noreturn]] constexpr void throw_error() const { throw Base::m_error; }
+        EDI_NORETURN constexpr void throw_error() const { throw Base::m_error; }
     };
 } // namespace edi

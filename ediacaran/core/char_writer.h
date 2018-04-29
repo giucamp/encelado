@@ -289,7 +289,7 @@ namespace edi
       typename = std::enable_if_t<
         (sizeof...(PARAMS) > 0) || !std::is_constructible_v<const char *, FIRST_PARAM>,
         void>>
-    [[noreturn]] constexpr void
+    EDI_NORETURN constexpr void
       except(const FIRST_PARAM & i_first_parameter, const PARAMS &... i_other_parameters)
     {
         char        message[512]{};

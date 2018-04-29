@@ -57,6 +57,8 @@ namespace edi
 
         bool empty() const noexcept { return m_object == nullptr; }
 
+        explicit operator bool() const noexcept { return m_object != nullptr; }
+
         bool operator==(const raw_ptr & i_source) const noexcept
         {
             return m_object == i_source.m_object;

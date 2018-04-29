@@ -37,6 +37,9 @@ namespace edi
 
         bool is_over() const noexcept { return m_curr_segment.m_element_count == 0; }
 
+        bool operator==(end_marker_t) const noexcept { return is_over(); }
+        bool operator!=(end_marker_t) const noexcept { return !is_over(); }
+
       private:
         static void * allocate_iterator(size_t i_size);
         static void   deallocate_iterator(void * i_block, size_t i_size) noexcept;

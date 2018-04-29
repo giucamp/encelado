@@ -21,7 +21,7 @@ namespace edi
     };
 
     template <typename... PARAMS>
-    struct is_contogous_container<std::basic_string<PARAMS...>> : std::true_type
+    struct is_contiguous_container<std::basic_string<PARAMS...>> : std::true_type
     {
     };
 

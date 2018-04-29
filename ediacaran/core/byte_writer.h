@@ -34,6 +34,16 @@ namespace edi
             m_remaining_size -= static_cast<ptrdiff_t>(i_size);
         }
 
+        bool write_all_or_none(void const * i_source, size_t i_size) noexcept
+        {
+            if (m_remaining_size < static_cast<ptrdiff_t>(i_size))
+                return false;
+            memcpy(m_next_byte, i_source, static_cast<ptrdiff_t>(i_size));
+            m_next_byte += static_cast<ptrdiff_t>(i_size);
+            m_remaining_size -= static_cast<ptrdiff_t>(i_size);
+            return true;
+        }
+
       private:
         char *    m_next_byte{};
         ptrdiff_t m_remaining_size{};

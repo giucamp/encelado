@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClInclude Include="..\cambrian_common.h" />
     <ClInclude Include="..\data\directory.h" />
+    <ClInclude Include="..\data\passive_type.h" />
     <ClInclude Include="..\data\path.h" />
+    <ClInclude Include="..\data\serializer.h" />
     <ClInclude Include="..\storage\file_device.h" />
     <ClInclude Include="..\storage\memory_device.h" />
     <ClInclude Include="..\storage\storage_device.h" />
@@ -29,7 +31,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\data\directory.cpp" />
+    <ClCompile Include="..\data\passive_type.cpp" />
     <ClCompile Include="..\data\path.cpp" />
+    <ClCompile Include="..\data\serializer.cpp" />
     <ClCompile Include="..\storage\file_device.cpp" />
     <ClCompile Include="..\storage\memory_device.cpp" />
     <ClCompile Include="..\storage\storage_device.cpp" />

@@ -140,6 +140,11 @@ namespace edi
           size_t       i_constness_word,
           size_t       i_volatileness_word) noexcept;
 
+        constexpr explicit qualified_type_ptr(const type * i_final_type) noexcept
+            : qualified_type_ptr(i_final_type, 0, 0, 0)
+        {
+        }
+
         /** Constructs an empty qualified_type_ptr (is_empty() will return true). The object may be later the destination of an assignment, changing its state. */
         constexpr qualified_type_ptr() noexcept;
 

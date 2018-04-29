@@ -24,21 +24,30 @@ namespace edi
       public:
         template <typename DERIVED, typename BASE> constexpr static base_class make() noexcept;
 
-        void * up_cast(void * i_derived) const noexcept { return (*m_up_caster)(i_derived); }
-
-        const void * up_cast(const void * i_derived) const noexcept
-        {
-            return (*m_up_caster)(const_cast<void *>(i_derived));
-        }
-
-        constexpr class_type const & get_class() const noexcept { return m_class; }
-
-      private:
         constexpr base_class(class_type const & i_class, void * (*i_up_caster)(void *)noexcept)
             : m_class(i_class), m_up_caster(i_up_caster)
         {
         }
 
+        void * up_cast(void * i_derived) const noexcept
+        {
+            if (m_up_caster != nullptr)
+                return (*m_up_caster)(i_derived);
+            else
+                return i_derived;
+        }
+
+        const void * up_cast(const void * i_derived) const noexcept
+        {
+            if (m_up_caster != nullptr)
+                return (*m_up_caster)(const_cast<void *>(i_derived));
+            else
+                return i_derived;
+        }
+
+        constexpr class_type const & get_class() const noexcept { return m_class; }
+
+      private:
         template <typename DERIVED, typename BASE>
         static void * impl_up_cast(void * i_derived) noexcept
         {
@@ -69,6 +78,31 @@ namespace edi
               m_container(i_container)
         {
             check_duplicates();
+        }
+
+        struct construction_data
+        {
+            const char * const                   m_name      = nullptr;
+            size_t                               m_size      = 0;
+            size_t                               m_alignment = 0;
+            const special_functions &            m_special_functions;
+            const array_view<const base_class> & m_base_classes;
+            const array_view<const property> &   m_properties;
+            const array_view<const function> &   m_functions;
+            const container *                    m_container;
+        };
+
+        constexpr class_type(const construction_data & i_construction_data)
+            : class_type(
+                i_construction_data.m_name,
+                i_construction_data.m_size,
+                i_construction_data.m_alignment,
+                i_construction_data.m_special_functions,
+                i_construction_data.m_base_classes,
+                i_construction_data.m_properties,
+                i_construction_data.m_functions,
+                i_construction_data.m_container)
+        {
         }
 
         constexpr array_view<const base_class> const & bases() const noexcept

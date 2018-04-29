@@ -11,7 +11,7 @@
 
 namespace edi
 {
-    template <typename CONTAINER> struct is_contogous_container : std::false_type
+    template <typename CONTAINER> struct is_contiguous_container : std::false_type
     {
     };
 
@@ -151,7 +151,7 @@ namespace edi
       typename std::enable_if_t<detail::HasStdContainerInterface<CONTAINER>::value> * = nullptr>
     constexpr container make_container_reflection() noexcept
     {
-        using Cont = detail::StdContainer<CONTAINER, is_contogous_container<CONTAINER>::value>;
+        using Cont = detail::StdContainer<CONTAINER, is_contiguous_container<CONTAINER>::value>;
         return container{container::capability::none,
                          get_qualified_type<typename Cont::element_type>(),
                          Cont::iterator_storage_size,

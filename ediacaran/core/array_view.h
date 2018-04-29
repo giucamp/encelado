@@ -17,6 +17,8 @@ namespace edi
     template <typename TYPE> class array_view
     {
       public:
+        using value_type = TYPE;
+
         constexpr array_view() noexcept : m_objects(nullptr), m_size(0) {}
 
         constexpr array_view(TYPE * i_objects, size_t i_size) noexcept

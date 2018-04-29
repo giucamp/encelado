@@ -18,6 +18,12 @@
     <ClInclude Include="..\storage\file_device.h">
       <Filter>storage</Filter>
     </ClInclude>
+    <ClInclude Include="..\data\serializer.h">
+      <Filter>data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\data\passive_type.h">
+      <Filter>data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TypeRegistry.cpp" />
@@ -35,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="..\storage\file_device.cpp">
       <Filter>storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\data\serializer.cpp">
+      <Filter>data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\data\passive_type.cpp">
+      <Filter>data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
