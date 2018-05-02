@@ -6,11 +6,14 @@
 
 #include "cambrian/data/type_registry.h"
 #include <algorithm>
+#include <string>
+#include <vector>
 
 namespace cambrian
 {
     struct type_registry::PassiveClassData
     {
+        type_id                  m_type_id = 0;
         std::string              m_name;
         size_t                   m_size = 0;
         std::vector<base_class>  m_base_classes;
@@ -18,7 +21,9 @@ namespace cambrian
         std::vector<function>    m_functions;
         std::vector<std::string> m_property_names;
 
-        PassiveClassData(type_registry * i_type_registry, const class_type & i_source_class)
+        PassiveClassData(
+          type_registry * i_type_registry, const class_type & i_source_class, type_id i_type_id)
+            : m_type_id(i_type_id)
         {
             m_name = i_source_class.name();
 
@@ -31,14 +36,14 @@ namespace cambrian
             m_properties.reserve(property_count);
             m_property_names.reserve(property_count);
 
-
             m_base_classes.reserve(i_source_class.bases().size());
 
             // add the properties of this class and of the base classes
             add_properties(i_type_registry, i_source_class.properties());
             for (auto const base : i_source_class.bases())
             {
-                auto const & passive_base = i_type_registry->get_passive_type(base.get_class());
+                auto const & passive_base =
+                  i_type_registry->get_type_data(base.get_class()).m_native_type;
                 CAMBRIAN_ASSERT(passive_base.is_class());
 
                 m_base_classes.emplace_back(static_cast<const class_type &>(passive_base), nullptr);
@@ -54,7 +59,8 @@ namespace cambrian
             {
                 auto const raw_type = prop.qualified_type().final_type();
 
-                auto const & prop_passive_type = i_type_registry->get_passive_type(*raw_type);
+                auto const & prop_passive_type =
+                  i_type_registry->get_type_data(*raw_type).m_native_type;
 
                 auto const prop_name = m_property_names.emplace_back(prop.name());
 
@@ -69,16 +75,18 @@ namespace cambrian
     struct type_registry::PassiveClass
     {
       public:
-        PassiveClass(type_registry * i_type_registry, const class_type & i_source_class)
-            : m_class_data(i_type_registry, i_source_class), m_class(
-                                                               m_class_data.m_name.c_str(),
-                                                               m_class_data.m_size,
-                                                               1,
-                                                               edi::special_functions(),
-                                                               m_class_data.m_base_classes,
-                                                               m_class_data.m_properties,
-                                                               m_class_data.m_functions,
-                                                               nullptr)
+        PassiveClass(
+          type_registry * i_type_registry, const class_type & i_source_class, type_id i_type_id)
+            : m_class_data(i_type_registry, i_source_class, i_type_id),
+              m_class(
+                m_class_data.m_name.c_str(),
+                m_class_data.m_size,
+                1,
+                edi::special_functions(),
+                m_class_data.m_base_classes,
+                m_class_data.m_properties,
+                m_class_data.m_functions,
+                nullptr)
         {
         }
 
@@ -86,19 +94,23 @@ namespace cambrian
         class_type       m_class;
     };
 
-    const type & type_registry::get_passive_type(const type & i_source_type)
+
+    type_registry::type_data type_registry::get_type_data(const type & i_source_type)
     {
         if (i_source_type.is_fundamental())
-            return i_source_type;
+        {
+            return {i_source_type, 0, i_source_type};
+        }
         else
         {
             auto const & source_class = static_cast<const class_type &>(i_source_type);
             auto &       slot         = m_classes[&source_class];
             if (!slot)
             {
-                slot = std::make_unique<PassiveClass>(this, source_class);
+                slot = std::make_unique<PassiveClass>(this, source_class, m_next_type_id);
+                m_next_type_id++;
             }
-            return slot->m_class;
+            return {i_source_type, slot->m_class_data.m_type_id, slot->m_class};
         }
     }
 

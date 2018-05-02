@@ -31,12 +31,6 @@ namespace edi
         {
         }
 
-        /*template <typename SOURCE_TYPE, size_t SIZE>
-        constexpr array_view(const array<SOURCE_TYPE, SIZE> & i_objects) noexcept
-            : m_objects(i_objects.data()), m_size(SIZE)
-        {
-        }*/
-
         template <
           typename CONTAINER,
           std::enable_if_t<

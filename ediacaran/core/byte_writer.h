@@ -44,6 +44,14 @@ namespace edi
             return true;
         }
 
+        void write_unchecked(void const * i_source, size_t i_size) noexcept
+        {
+            EDIACARAN_ASSERT(m_remaining_size < static_cast<ptrdiff_t>(i_size));
+            memcpy(m_next_byte, i_source, static_cast<ptrdiff_t>(i_size));
+            m_next_byte += static_cast<ptrdiff_t>(i_size);
+            m_remaining_size -= static_cast<ptrdiff_t>(i_size);
+        }
+
       private:
         char *    m_next_byte{};
         ptrdiff_t m_remaining_size{};

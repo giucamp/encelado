@@ -8,16 +8,23 @@
 #include "cambrian/cambrian_common.h"
 #include "ediacaran/reflection/class_type.h"
 #include <memory>
-#include <string>
 #include <unordered_map>
-#include <vector>
 
 namespace cambrian
 {
+    using type_id = uint32_t;
+
     class type_registry
     {
       public:
-        const type & get_passive_type(const type & i_source_type);
+        struct type_data
+        {
+            const type &  m_native_type;
+            type_id const m_id;
+            const type &  m_passive_type;
+        };
+
+        type_data get_type_data(const type & i_source_type);
 
       private:
         struct PassiveClassData;
@@ -25,6 +32,7 @@ namespace cambrian
 
       private:
         std::unordered_map<const class_type *, std::unique_ptr<const PassiveClass>> m_classes;
+        type_id m_next_type_id = 0;
     };
 
 } // namespace cambrian
