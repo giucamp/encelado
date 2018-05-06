@@ -77,7 +77,7 @@ namespace edi
               m_base_classes(i_base_classes), m_properties(i_properties), m_functions(i_functions),
               m_container(i_container)
         {
-            check_duplicates();
+            //check_duplicates();
         }
 
         struct construction_data
@@ -123,7 +123,7 @@ namespace edi
         constexpr const class container * container() const noexcept { return m_container; }
 
       private:
-        constexpr void check_duplicates() const
+        /*constexpr void check_duplicates() const
         {
             for (size_t i = 0; i < m_properties.size(); i++)
             {
@@ -155,7 +155,7 @@ namespace edi
                     }
                 }
             }
-        }
+        }*/
 
       private:
         array_view<const base_class> const m_base_classes;

@@ -5,6 +5,9 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "../common.h"
+#include "ediacaran/core/array.h"
+#include "ediacaran/core/array_view.h"
+#include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/string_builder.h"
 #include "ediacaran/std_refl/list.h"
 #include "ediacaran/std_refl/string.h"
@@ -30,6 +33,22 @@ namespace ediacaran_test
         double * data() const { return nullptr; }
         size_t   size() const { return 0; }
     };
+
+    static_assert(!edi::is_container_v<int>);
+    static_assert(edi::is_container_v<std::vector<int>>);
+    static_assert(edi::is_container_v<std::list<int>>);
+    static_assert(edi::is_container_v<edi::array_view<int>>);
+    static_assert(edi::is_container_v<edi::array<int, 2>>);
+    static_assert(!edi::is_container_v<std::vector<int> *>);
+
+    static_assert(edi::detail::IsValueTypeComparable<std::vector<int>>::value);
+    static_assert(!edi::detail::IsValueTypeComparable<std::vector<NotAContigousContainer>>::value);
+
+    static_assert(edi::is_comparable_v<int>);
+    static_assert(!edi::is_comparable_v<std::vector<NotAContigousContainer>>);
+    static_assert(edi::is_comparable_v<std::vector<int>>);
+    static_assert(!edi::is_comparable_v<std::list<NotAContigousContainer>>);
+    static_assert(edi::is_comparable_v<std::list<int>>);
 
     void vector_tests()
     {

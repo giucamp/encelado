@@ -120,6 +120,24 @@ namespace edi
         throw EXCEPTION_TYPE(i_message);
     }
 
+    // trait is_container
+    template <typename, typename = std::void_t<>> struct is_container : std::false_type
+    {
+    };
+    template <typename TYPE>
+    struct is_container<
+      TYPE,
+      std::void_t<
+
+        decltype(std::declval<TYPE>().begin() != std::declval<TYPE>().end())
+
+        >> : std::true_type
+    {
+    };
+    template <typename TYPE> constexpr bool is_container_v = is_container<TYPE>::value;
+
+
+    // trait is_contiguous_container
     template <typename TYPE, typename = std::void_t<>>
     struct is_contiguous_container : std::false_type
     {
@@ -128,20 +146,63 @@ namespace edi
     template <typename TYPE>
     struct is_contiguous_container<
       TYPE,
-      std::void_t<decltype(
+      std::void_t<
+        std::enable_if_t<is_container_v<TYPE>>,
+        decltype(
 
-        // TYPE must have a member function data() returning a pointer to the TYPE::element_type
-        std::declval<typename TYPE::value_type const *&>() = std::declval<const TYPE>().data(),
+          // TYPE must have a member function data() returning a pointer to the TYPE::element_type
+          std::declval<typename TYPE::value_type const *&>() = std::declval<const TYPE>().data(),
 
-        // TYPE must have a member function size() returning a value assignable to a size_t
-        std::declval<size_t &>() = std::declval<const TYPE>().size()
+          // TYPE must have a member function size() returning a value assignable to a size_t
+          std::declval<size_t &>() = std::declval<const TYPE>().size()
 
-          )>> : std::true_type
+            )>> : std::true_type
     {
     };
 
     template <typename TYPE>
     constexpr bool is_contiguous_container_v = is_contiguous_container<TYPE>::value;
+
+    // trait is_comparable
+    template <typename, typename = std::void_t<>> struct is_comparable : std::false_type
+    {
+    };
+    template <typename TYPE>
+    struct is_comparable<
+      TYPE,
+      std::void_t<
+
+        std::enable_if_t<!is_container_v<TYPE>>,
+
+        decltype(
+          std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
+          std::declval<TYPE const &>() == std::declval<TYPE const &>())>> : std::true_type
+    {
+    };
+
+    namespace detail
+    {
+        template <typename TYPE, typename = std::void_t<>>
+        struct IsValueTypeComparable : std::false_type
+        {
+        };
+
+        template <typename TYPE>
+        struct IsValueTypeComparable<TYPE, std::void_t<typename TYPE::value_type>>
+            : is_comparable<typename TYPE::value_type>
+        {
+        };
+
+    } // namespace detail
+
+    template <typename TYPE>
+    struct is_comparable<TYPE, std::void_t<std::enable_if_t<is_container_v<TYPE>>>>
+        : detail::IsValueTypeComparable<TYPE>
+    {
+    };
+    template <typename TYPE> using is_comparable_t          = typename is_comparable<TYPE>::type;
+    template <typename TYPE> constexpr bool is_comparable_v = is_comparable<TYPE>::value;
+
 
     struct end_marker_t
     {

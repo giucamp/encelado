@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="..\cambrian.cpp" />
     <ClCompile Include="..\cambrian\common_tests.cpp" />
+    <ClCompile Include="..\cambrian\serialization\test_types.cpp" />
     <ClCompile Include="..\ediacaran\animalia.cpp" />
     <ClCompile Include="..\ediacaran\class_templates_tests.cpp" />
     <ClCompile Include="..\ediacaran\class_tests.cpp" />
@@ -179,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cambrian\iliade.h" />
+    <ClInclude Include="..\cambrian\serialization\test_types.h" />
     <ClInclude Include="..\common.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

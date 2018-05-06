@@ -13,21 +13,6 @@
 
 namespace edi
 {
-    // trait has_comparer
-    template <typename, typename = std::void_t<>> struct has_comparer : std::false_type
-    {
-    };
-    template <typename TYPE>
-    struct has_comparer<
-      TYPE,
-      std::void_t<decltype(
-        std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
-        std::declval<TYPE const &>() == std::declval<TYPE const &>())>> : std::true_type
-    {
-    };
-    template <typename TYPE> using has_comparer_t          = typename has_comparer<TYPE>::type;
-    template <typename TYPE> constexpr bool has_comparer_v = has_comparer<TYPE>::value;
-
     class special_functions
     {
       public:
@@ -264,7 +249,7 @@ namespace edi
 
         template <typename TYPE> constexpr static comparer_function make_comparer() noexcept
         {
-            if constexpr (has_comparer_v<TYPE>)
+            if constexpr (is_comparable_v<TYPE>)
                 return &comparer_impl<TYPE>;
             else
                 return nullptr;

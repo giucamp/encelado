@@ -131,7 +131,13 @@ namespace edi
         struct TypeInstance<UDT, std::enable_if_t<std::is_class_v<UDT> || std::is_enum_v<UDT>, UDT>>
         {
             constexpr static auto         static_class{reflect<UDT>()};
-            constexpr static const auto & instance() noexcept { return static_class.get_class(); }
+            constexpr static const auto & instance() noexcept
+            {
+                if constexpr (std::is_convertible_v<decltype(&static_class), const class_type *>)
+                    return static_class;
+                else
+                    return static_class.get_class();
+            }
         };
 
         template <

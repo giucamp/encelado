@@ -338,6 +338,10 @@ namespace ediacaran_test
         char dest[40];
         to_chars(dest, Enum_1(1 | 2 | 8));
 
+        /*
+        
+            check in class_type constructor disabled because it can't be used if the properties
+                are not a compile time constant
         try
         {
             property   props[2] = {property("prop", get_qualified_type<int>(), 2),
@@ -357,7 +361,7 @@ namespace ediacaran_test
         catch (std::exception i_exc)
         {
             std::cout << "expected error: " << i_exc.what() << std::endl;
-        }
+        }*/
 
         TestClass test_object;
         for (auto const & prop : inspect_properties(raw_ptr(&test_object)))
