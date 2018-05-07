@@ -43,6 +43,8 @@ namespace vulkaninc
             return m_present_queue_family_index;
         }
 
+        GpuAllocator & gpu_allocator() noexcept { return m_allocator; }
+
       private:
         std::vector<bool> get_surface_suppports(vk::SurfaceKHR i_surface) const;
 

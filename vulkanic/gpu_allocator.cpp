@@ -40,6 +40,8 @@ namespace vulkaninc
 
     void GpuAllocator::init(vk::PhysicalDevice i_physical_device, vk::Device i_logical_device)
     {
+        // https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/
+
         m_device                              = i_logical_device;
         VmaAllocatorCreateInfo allocator_info = {};
         allocator_info.physicalDevice         = i_physical_device;

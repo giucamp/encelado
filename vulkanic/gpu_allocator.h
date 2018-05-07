@@ -36,6 +36,8 @@ namespace vulkaninc
     class Image
     {
       public:
+        Image() noexcept {}
+
         Image(
           VkDevice i_device, VkImage i_image, VmaAllocator i_allocator, VmaAllocation i_allocation);
 
@@ -49,6 +51,8 @@ namespace vulkaninc
     class Buffer
     {
       public:
+        Buffer() noexcept {}
+
         Buffer(
           VkDevice      i_device,
           VkBuffer      i_image,
