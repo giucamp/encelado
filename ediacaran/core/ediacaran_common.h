@@ -79,8 +79,10 @@
 #define EDIACARAN_NO_INLINE
 #endif
 
-#define EDI_NODISCARD <:<:nodiscard:>:>
-#define EDI_NORETURN <:<:noreturn:>:>
+// clang-format off
+#define EDI_NODISCARD [[nodiscard]]
+#define EDI_NORETURN  [[noreturn]]
+// clang-format on
 
 namespace edi
 {
@@ -171,8 +173,9 @@ namespace edi
         {
         };
         template <typename TYPE>
-        struct IsComparableImpl< TYPE, std::void_t<
-            decltype(
+        struct IsComparableImpl<
+          TYPE,
+          std::void_t<decltype(
             std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
             std::declval<TYPE const &>() == std::declval<TYPE const &>())>> : std::true_type
         {
@@ -184,20 +187,22 @@ namespace edi
         };
         template <typename TYPE>
         struct IsValueTypeComparable<TYPE, std::void_t<typename TYPE::value_type>>
-                : IsComparableImpl<typename TYPE::value_type>
+            : IsComparableImpl<typename TYPE::value_type>
         {
         };
 
     } // namespace detail
 
 
-    template <typename TYPE> struct is_comparable : std::disjunction<
+    template <typename TYPE>
+    struct is_comparable
+        : std::disjunction<
             std::conjunction<std::negation<is_container<TYPE>>, detail::IsComparableImpl<TYPE>>,
             std::conjunction<is_container<TYPE>, detail::IsValueTypeComparable<TYPE>>>
     {
     };
 
-    template <typename TYPE> using is_comparable_t          = typename is_comparable<TYPE>::type;
+    template <typename TYPE> using is_comparable_t = typename is_comparable<TYPE>::type;
 
 
     template <typename TYPE> constexpr bool is_comparable_v = is_comparable<TYPE>::value;

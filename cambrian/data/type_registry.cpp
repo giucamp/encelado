@@ -114,4 +114,8 @@ namespace cambrian
         }
     }
 
+    type_registry::type_registry() = default;
+
+    type_registry::~type_registry() = default;
+
 } // namespace cambrian

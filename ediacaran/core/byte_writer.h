@@ -8,8 +8,8 @@
 #include "ediacaran/core/address.h"
 #include "ediacaran/core/ediacaran_common.h"
 #include <algorithm>
-#include <type_traits>
 #include <cstring>
+#include <type_traits>
 
 namespace edi
 {
@@ -47,7 +47,7 @@ namespace edi
 
         void write_unchecked(void const * i_source, size_t i_size) noexcept
         {
-            EDIACARAN_ASSERT(m_remaining_size < static_cast<ptrdiff_t>(i_size));
+            EDIACARAN_ASSERT(m_remaining_size >= static_cast<ptrdiff_t>(i_size));
             memcpy(m_next_byte, i_source, static_cast<ptrdiff_t>(i_size));
             m_next_byte += static_cast<ptrdiff_t>(i_size);
             m_remaining_size -= static_cast<ptrdiff_t>(i_size);

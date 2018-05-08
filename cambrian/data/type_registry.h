@@ -17,6 +17,11 @@ namespace cambrian
     class type_registry
     {
       public:
+        type_registry();
+        type_registry(const type_registry &) = delete;
+        type_registry & operator=(const type_registry &) = delete;
+        ~type_registry();
+
         struct type_data
         {
             const type &  m_native_type;
