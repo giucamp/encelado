@@ -159,7 +159,7 @@ namespace edi
     {
         using function_invoker = detail::FunctionInvoker<
           METHOD_TYPE,
-          detail::MethodTraits<METHOD_TYPE>::return_type,
+          typename detail::MethodTraits<METHOD_TYPE>::return_type,
           METHOD,
           std::make_index_sequence<detail::MethodTraits<METHOD_TYPE>::parameter_count>>;
         return function(

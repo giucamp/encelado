@@ -489,7 +489,7 @@ namespace edi
         return property(
           i_name,
           get_qualified_type<property_type>(),
-          accessor::getter(),
+          i_name,
           accessor::getter(),
           accessor::setter());
     }

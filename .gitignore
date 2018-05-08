@@ -1,4 +1,6 @@
 
+ediacaran/build/
+cmake-build-debug/
 cambrian/vs2017/x64/
 ediacaran/vs2017/x64/
 ediacaran/code_blocks/bin/

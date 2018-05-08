@@ -9,6 +9,7 @@
 #include "ediacaran/core/ediacaran_common.h"
 #include <algorithm>
 #include <type_traits>
+#include <cstring>
 
 namespace edi
 {

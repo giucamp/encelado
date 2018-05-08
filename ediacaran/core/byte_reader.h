@@ -10,6 +10,7 @@
 #include "ediacaran/core/expected.h"
 #include <algorithm>
 #include <type_traits>
+#include <cstring>
 
 namespace edi
 {

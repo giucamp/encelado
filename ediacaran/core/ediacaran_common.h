@@ -164,43 +164,42 @@ namespace edi
     constexpr bool is_contiguous_container_v = is_contiguous_container<TYPE>::value;
 
     // trait is_comparable
-    template <typename, typename = std::void_t<>> struct is_comparable : std::false_type
-    {
-    };
-    template <typename TYPE>
-    struct is_comparable<
-      TYPE,
-      std::void_t<
-
-        std::enable_if_t<!is_container_v<TYPE>>,
-
-        decltype(
-          std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
-          std::declval<TYPE const &>() == std::declval<TYPE const &>())>> : std::true_type
-    {
-    };
 
     namespace detail
     {
+        template <typename, typename = std::void_t<>> struct IsComparableImpl : std::false_type
+        {
+        };
+        template <typename TYPE>
+        struct IsComparableImpl< TYPE, std::void_t<
+            decltype(
+            std::declval<TYPE const &>() < std::declval<TYPE const &>() ||
+            std::declval<TYPE const &>() == std::declval<TYPE const &>())>> : std::true_type
+        {
+        };
+
         template <typename TYPE, typename = std::void_t<>>
         struct IsValueTypeComparable : std::false_type
         {
         };
-
         template <typename TYPE>
         struct IsValueTypeComparable<TYPE, std::void_t<typename TYPE::value_type>>
-            : is_comparable<typename TYPE::value_type>
+                : IsComparableImpl<typename TYPE::value_type>
         {
         };
 
     } // namespace detail
 
-    template <typename TYPE>
-    struct is_comparable<TYPE, std::void_t<std::enable_if_t<is_container_v<TYPE>>>>
-        : detail::IsValueTypeComparable<TYPE>
+
+    template <typename TYPE> struct is_comparable : std::disjunction<
+            std::conjunction<std::negation<is_container<TYPE>>, detail::IsComparableImpl<TYPE>>,
+            std::conjunction<is_container<TYPE>, detail::IsValueTypeComparable<TYPE>>>
     {
     };
+
     template <typename TYPE> using is_comparable_t          = typename is_comparable<TYPE>::type;
+
+
     template <typename TYPE> constexpr bool is_comparable_v = is_comparable<TYPE>::value;
 
 
