@@ -10,6 +10,14 @@ namespace cambrian_test
 {
     namespace serialization
     {
+        const array<property, 4> mak_props = make_array(
+          make_property<decltype(TestClass::m_int), offsetof(TestClass, m_int)>("int"),
+          make_property<decltype(TestClass::m_objects_1), offsetof(TestClass, m_objects_1)>(
+            "objects_1"),
+          make_property<decltype(TestClass::m_double), offsetof(TestClass, m_double)>("double"),
+          make_property<decltype(TestClass::m_objects_2), offsetof(TestClass, m_objects_2)>(
+            "objects_2"));
+
         void edit_serialization_test_data(TestClass & i_result, int32_t i_depth)
         {
             i_result.m_int    = i_depth;

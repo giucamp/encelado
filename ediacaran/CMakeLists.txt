@@ -59,5 +59,4 @@ add_library(ediacaran STATIC
 	utils/inspect.cpp
 	utils/raw_ptr.cpp
 	utils/universal_iterator.cpp
-
 )

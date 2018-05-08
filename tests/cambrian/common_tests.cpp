@@ -7,11 +7,26 @@
 #include "../common.h"
 #include "cambrian/data/directory.h"
 #include "ediacaran/core/string_utils.h"
-#include "iliade.h"
 #include <iostream>
 
 namespace cambrian_test
 {
+    constexpr char text[] = R"TestText(
+Libro Primo
+Cantami, o Diva, del Pelede Achille
+l'ira funesta che infiniti addusse
+lutti agli Achei, molte anzi tempo all'Orco
+generose travolse alme d'eroi,
+e di cani e d'augelli orrido pasto
+lor salme abbandona (cosa di Giove
+l'alto consiglio s'adempa), da quando
+primamente disgiunse aspra contesa
+il re de' prodi Atride e il divo Achille.
+E qual de' numi inimicolli? Il figlio
+di Latona e di Giove. Irato al Sire
+desta quel Dio nel campo un feral morbo,
+e la gente pera: colpa d'Atride
+che fece a Crise sacerdote oltraggio.)TestText";
 
     void common_tests()
     {

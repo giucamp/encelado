@@ -31,4 +31,10 @@ namespace ediacaran_test
 namespace cambrian_test
 {
     void common_tests();
-}
+
+    namespace serialization
+    {
+        void tests();
+    }
+
+} // namespace cambrian_test

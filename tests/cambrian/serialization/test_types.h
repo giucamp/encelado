@@ -44,14 +44,6 @@ namespace cambrian_test
 
         dyn_value make_serialization_test_data();
 
-        const array<property, 4> mak_props = make_array(
-          make_property<decltype(TestClass::m_int), offsetof(TestClass, m_int)>("int"),
-          make_property<decltype(TestClass::m_objects_1), offsetof(TestClass, m_objects_1)>(
-            "objects_1"),
-          make_property<decltype(TestClass::m_double), offsetof(TestClass, m_double)>("double"),
-          make_property<decltype(TestClass::m_objects_2), offsetof(TestClass, m_objects_2)>(
-            "objects_2"));
-
     } // namespace serialization
 
 } // namespace cambrian_test

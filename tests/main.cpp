@@ -55,6 +55,7 @@ int main()
     {
         using namespace cambrian_test;
         common_tests();
+        serialization::tests();
     }
 
     {
