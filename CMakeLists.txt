@@ -3,4 +3,5 @@ project(encelado)
 
 add_subdirectory(ediacaran)
 add_subdirectory(cambrian)
+add_subdirectory(tests)
 

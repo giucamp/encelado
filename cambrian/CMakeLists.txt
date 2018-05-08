@@ -7,7 +7,7 @@ include_directories(..)
 #set (CMAKE_CXX_FLAGS "-fno-elide-constructors -Wall -Wextra -Wno-invalid-offsetof")
 set (CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-invalid-offsetof")
 
-add_library(ediacaran STATIC
+add_library(cambrian STATIC
     data/directory.cpp
     data/directory.h
     data/path.cpp

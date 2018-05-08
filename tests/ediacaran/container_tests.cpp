@@ -80,7 +80,7 @@ namespace ediacaran_test
         static_assert(!is_contiguous_container_v<std::map<int, int>>);
         static_assert(!is_contiguous_container_v<std::unordered_map<int, int>>);
         static_assert(!is_contiguous_container_v<std::set<int, int>>);
-        static_assert(!is_contiguous_container_v<std::unordered_set<int, int>>);
+        static_assert(!is_contiguous_container_v<std::unordered_set<int>>);
 
         constexpr auto & vector_t = get_class_type<std::vector<int>>();
         static_assert(vector_t.container() != nullptr);

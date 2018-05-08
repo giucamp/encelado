@@ -1,4 +1,5 @@
 
+build/
 ediacaran/build/
 cmake-build-debug/
 cambrian/vs2017/x64/
