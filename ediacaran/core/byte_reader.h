@@ -9,11 +9,61 @@
 #include "ediacaran/core/ediacaran_common.h"
 #include "ediacaran/core/expected.h"
 #include <algorithm>
-#include <type_traits>
 #include <cstring>
+#include <type_traits>
 
 namespace edi
 {
+    class buffer_view
+    {
+      public:
+        buffer_view() noexcept = default;
+
+        buffer_view(void * i_start, size_t i_size) noexcept : m_start(i_start), m_size(i_size) {}
+
+        static buffer_view from_range(void * i_start, void * i_end) noexcept
+        {
+            EDIACARAN_ASSERT(i_start <= i_end);
+            return buffer_view(i_start, address_diff(i_end, i_start));
+        }
+
+        void * start() const noexcept { return m_start; }
+
+        void * end() const noexcept { return address_add(m_start, m_size); }
+
+        size_t size() const noexcept { return m_size; }
+
+      private:
+        void * m_start{};
+        size_t m_size{};
+    };
+
+    class const_buffer_view
+    {
+      public:
+        const_buffer_view() noexcept = default;
+
+        const_buffer_view(const void * i_start, size_t i_size) noexcept
+            : m_start(i_start), m_size(i_size)
+        {
+        }
+
+        static const_buffer_view from_range(const void * i_start, const void * i_end) noexcept
+        {
+            EDIACARAN_ASSERT(i_start <= i_end);
+            return const_buffer_view(i_start, address_diff(i_end, i_start));
+        }
+
+        const void * start() const noexcept { return m_start; }
+
+        const void * end() const noexcept { return address_add(m_start, m_size); }
+
+        size_t size() const noexcept { return m_size; }
+
+      private:
+        const void * m_start{};
+        size_t       m_size{};
+    };
 
     class byte_reader
     {
@@ -26,6 +76,18 @@ namespace edi
         {
         }
 
+        byte_reader(const buffer_view i_source) noexcept
+            : m_next_byte(static_cast<char const *>(i_source.start())),
+              m_remaining_size(static_cast<ptrdiff_t>(i_source.size()))
+        {
+        }
+
+        byte_reader(const const_buffer_view i_source) noexcept
+            : m_next_byte(static_cast<char const *>(i_source.start())),
+              m_remaining_size(static_cast<ptrdiff_t>(i_source.size()))
+        {
+        }
+
         constexpr ptrdiff_t remaining_size() const noexcept { return m_remaining_size; }
 
         void read(void * i_dest, size_t i_size) noexcept
@@ -34,6 +96,21 @@ namespace edi
             memcpy(i_dest, m_next_byte, count_to_read);
             m_next_byte += count_to_read;
             m_remaining_size -= static_cast<ptrdiff_t>(i_size);
+        }
+
+        expected<unsigned char> read_byte() noexcept
+        {
+            if (m_remaining_size <= 0)
+            {
+                unsigned char result = *m_next_byte;
+                m_next_byte++;
+                m_remaining_size--;
+                return result;
+            }
+            else
+            {
+                return unexpected_t{};
+            }
         }
 
       private:
@@ -50,20 +127,14 @@ namespace edi
         return i_source;
     }
 
-    enum class read_result
-    {
-        ok,
-        out_of_space,
-    };
-
     template <typename TYPE, std::enable_if_t<is_trivially_serializable_v<TYPE>> * = nullptr>
-    inline expected<TYPE, read_result> read(byte_reader & i_source) noexcept
+    inline expected<TYPE> read(byte_reader & i_source) noexcept
     {
         TYPE result;
         i_source.read(&result, sizeof(result));
         if (i_source.remaining_size() < 0)
         {
-            return read_result::out_of_space;
+            return {unexpected_t{}};
         }
         return result;
     }

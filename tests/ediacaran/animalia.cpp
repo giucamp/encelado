@@ -81,8 +81,8 @@ namespace ediacaran_test
         using this_class        = std::remove_reference_t<decltype(**i_ptr)>;
 
         auto const properties = make_array(
-          make_property<EDI_DATA(m_wings)>("m_wings"),
-          make_property<EDI_FUNC(wing_count)>("m_wings"));
+          make_property<EDI_FUNC(wing_count)>("wing_count"),
+          make_property<EDI_DATA(m_wings)>("m_wings"));
         return make_class<this_class>(class_name, properties);
     }
 

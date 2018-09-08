@@ -39,8 +39,8 @@ namespace edi
         {
             if (m_remaining_size < static_cast<ptrdiff_t>(i_size))
                 return false;
-            memcpy(m_next_byte, i_source, static_cast<ptrdiff_t>(i_size));
-            m_next_byte += static_cast<ptrdiff_t>(i_size);
+            memcpy(m_next_byte, i_source, i_size);
+            m_next_byte += i_size;
             m_remaining_size -= static_cast<ptrdiff_t>(i_size);
             return true;
         }
@@ -48,9 +48,19 @@ namespace edi
         void write_unchecked(void const * i_source, size_t i_size) noexcept
         {
             EDIACARAN_ASSERT(m_remaining_size >= static_cast<ptrdiff_t>(i_size));
-            memcpy(m_next_byte, i_source, static_cast<ptrdiff_t>(i_size));
-            m_next_byte += static_cast<ptrdiff_t>(i_size);
+            memcpy(m_next_byte, i_source, i_size);
+            m_next_byte += i_size;
             m_remaining_size -= static_cast<ptrdiff_t>(i_size);
+        }
+
+        void * next_byte() const noexcept { return m_next_byte; }
+
+        void * skip(size_t i_offset) noexcept
+        {
+            auto const result = m_next_byte;
+            m_next_byte += i_offset;
+            m_remaining_size -= static_cast<ptrdiff_t>(i_offset);
+            return result;
         }
 
       private:

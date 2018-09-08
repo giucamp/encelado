@@ -10,23 +10,16 @@
     edi::make_property<decltype(this_class::DataMember), offsetof(this_class, DataMember)>(Name)
 
 #define REFL_ACCESSOR_PROP(Name, Getter, Setter)                                                   \
-    edi::make_property<                                                                            \
-      decltype(&this_class::Getter),                                                               \
-      &this_class::Getter,                                                                         \
-      decltype(&this_class::Setter),                                                               \
-      &this_class::Setter>(Name)
+    edi::make_property<&this_class::Getter, &this_class::Setter>(Name)
 
-#define REFL_ACCESSOR_RO_PROP(Name, Getter)                                                        \
-    edi::                                                                                          \
-      make_property<decltype(&this_class::Getter), &this_class::Getter, std::nullptr_t, nullptr>(  \
-        Name)
+#define REFL_ACCESSOR_RO_PROP(Name, Getter) edi::make_property<&this_class::Getter, nullptr>(Name)
 
 #define REFL_FUNCTION(Name, Method, ParameterNames)                                                \
-    edi::make_function<decltype(&this_class::Method), &this_class::Method>(Name, ParameterNames)
+    edi::make_function<&this_class::Method>(Name, ParameterNames)
 
 #define EDI_DATA(DataMember) decltype(this_class::DataMember), offsetof(this_class, DataMember)
 
-#define EDI_FUNC(Method) decltype(&this_class::Method), &this_class::Method
+#define EDI_FUNC(Method) &this_class::Method
 
 namespace edi
 {
@@ -467,14 +460,14 @@ namespace edi
         return property(i_name, get_qualified_type<PROP_TYPE>(), OFFSET);
     }
 
-    template <
-      typename GETTER_TYPE,
-      GETTER_TYPE GETTER,
-      typename SETTER_TYPE = std::nullptr_t,
-      SETTER_TYPE SETTER   = nullptr>
-    constexpr std::enable_if_t<std::is_member_function_pointer_v<GETTER_TYPE>, property>
+    template <auto GETTER, auto SETTER = nullptr>
+    constexpr std::
+      enable_if_t<std::is_member_function_pointer_v<std::decay_t<decltype(GETTER)>>, property>
       make_property(const char * i_name)
     {
+        using GETTER_TYPE = std::decay_t<decltype(GETTER)>;
+        using SETTER_TYPE = std::decay_t<decltype(SETTER)>;
+
         using accessor = detail::PropertyAccessor<
           edi::remove_noexcept_t<GETTER_TYPE>,
           edi::remove_noexcept_t<SETTER_TYPE>,

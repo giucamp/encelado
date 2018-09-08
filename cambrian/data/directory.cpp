@@ -9,7 +9,7 @@
 
 namespace cambrian
 {
-    obj_ref::obj_ref(storage_device * i_device, const string_view & i_path) : m_device(i_device)
+    /*obj_ref::obj_ref(storage_device * i_device, const string_view & i_path) : m_device(i_device)
     {
         auto const device_info = m_device->get_info();
         auto const slot_count  = device_info.m_page_size / sizeof(page_address);
@@ -22,16 +22,16 @@ namespace cambrian
               i_device->map_page(page, storage_device::access_flags::read_write).value();
             m_mapped_pages.push_back(std::move(mapping));
         }
-    }
+    }*/
 
     directory_iterator::directory_iterator(storage_device * i_device, const string_view & i_path)
         : m_device(i_device), m_path(i_path)
     {
     }
 
-    void directory_iterator::lookup(const string_view & i_path)
+    /*void directory_iterator::lookup(const string_view & i_path)
     {
-        /*auto const device_info = m_device->get_info();
+        auto const device_info = m_device->get_info();
         auto const slot_count  = device_info.m_page_size / sizeof(page_address);
 
         void * current_content =
@@ -62,7 +62,7 @@ namespace cambrian
         do
         {
 
-        } while (token_it != end_marker);*/
-    }
+        } while (token_it != end_marker);
+    }*/
 
 } // namespace cambrian

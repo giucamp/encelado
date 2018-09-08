@@ -87,8 +87,9 @@ namespace edi
 
         template <typename... TYPE> constexpr void write(TYPE &&... i_args) noexcept
         {
-            int dummy[sizeof...(TYPE)] = {(*this << std::forward<TYPE>(i_args), 0)...};
-            (void)dummy;
+            (*this << std::forward<TYPE>(i_args)), ...;
+            /*int dummy[sizeof...(TYPE)] = {(*this << std::forward<TYPE>(i_args), 0)...};
+            (void)dummy;*/
         }
 
         constexpr char * next_dest() const noexcept { return m_curr_char; }

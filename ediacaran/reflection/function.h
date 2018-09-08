@@ -154,9 +154,10 @@ namespace edi
 #endif
     } // namespace detail
 
-    template <typename METHOD_TYPE, METHOD_TYPE METHOD>
+    template <auto METHOD>
     constexpr function make_function(const char * i_name, const char * i_parameter_names = "")
     {
+        using METHOD_TYPE      = std::decay_t<decltype(METHOD)>;
         using function_invoker = detail::FunctionInvoker<
           METHOD_TYPE,
           typename detail::MethodTraits<METHOD_TYPE>::return_type,

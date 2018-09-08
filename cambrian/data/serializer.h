@@ -14,6 +14,7 @@
 #include "ediacaran/utils/raw_ptr.h"
 #include "ediacaran/utils/universal_iterator.h"
 #include <deque>
+#include <limits>
 
 namespace cambrian
 {
@@ -23,8 +24,11 @@ namespace cambrian
         uint16_t m_count   = 0;
         uint16_t m_flags   = 0;
 
+        constexpr static uint16_t s_max_count = std::numeric_limits<uint16_t>::max();
+
         enum flags
         {
+            flag_none            = 0,
             flag_begin_comtainer = 1 << 0,
             flag_end_comtainer   = 1 << 1,
         };
@@ -46,14 +50,9 @@ namespace cambrian
         EDI_NODISCARD result step(byte_writer & i_dest);
 
       private:
-        enum write_object_flags
-        {
-            wo_none,
-            wo_add_marker,
-        };
+        bool push_level(const raw_ptr & i_source_object);
 
-        bool write_object(
-          byte_writer & i_dest, const raw_ptr & i_source_object, write_object_flags i_flags);
+        bool write_prop_value(byte_writer & i_dest, const raw_ptr & i_source_object);
 
       private:
         struct Level
@@ -62,6 +61,8 @@ namespace cambrian
             universal_iterator           m_element_iterator;
             bool                         m_move_next_property = false;
             bool                         m_move_next_element  = false;
+            bool                         m_first_element      = true;
+            data_marker *                marker               = nullptr;
             Level(const raw_ptr & i_object);
         };
         type_registry &   m_type_registry;

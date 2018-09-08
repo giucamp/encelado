@@ -24,19 +24,20 @@ namespace cambrian
 
         struct type_data
         {
-            const type &  m_native_type;
-            type_id const m_id;
-            const type &  m_passive_type;
+            const type &   m_active_type;
+            type_id const  m_id;
+            const type &   m_serialized_type;
+            uint64_t const m_serialized_size;
         };
 
         type_data get_type_data(const type & i_source_type);
 
       private:
-        struct PassiveClassData;
-        struct PassiveClass;
+        struct SerializedClassData;
+        struct SerializedClass;
 
       private:
-        std::unordered_map<const class_type *, std::unique_ptr<const PassiveClass>> m_classes;
+        std::unordered_map<const class_type *, std::unique_ptr<const SerializedClass>> m_classes;
         type_id m_next_type_id = 0;
     };
 

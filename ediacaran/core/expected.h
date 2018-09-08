@@ -158,7 +158,11 @@ namespace edi
 
     } // namespace detail
 
-    template <typename VALUE, typename ERROR>
+    struct default_error_t
+    {
+    };
+
+    template <typename VALUE, typename ERROR = default_error_t>
     class EDI_NODISCARD expected
         : private detail::ExpectedBase<
             VALUE,

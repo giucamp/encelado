@@ -11,7 +11,7 @@
 
 namespace cambrian
 {
-    struct type_registry::PassiveClassData
+    struct type_registry::SerializedClassData
     {
         type_id                  m_type_id = 0;
         std::string              m_name;
@@ -21,7 +21,7 @@ namespace cambrian
         std::vector<function>    m_functions;
         std::vector<std::string> m_property_names;
 
-        PassiveClassData(
+        SerializedClassData(
           type_registry * i_type_registry, const class_type & i_source_class, type_id i_type_id)
             : m_type_id(i_type_id)
         {
@@ -43,7 +43,7 @@ namespace cambrian
             for (auto const base : i_source_class.bases())
             {
                 auto const & passive_base =
-                  i_type_registry->get_type_data(base.get_class()).m_native_type;
+                  i_type_registry->get_type_data(base.get_class()).m_active_type;
                 CAMBRIAN_ASSERT(passive_base.is_class());
 
                 m_base_classes.emplace_back(static_cast<const class_type &>(passive_base), nullptr);
@@ -60,7 +60,7 @@ namespace cambrian
                 auto const raw_type = prop.qualified_type().final_type();
 
                 auto const & prop_passive_type =
-                  i_type_registry->get_type_data(*raw_type).m_native_type;
+                  i_type_registry->get_type_data(*raw_type).m_active_type;
 
                 auto const prop_name = m_property_names.emplace_back(prop.name());
 
@@ -72,10 +72,10 @@ namespace cambrian
         }
     };
 
-    struct type_registry::PassiveClass
+    struct type_registry::SerializedClass
     {
       public:
-        PassiveClass(
+        SerializedClass(
           type_registry * i_type_registry, const class_type & i_source_class, type_id i_type_id)
             : m_class_data(i_type_registry, i_source_class, i_type_id),
               m_class(
@@ -90,8 +90,8 @@ namespace cambrian
         {
         }
 
-        PassiveClassData m_class_data;
-        class_type       m_class;
+        SerializedClassData m_class_data;
+        class_type          m_class;
     };
 
 
@@ -99,7 +99,7 @@ namespace cambrian
     {
         if (i_source_type.is_fundamental())
         {
-            return {i_source_type, 0, i_source_type};
+            return {i_source_type, 0, i_source_type, i_source_type.size()};
         }
         else
         {
@@ -107,10 +107,13 @@ namespace cambrian
             auto &       slot         = m_classes[&source_class];
             if (!slot)
             {
-                slot = std::make_unique<PassiveClass>(this, source_class, m_next_type_id);
+                slot = std::make_unique<SerializedClass>(this, source_class, m_next_type_id);
                 m_next_type_id++;
             }
-            return {i_source_type, slot->m_class_data.m_type_id, slot->m_class};
+            return {i_source_type,
+                    slot->m_class_data.m_type_id,
+                    slot->m_class,
+                    slot->m_class_data.m_size};
         }
     }
 
